@@ -1,0 +1,61 @@
+plugins {
+    id 'java'
+    id 'edu.sc.seis.launch4j' version '2.4.6'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'application'
+}
+
+group 'ru.smclabs.bootstrap'
+version '1.0.0'
+
+mainClassName = project.group + '.BootstrapMain'
+archivesBaseName = 'Bootstrap'
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+    flatDir {
+        dirs "libs"
+    }
+}
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+    implementation 'org.javassist:javassist:3.29.2-GA'
+    implementation 'com.github.tox1cozZ:jSystemThemeDetector:master-SNAPSHOT'
+    implementation 'ru.smclabs:jackson-pack:1.0.0'
+    implementation 'ru.smclabs:jackson-pack-config:1.0.0'
+    implementation 'ru.smclabs:resources:1.0.0'
+    implementation 'ru.smclabs:process-utils:1.0.0'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
+
+launch4j {
+    version = project.version
+    textVersion = project.version
+    mainClassName = mainClassName
+    icon = "${projectDir}/inno-setup/64.ico"
+    jar = "${projectDir}/build/libs/${archivesBaseName + "-" + version + "-all.jar"}"
+    errTitle = 'Bootstrap'
+    supportUrl = 'https://f.simpleminecraft.net/'
+    language = 'RUSSIAN'
+    copyright = 'Created by SMC-Labs'
+    fileDescription = archivesBaseName
+    productName = archivesBaseName
+    internalName = archivesBaseName
+    outfile = archivesBaseName + '.exe'
+    bundledJrePath = 'runtime/i586'
+}
