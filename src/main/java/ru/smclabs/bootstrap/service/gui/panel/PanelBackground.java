@@ -1,4 +1,4 @@
-package ru.smclabs.bootstrap.service.gui.pane;
+package ru.smclabs.bootstrap.service.gui.panel;
 
 import lombok.Getter;
 import ru.smclabs.bootstrap.service.GuiService;
@@ -12,6 +12,7 @@ public class PanelBackground extends AbstractPanel {
 
     private final Image imageLogo;
     private final Font titleFont = LocalResourceHelper.loadFont("Inter-Bold", 28);
+    private final @Getter PanelUpdate panelUpdate;
 
     public PanelBackground(GuiService guiService) {
         super(guiService);
@@ -19,8 +20,8 @@ public class PanelBackground extends AbstractPanel {
         this.setBorder(new BorderBackground(guiService.getThemeManager()));
         this.setLayout(null);
         this.imageLogo = LocalResourceHelper.loadScaledImage("/assets/icons/512.png", 44, 44);
-
         this.add(new PanelHeader(guiService));
+        this.add(this.panelUpdate = new PanelUpdate(guiService));
     }
 
     @Override

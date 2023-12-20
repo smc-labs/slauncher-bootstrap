@@ -1,4 +1,4 @@
-package ru.smclabs.bootstrap.service.gui.pane;
+package ru.smclabs.bootstrap.service.gui.panel;
 
 import ru.smclabs.bootstrap.service.GuiService;
 import ru.smclabs.bootstrap.service.gui.component.button.ButtonControl;

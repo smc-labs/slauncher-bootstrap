@@ -28,6 +28,8 @@ public class ThemeManager {
         this.registerColor("bg-border", new Color(0, 0, 0, (int) (255 * 0.04)), new Color(255, 255, 255, (int) (255 * 0.04)));
         this.registerColor("title", Color.BLACK, Color.WHITE);
         this.registerColor("sub-title", new Color(0, 0, 0, (int) (255 * 0.6)), new Color(255, 255, 255, (int) (255 * 0.6)));
+        this.registerColor("progress-bar", new Color(0, 0, 0, (int) (255 * 0.06)), new Color(255, 255, 255, (int) (255 * 0.06)));
+        this.registerColor("progress-bar-track", Color.decode("#A2BE06"), Color.decode("#A2BE06"));
     }
 
     private void registerColor(String type, Color lightDark, Color darkColor) {

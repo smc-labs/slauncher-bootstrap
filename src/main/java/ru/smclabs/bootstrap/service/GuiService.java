@@ -5,7 +5,7 @@ import ru.smclabs.bootstrap.Bootstrap;
 import ru.smclabs.bootstrap.environment.GuiEnvironment;
 import ru.smclabs.bootstrap.service.gui.ThemeManager;
 import ru.smclabs.bootstrap.service.gui.component.FrameDragListener;
-import ru.smclabs.bootstrap.service.gui.pane.PanelBackground;
+import ru.smclabs.bootstrap.service.gui.panel.PanelBackground;
 import ru.smclabs.bootstrap.util.LocalResourceHelper;
 
 import javax.swing.*;
@@ -29,7 +29,6 @@ public class GuiService extends AbstractService {
 
     private JFrame createFrame() {
         GuiEnvironment guiEnvironment = this.getBootstrap().getEnvironment().getGui();
-
         try {
             Toolkit defaultToolkit = Toolkit.getDefaultToolkit();
             Field awtAppClassNameField = defaultToolkit.getClass().getDeclaredField("awtAppClassName");

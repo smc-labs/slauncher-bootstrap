@@ -1,4 +1,4 @@
-package ru.smclabs.bootstrap.service.gui.pane;
+package ru.smclabs.bootstrap.service.gui.panel;
 
 import lombok.Getter;
 import ru.smclabs.bootstrap.service.GuiService;
