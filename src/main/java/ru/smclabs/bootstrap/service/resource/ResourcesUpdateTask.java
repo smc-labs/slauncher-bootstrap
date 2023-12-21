@@ -89,9 +89,8 @@ public class ResourcesUpdateTask {
 
         this.downloadInvalidFiles(resourcesBuild, runtime, launcher);
 
+        this.panelUpdate.setLabelTitle("Все готово");
         this.panelUpdate.setLabelSubTitle("запуск лаунчера...");
-
-
         this.checkIfCancelled();
 
         LauncherProcess launcherProcess = Bootstrap.getInstance().getLauncherService().getProcessManager()
@@ -139,12 +138,13 @@ public class ResourcesUpdateTask {
             }
 
             try (ResourceDownloadTaskStats stats = new ResourceDownloadTaskStats(this.panelUpdate)) {
+                this.panelUpdate.setLabelTitle("Обновление");
                 this.panelUpdate.setLabelSubTitle("скачивание обновления...");
                 this.panelUpdate.setLabelTimeRemain("...");
                 this.panelUpdate.setLabelFileName("...");
                 this.panelUpdate.setLabelSpeed("...");
                 this.panelUpdate.setProgress(0.01D);
-                this.panelUpdate.setVisible(true);
+                this.panelUpdate.getPanelDownloadInfo().setVisible(true);
 
                 stats.start(downloads.stream().mapToLong(task -> task.getResource().getSize()).sum());
 
@@ -161,7 +161,7 @@ public class ResourcesUpdateTask {
 
             this.panelUpdate.setLabelSubTitle("установка обновления...");
             this.panelUpdate.setProgress(0D);
-            //this.panelUpdate.resetLabels(this);
+            this.panelUpdate.getPanelDownloadInfo().setVisible(false);
 
             for (ResourceCompressed resource : compressedResources) {
                 this.checkIfCancelled();

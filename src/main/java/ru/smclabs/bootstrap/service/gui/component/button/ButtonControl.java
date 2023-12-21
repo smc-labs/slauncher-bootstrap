@@ -38,15 +38,12 @@ public abstract class ButtonControl extends JComponent implements MouseListener 
         g2d.setColor(Bootstrap.getInstance().getGuiService().getThemeManager().getColor("bg"));
         g2d.fill(new RoundRectangle2D.Double(0, 0, dimension.width, dimension.height, 0, 0));
 
-        g2d.setComposite(AlphaComposite.SrcAtop);
         g2d.drawImage(this.hovered ? this.imageHover : this.imageRegular,
                 0,
                 0,
                 dimension.width,
                 dimension.height,
                 this);
-
-        g2d.dispose();
     }
 
     @Override

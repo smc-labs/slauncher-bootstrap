@@ -24,7 +24,7 @@ DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
 OutputDir={#OutputDir}
-OutputBaseFilename=SIMPLEMINECRAFT-Installer
+OutputBaseFilename=simpleminecraft-installer
 SetupIconFile={#OutputDir}\64.ico
 Compression=lzma
 SolidCompression=yes

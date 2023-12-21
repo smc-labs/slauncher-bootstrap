@@ -1,10 +1,11 @@
 package ru.smclabs.bootstrap.service.gui.panel;
 
+import lombok.Getter;
 import lombok.Setter;
 import ru.smclabs.bootstrap.Bootstrap;
 import ru.smclabs.bootstrap.service.GuiService;
-import ru.smclabs.bootstrap.service.resource.ResourcesUpdateTask;
 import ru.smclabs.bootstrap.util.LocalResourceHelper;
+import ru.smclabs.bootstrap.util.SystemUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +15,7 @@ import java.awt.geom.RoundRectangle2D;
 
 public class PanelUpdate extends AbstractPanel {
 
-    private final PanelDownloadInfo panelDownloadInfo;
+    private final @Getter PanelDownloadInfo panelDownloadInfo;
     private final Font labelTitleFont = LocalResourceHelper.loadFont("Inter-Bold", 54);
     private final Font labelSubTitleFont = LocalResourceHelper.loadFont("Inter-Regular", 18);
     private final int progressPrefWidth;
@@ -46,7 +47,7 @@ public class PanelUpdate extends AbstractPanel {
     }
 
     private void startRepaintTimer() {
-        new Timer(2, new AbstractAction() {
+        new Timer(10, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (progress <= 0D) {
@@ -59,7 +60,11 @@ public class PanelUpdate extends AbstractPanel {
                     }
                 }
 
-                repaint();
+                if (SystemUtils.isMacOS()) {
+                    guiService.getPanelBackground().repaint();
+                } else {
+                    repaint();
+                }
             }
         }).start();
     }
@@ -80,11 +85,11 @@ public class PanelUpdate extends AbstractPanel {
         g2d.setColor(this.guiService.getThemeManager().getColor("bg"));
         g2d.fill(new Area(roundRectangle));
 
-        int titlePosY = this.panelDownloadInfo.isVisible() ? 30 : 40;
+        int titlePosY = 30;
 
         this.drawProgressBar(g2d);
         this.drawCenteredString(g2d, this.labelTitle, this.labelTitleFont, this.guiService.getThemeManager().getColor("title"), 0, titlePosY);
-        this.drawCenteredString(g2d, this.labelSubTitle, this.labelSubTitleFont, this.guiService.getThemeManager().getColor("sub-title"), 0, titlePosY + 30);
+        this.drawCenteredString(g2d, this.labelSubTitle, this.labelSubTitleFont, this.guiService.getThemeManager().getColor("sub-title"), 0, titlePosY + 33);
         this.panelDownloadInfo.paintComponent(g);
 
         g2d.dispose();
@@ -140,9 +145,5 @@ public class PanelUpdate extends AbstractPanel {
 
     public void setLabelFileName(String fileName) {
         this.panelDownloadInfo.setLabelFileName(fileName);
-    }
-
-    public void resetLabels() {
-        this.panelDownloadInfo.setVisible(false);
     }
 }

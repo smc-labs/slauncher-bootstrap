@@ -32,13 +32,11 @@ public class PanelBackground extends AbstractPanel {
 
         g2d.setColor(this.guiService.getThemeManager().getColor("bg"));
         g2d.fill(new RoundRectangle2D.Double(0, 0, this.getWidth(), this.getHeight(), (18D / 2D) * Math.PI, (18D / 2D) * Math.PI));
-        g2d.setComposite(AlphaComposite.SrcAtop);
 
         int logoPosX = 32;
         int logoPosY = 23;
         int logoWidth = 44;
         int logoHeight = 44;
-
         g2d.drawImage(this.imageLogo, logoPosX, logoPosY, logoWidth, logoHeight, this);
 
         g2d.setPaint(this.guiService.getThemeManager().getColor("title"));
