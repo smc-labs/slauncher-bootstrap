@@ -23,7 +23,7 @@ public class ThemeManager {
     private final Map<String, Color> colors = new HashMap<>();
 
     public ThemeManager() {
-        this.dark = this.detectTheme();
+        this.dark = this.isDarkTheme();
         this.registerColor("bg", Color.decode("#F8E6D6"), Color.decode("#15151D"));
         this.registerColor("bg-border", new Color(0, 0, 0, (int) (255 * 0.04)), new Color(255, 255, 255, (int) (255 * 0.04)));
         this.registerColor("title", Color.BLACK, Color.WHITE);
@@ -46,17 +46,23 @@ public class ThemeManager {
                 + "-" + (this.dark ? "dark" : "light") + ".png", width, height);
     }
 
-    private boolean detectTheme() {
-        return this.isLauncherUseDarkTheme() || OsThemeDetector.isSupported()
-                && OsThemeDetector.getDetector().isDark();
+    private boolean isDarkTheme() {
+        String theme = this.getLauncherTheme();
+        if (Objects.equals(theme, "light")) {
+            return false;
+        } else if (Objects.equals(theme, "dark")) {
+            return true;
+        }
+
+        return OsThemeDetector.isSupported() && OsThemeDetector.getDetector().isDark();
     }
 
-    private boolean isLauncherUseDarkTheme() {
+    private String getLauncherTheme() {
         Path configPath = Paths.get(Bootstrap.getInstance().getDirProvider()
                 .getPersistenceDir("data/config") + "/launcher.json");
 
         if (!Files.exists(configPath)) {
-            return false;
+            return null;
         }
 
         try {
@@ -64,9 +70,9 @@ public class ThemeManager {
                     new TypeReference<HashMap<String, String>>() {
                     });
 
-            return Objects.equals(config.get("theme"), "dark");
+            return config.get("theme");
         } catch (IOException e) {
-            return false;
+            return null;
         }
     }
 

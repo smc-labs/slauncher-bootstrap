@@ -85,7 +85,7 @@ public class PanelUpdate extends AbstractPanel {
         g2d.setColor(this.guiService.getThemeManager().getColor("bg"));
         g2d.fill(new Area(roundRectangle));
 
-        int titlePosY = 30;
+        int titlePosY = 36;
 
         this.drawProgressBar(g2d);
         this.drawCenteredString(g2d, this.labelTitle, this.labelTitleFont, this.guiService.getThemeManager().getColor("title"), 0, titlePosY);
