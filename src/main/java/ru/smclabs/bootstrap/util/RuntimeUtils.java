@@ -1,7 +1,10 @@
 package ru.smclabs.bootstrap.util;
 
+import ru.smclabs.bootstrap.BootstrapMain;
+
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Field;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -40,5 +43,21 @@ public class RuntimeUtils {
 
     public static boolean isStartedByPackagedJre() {
         return SystemUtils.isWindows() && Files.exists(Paths.get(getWorkingDir() + "/runtime/"));
+    }
+
+    public static Path getExecutableFilePath() throws URISyntaxException {
+        return Paths.get(BootstrapMain.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+    }
+
+    public static String getExecutableFileName() {
+        try {
+            return getExecutableFilePath().getFileName().toString();
+        } catch (Throwable e) {
+            return "";
+        }
+    }
+
+    public static boolean isExecutableFileExtension(String extension) {
+        return getExecutableFileName().endsWith("." + extension);
     }
 }

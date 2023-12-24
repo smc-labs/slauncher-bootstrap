@@ -8,6 +8,8 @@ import java.nio.file.Paths;
 public class BootstrapMain {
 
     public static void main(String[] args) {
+        System.out.println("Launcher is started");
+
         if (switchToSystemRuntime()) {
             System.exit(0);
             return;
@@ -25,6 +27,8 @@ public class BootstrapMain {
     }
 
     private static boolean switchToSystemRuntime() {
+        if (RuntimeUtils.isExecutableFileExtension("jar")) return false;
+
         if (RuntimeUtils.isStartedByWrongPackagedJre()) {
             ProcessBuilder processBuilder = new ProcessBuilder();
             processBuilder.redirectErrorStream(true);
