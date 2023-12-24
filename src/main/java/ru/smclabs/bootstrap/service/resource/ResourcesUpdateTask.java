@@ -34,7 +34,6 @@ public class ResourcesUpdateTask {
     private final @Getter PanelUpdate panelUpdate;
     private final Thread thread;
 
-    private boolean awaitProcessesDestroy;
 
     public ResourcesUpdateTask(ResourcesService service, PanelUpdate panelUpdate) {
         this.service = service;
@@ -122,20 +121,8 @@ public class ResourcesUpdateTask {
             ProcessManager processManager = Bootstrap.getInstance().getLauncherService().getProcessManager();
             processManager.readProcessesFromDisk();
 
-            downloads.stream().map(ResourceDownloadTask::getResource).forEach(resource -> {
-                if (resource instanceof ResourceCompressedRuntime) {
-                    processManager.destroyLauncherProcesses();
-                    this.awaitProcessesDestroy = true;
-                } else if (resource instanceof ResourceLauncher) {
-                    processManager.destroyGameProcesses(runtime, launcher);
-                    this.awaitProcessesDestroy = true;
-                }
-            });
-
-            if (this.awaitProcessesDestroy) {
-                TimeUnit.SECONDS.sleep(1);
-                this.awaitProcessesDestroy = false;
-            }
+            processManager.destroyLauncherProcesses(runtime, launcher);
+            TimeUnit.SECONDS.sleep(1);
 
             try (ResourceDownloadTaskStats stats = new ResourceDownloadTaskStats(this.panelUpdate)) {
                 this.panelUpdate.setLabelTitle("Обновление");

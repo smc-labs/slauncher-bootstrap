@@ -42,7 +42,7 @@ public class ProcessManager {
         return launcherProcess;
     }
 
-    public void destroyGameProcesses(ResourceCompressedRuntime runtime, ResourceLauncher launcher) {
+    private void destroyGameProcesses(ResourceCompressedRuntime runtime, ResourceLauncher launcher) {
         if (!Files.exists(runtime.getPath()) || !Files.exists(launcher.getPath())) {
             return;
         }
@@ -76,8 +76,10 @@ public class ProcessManager {
         }
     }
 
-    public void destroyLauncherProcesses() {
-        if (this.processes.isEmpty()) {
+    public void destroyLauncherProcesses(ResourceCompressedRuntime runtime, ResourceLauncher launcher) {
+        this.destroyGameProcesses(runtime, launcher);
+
+        if (this.processes.isEmpty()){
             return;
         }
 

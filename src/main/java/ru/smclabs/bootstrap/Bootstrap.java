@@ -37,7 +37,6 @@ public class Bootstrap {
 
     public void start() {
         this.logger.info("Starting Bootstrap " + this.environment.getVersion());
-        RuntimeUtils.setupUTF8();
         System.setProperty("java.net.preferIPv4Stack", "true");
         System.setProperty("http.agent", this.environment.getHttp().getUserAgent());
         this.guiService.postInit();

@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.nio.charset.StandardCharsets;
 
 @Getter
 @Setter
@@ -44,7 +45,7 @@ public class HttpResponse {
     }
 
     protected void readStream(InputStream inputStream) throws IOException {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
             StringBuilder result = new StringBuilder();
             String line;
 
