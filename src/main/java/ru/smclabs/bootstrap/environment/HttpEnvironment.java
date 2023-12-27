@@ -15,7 +15,7 @@ public class HttpEnvironment {
 
     public HttpEnvironment(String version) {
         this.userAgent = "S-LAUNCHER@" + version;
-        this.hostname = "slauncher.simpleminecraft.net";
+        this.hostname = "slauncher.simpleminecraft.ru";
         this.changeZone("ru");
         this.changeProtocol(this.hostname.startsWith("localhost") ? "http" : "https");
     }
@@ -29,7 +29,7 @@ public class HttpEnvironment {
     }
 
     public boolean isZoneChanged() {
-        return zone.equals(".net");
+        return this.zone.equals(".net");
     }
 
     public boolean isProtocolChanged() {
