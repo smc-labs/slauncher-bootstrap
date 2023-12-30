@@ -5,9 +5,6 @@ import lombok.Getter;
 import ru.smclabs.bootstrap.Bootstrap;
 import ru.smclabs.bootstrap.service.ResourcesService;
 import ru.smclabs.bootstrap.service.gui.panel.PanelUpdate;
-import ru.smclabs.bootstrap.service.http.HttpRequest;
-import ru.smclabs.bootstrap.service.http.exception.HttpClientException;
-import ru.smclabs.bootstrap.service.http.exception.HttpServerException;
 import ru.smclabs.bootstrap.service.launcher.ProcessManager;
 import ru.smclabs.bootstrap.service.launcher.exception.LauncherProcessFailedException;
 import ru.smclabs.bootstrap.service.launcher.exception.LauncherServiceException;
@@ -19,6 +16,9 @@ import ru.smclabs.bootstrap.service.resource.dto.BootstrapResourceList;
 import ru.smclabs.bootstrap.service.resource.exception.ResourceServerException;
 import ru.smclabs.bootstrap.service.resource.exception.ResourceWriteException;
 import ru.smclabs.bootstrap.service.resource.type.ResourceLauncher;
+import ru.smclabs.http.HttpService;
+import ru.smclabs.http.exception.HttpServiceException;
+import ru.smclabs.http.request.HttpRequest;
 import ru.smclabs.resources.exception.ResourceException;
 import ru.smclabs.resources.type.ResourceCompressed;
 import ru.smclabs.resources.type.ResourceCompressedRuntime;
@@ -52,7 +52,7 @@ public class ResourcesUpdateTask {
 
                 this.getPanelUpdate().setLabelTitle("Что-то пошло не так");
                 this.getPanelUpdate().setLabelSubTitle("не удалось запустить лаунчер");
-            } catch (HttpClientException | HttpServerException | JsonProcessingException | ResourceWriteException |
+            } catch (HttpServiceException | JsonProcessingException | ResourceWriteException |
                      ResourceServerException | LauncherServiceException | ResourceException e) {
 
                 Bootstrap.getInstance().getLogger().error("Update ended with an exception!", e);
@@ -69,7 +69,7 @@ public class ResourcesUpdateTask {
         return thread;
     }
 
-    private void run() throws HttpClientException, HttpServerException, JsonProcessingException,
+    private void run() throws HttpServiceException, JsonProcessingException,
             ResourceWriteException, ResourceServerException, InterruptedException, LauncherServiceException {
 
         ResourcesBuild resourcesBuild = this.factory.buildModels(this.fetchResourceList());
@@ -101,8 +101,8 @@ public class ResourcesUpdateTask {
         System.exit(0);
     }
 
-    private BootstrapResourceList fetchResourceList() throws HttpClientException, HttpServerException, JsonProcessingException {
-        HttpRequest<BootstrapResourceList> request = new HttpRequest<>(Bootstrap.getInstance().getHttpService(),
+    private BootstrapResourceList fetchResourceList() throws HttpServiceException, JsonProcessingException {
+        HttpRequest<HttpService, BootstrapResourceList> request = new HttpRequest<>(Bootstrap.getInstance().getHttpService(),
                 "GET",
                 "application/json",
                 "%slauncher-backend%/bootstrap");
@@ -112,7 +112,7 @@ public class ResourcesUpdateTask {
 
     private void downloadInvalidFiles(ResourcesBuild resourcesBuild,
                                       ResourceCompressedRuntime runtime,
-                                      ResourceLauncher launcher) throws InterruptedException, ResourceWriteException, HttpClientException, ResourceServerException {
+                                      ResourceLauncher launcher) throws InterruptedException, ResourceWriteException, ResourceServerException, HttpServiceException {
 
         List<ResourceDownloadTask> downloads = resourcesBuild.findInvalidResources();
 

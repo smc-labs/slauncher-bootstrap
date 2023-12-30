@@ -3,12 +3,11 @@ package ru.smclabs.bootstrap;
 import lombok.Getter;
 import ru.smclabs.bootstrap.environment.Environment;
 import ru.smclabs.bootstrap.service.GuiService;
-import ru.smclabs.bootstrap.service.HttpService;
 import ru.smclabs.bootstrap.service.LauncherService;
 import ru.smclabs.bootstrap.service.ResourcesService;
 import ru.smclabs.bootstrap.util.LoggingUtils;
-import ru.smclabs.bootstrap.util.RuntimeUtils;
 import ru.smclabs.bootstrap.util.logger.Logger;
+import ru.smclabs.http.HttpService;
 import ru.smclabs.resources.provider.DirProvider;
 
 @Getter

@@ -3,13 +3,15 @@ package ru.smclabs.bootstrap.service.resource.download;
 import lombok.Getter;
 import lombok.Setter;
 import ru.smclabs.bootstrap.Bootstrap;
-import ru.smclabs.bootstrap.environment.HttpEnvironment;
-import ru.smclabs.bootstrap.service.HttpService;
-import ru.smclabs.bootstrap.service.http.exception.HttpClientException;
 import ru.smclabs.bootstrap.service.resource.exception.ResourceNotCompleteException;
 import ru.smclabs.bootstrap.service.resource.exception.ResourceServerException;
 import ru.smclabs.bootstrap.service.resource.exception.ResourceWriteException;
 import ru.smclabs.bootstrap.util.logger.Logger;
+import ru.smclabs.http.HttpService;
+import ru.smclabs.http.environment.HttpEnvironment;
+import ru.smclabs.http.exception.HttpClientException;
+import ru.smclabs.http.exception.HttpServiceException;
+import ru.smclabs.http.logger.IHttpLogger;
 import ru.smclabs.resources.exception.ResourceException;
 import ru.smclabs.resources.type.Resource;
 
@@ -34,7 +36,7 @@ public class ResourceDownloadTask {
         this.tempPath = Paths.get(resource.getPath() + ".download");
     }
 
-    public void run() throws ResourceWriteException, HttpClientException, ResourceServerException, InterruptedException {
+    public void run() throws ResourceWriteException, HttpServiceException, ResourceServerException, InterruptedException {
         this.prepareDir();
 
         try {
@@ -74,33 +76,37 @@ public class ResourceDownloadTask {
         }
     }
 
-    private void downloadWithRetry(boolean append) throws ResourceWriteException, HttpClientException, ResourceServerException, InterruptedException {
+    private void downloadWithRetry(boolean append) throws ResourceWriteException, ResourceServerException, InterruptedException {
         HttpService httpService = Bootstrap.getInstance().getHttpService();
-        HttpEnvironment environment = httpService.getEnvironment();
-        Logger logger = httpService.getLogger();
 
         try {
             this.download(append);
         } catch (ResourceServerException | HttpClientException e) {
-            logger.error("Failed to send request to " + this.resource.getUrl(), e);
+            HttpEnvironment environment = httpService.getEnvironment();
+            IHttpLogger logger = httpService.getLogger();
 
-            if (environment.isProtocolChanged() && environment.isZoneChanged()) {
-                logger.info("Reset domain and protocol to default...");
-                environment.changeProtocol("https");
-                environment.changeZone("ru");
-                throw e;
-            } else if (!environment.isProtocolChanged()) {
-                logger.info("Change working protocol to: HTTP");
-                environment.changeProtocol("http");
-                this.download(append);
+            logger.warn("Failed to send request to " + this.resource.getUrl() + "! (zone: ."
+                    + environment.getZone() + ", protocol: " + environment.getProtocol() + ")");
+
+            logger.info("Search working zone...");
+
+            for (int i = 0; i < environment.getZones().size(); i++) {
+                environment.setZoneIndex(i);
+
+                for (int j = 0; j < environment.getProtocols().size(); j++) {
+                    environment.setProtocolIndex(j);
+                    logger.info("Try zone: ." + environment.getZone() + ", protocol: " + environment.getProtocol());
+
+                    try {
+                        this.download(append);
+                        logger.info("Found working zone: ." + environment.getZone()
+                                + ", protocol: " + environment.getProtocol());
+                        return;
+                    } catch (HttpServiceException e1) {
+                        e.addSuppressed(e1);
+                    }
+                }
             }
-
-            logger.info("Change working protocol to: HTTPS");
-            logger.info("Change working domain to: NET");
-            environment.changeProtocol("https");
-            environment.changeZone("net");
-
-            this.download(append);
         }
     }
 

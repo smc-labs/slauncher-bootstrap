@@ -1,38 +1,13 @@
 package ru.smclabs.bootstrap.environment;
 
-import lombok.Getter;
-import lombok.ToString;
+import java.util.Arrays;
 
-@Getter
-@ToString
-public class HttpEnvironment {
-
-    private final String userAgent;
-    private final String hostname;
-
-    private String zone;
-    private String protocol;
+public class HttpEnvironment extends ru.smclabs.http.environment.HttpEnvironment {
 
     public HttpEnvironment(String version) {
-        this.userAgent = "S-LAUNCHER@" + version;
-        this.hostname = "slauncher.simpleminecraft.ru";
-        this.changeZone("ru");
-        this.changeProtocol(this.hostname.startsWith("localhost") ? "http" : "https");
-    }
-
-    public void changeZone(String zone) {
-        this.zone = "." + zone;
-    }
-
-    public void changeProtocol(String protocol) {
-        this.protocol = protocol + "://";
-    }
-
-    public boolean isZoneChanged() {
-        return this.zone.equals(".net");
-    }
-
-    public boolean isProtocolChanged() {
-        return protocol.equals("http://");
+        super(Arrays.asList("net", "ru"),
+                "S-LAUNCHER@" + version,
+                "slauncher.simpleminecraft.%zone%",
+                "%slauncher-backend%");
     }
 }

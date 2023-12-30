@@ -1,8 +1,10 @@
 package ru.smclabs.bootstrap.util.logger;
 
+import ru.smclabs.http.logger.IHttpLogger;
+
 import java.util.logging.Level;
 
-public class Logger {
+public class Logger implements IHttpLogger {
 
     private final java.util.logging.Logger logger;
 
