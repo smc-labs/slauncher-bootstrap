@@ -87,6 +87,7 @@ public class ResourcesUpdateTask {
                 .orElseThrow(() -> new ResourceException("Launcher not found!"));
 
         this.downloadInvalidFiles(resourcesBuild, runtime, launcher);
+        this.removeOldLauncherVersions(runtime, launcher);
 
         this.panelUpdate.setLabelTitle("Все готово");
         this.panelUpdate.setLabelSubTitle("запуск лаунчера...");
@@ -108,6 +109,14 @@ public class ResourcesUpdateTask {
                 "%slauncher-backend%/bootstrap");
 
         return request.execute(BootstrapResourceList.class);
+    }
+
+    private void removeOldLauncherVersions(ResourceCompressedRuntime runtime, ResourceLauncher launcher) throws InterruptedException {
+        ProcessManager processManager = Bootstrap.getInstance().getLauncherService().getProcessManager();
+        processManager.readProcessesFromDisk();
+        processManager.destroyLauncherProcesses(runtime, launcher);
+        TimeUnit.SECONDS.sleep(1);
+        launcher.removeOlderVersions();
     }
 
     private void downloadInvalidFiles(ResourcesBuild resourcesBuild,

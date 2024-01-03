@@ -17,7 +17,7 @@ import java.util.function.Predicate;
 
 public class ResourcesFactory implements IResourcesFactory {
 
-    private final Predicate<ResourceModel> IS_LAUNCHER_MODEL = model ->
+    private static final Predicate<ResourceModel> IS_LAUNCHER_MODEL = model ->
             model.getName().contains("slauncher-") && model.getName().endsWith(".jar");
 
     private final @Getter Path bootstrapDir;
@@ -61,12 +61,13 @@ public class ResourcesFactory implements IResourcesFactory {
                 .replace("%bootstrap-dir%", this.bootstrapDir.toString())
                 .replace("%runtime-dir%", this.runtimeDir.toString());
 
+        /*
         Path path = Paths.get(filePath);
 
         if (IS_LAUNCHER_MODEL.test(model)) {
             path = Paths.get(path.toString().replace(path.getFileName().toString(), "slauncher.jar"));
         }
-
-        return path;
+         */
+        return Paths.get(filePath);
     }
 }
