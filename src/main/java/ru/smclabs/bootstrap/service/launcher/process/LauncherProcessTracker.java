@@ -40,9 +40,7 @@ public class LauncherProcessTracker {
             }
         }
 
-        if (this.processFailed) {
-            throw new LauncherProcessFailedException(this.processOutput());
-        }
+        if (this.processFailed) throw new LauncherProcessFailedException(this.processOutput());
     }
 
     private boolean checkIfStarted(String line) {
