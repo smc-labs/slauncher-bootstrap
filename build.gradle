@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'ru.smclabs.bootstrap'
-version '1.0.5'
+version '1.0.6'
 
 mainClassName = project.group + '.BootstrapMain'
 archivesBaseName = 'Bootstrap'
@@ -35,7 +35,7 @@ dependencies {
     implementation 'ru.smclabs:jackson-pack-config:1.0.0'
     implementation 'ru.smclabs:resources:1.0.0'
     implementation 'ru.smclabs:process-utils:1.0.0'
-    implementation 'ru.smclabs:http-service:1.0.0'
+    implementation 'ru.smclabs:http-service:1.0.1'
 }
 
 jar {
