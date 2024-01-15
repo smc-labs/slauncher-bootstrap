@@ -26,7 +26,7 @@ public class PanelUpdate extends AbstractPanel {
     @Setter
     private volatile String labelTitle = "Поиск обновлений";
     @Setter
-    private volatile String labelSubTitle = "Это займет пару мгновений...";
+    private volatile String labelSubTitle = "это займет пару мгновений...";
     private volatile double progress = 0.0D;
     private volatile boolean bouncingReverse = false;
     private int platformPosX = 0;
