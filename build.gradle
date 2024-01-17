@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'ru.smclabs.bootstrap'
-version '1.0.6'
+version '1.0.8'
 
 mainClassName = project.group + '.BootstrapMain'
 archivesBaseName = 'Bootstrap'
@@ -44,12 +44,17 @@ jar {
     }
 }
 
+shadowJar {
+    archiveBaseName.set('SIMPLEMINECRAFT')
+    archiveClassifier.set('')
+}
+
 launch4j {
     version = project.version
     textVersion = project.version
     mainClassName = mainClassName
     icon = "${projectDir}/inno-setup/64.ico"
-    jar = "${projectDir}/build/libs/${archivesBaseName + "-" + version + "-all.jar"}"
+    jar = "${projectDir}/build/libs/SIMPLEMINECRAFT-${version}.jar"
     errTitle = 'Bootstrap'
     supportUrl = 'https://f.simpleminecraft.net/'
     language = 'RUSSIAN'

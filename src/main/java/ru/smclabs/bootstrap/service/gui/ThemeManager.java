@@ -66,11 +66,11 @@ public class ThemeManager {
         }
 
         try {
-            Map<String, String> config = Jackson.getMapper().readValue(configPath.toFile(),
-                    new TypeReference<HashMap<String, String>>() {
+            Map<String, Object> config = Jackson.getMapper().readValue(configPath.toFile(),
+                    new TypeReference<HashMap<String, Object>>() {
                     });
 
-            return config.get("theme");
+            return (String) config.get("theme");
         } catch (IOException e) {
             return null;
         }
