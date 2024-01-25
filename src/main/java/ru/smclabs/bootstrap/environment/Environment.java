@@ -8,7 +8,7 @@ import ru.smclabs.resources.provider.DirEnvironment;
 @ToString
 public class Environment {
 
-    private final String version = "1.0.8";
+    private final String version = "1.0.9";
     private final GuiEnvironment gui = new GuiEnvironment();
     private final HttpEnvironment http = new HttpEnvironment(this.version);
     private final DirEnvironment dir = DirEnvironment.builder().persistenceDir("SIMPLEMINECRAFT").build();

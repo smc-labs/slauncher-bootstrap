@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'ru.smclabs.bootstrap'
-version '1.0.8'
+version '1.0.9'
 
 mainClassName = project.group + '.BootstrapMain'
 archivesBaseName = 'Bootstrap'

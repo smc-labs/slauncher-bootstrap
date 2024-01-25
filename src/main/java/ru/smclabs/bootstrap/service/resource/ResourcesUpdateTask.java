@@ -34,7 +34,6 @@ public class ResourcesUpdateTask {
     private final @Getter PanelUpdate panelUpdate;
     private final Thread thread;
 
-
     public ResourcesUpdateTask(ResourcesService service, PanelUpdate panelUpdate) {
         this.service = service;
         this.panelUpdate = panelUpdate;
@@ -45,20 +44,7 @@ public class ResourcesUpdateTask {
     private Thread createThread() {
         Thread thread = new Thread(() -> {
             try {
-                this.run();
-            } catch (LauncherProcessFailedException e) {
-                Bootstrap.getInstance().getLogger().error("Failed to start launcher!", e);
-                Bootstrap.getInstance().getLogger().info("Launcher output:\n" + e.getProcessOutput());
-
-                this.getPanelUpdate().setLabelTitle("Что-то пошло не так");
-                this.getPanelUpdate().setLabelSubTitle("не удалось запустить лаунчер");
-            } catch (HttpServiceException | JsonProcessingException | ResourceWriteException |
-                     ResourceServerException | LauncherServiceException | ResourceException e) {
-
-                Bootstrap.getInstance().getLogger().error("Update ended with an exception!", e);
-
-                this.getPanelUpdate().setLabelTitle("Что-то пошло не так");
-                this.getPanelUpdate().setLabelSubTitle("не удалось обновить лаунчер");
+                this.update();
             } catch (InterruptedException e) {
                 Bootstrap.getInstance().getLogger().info("Update cancelled.");
             } finally {
@@ -67,6 +53,38 @@ public class ResourcesUpdateTask {
         });
         thread.setName("ResourceUpdateTask Thread");
         return thread;
+    }
+
+    private void retryUpdate() throws InterruptedException {
+        TimeUnit.SECONDS.sleep(5);
+
+        for (int i = 0; i < 5; i++) {
+            this.panelUpdate.setLabelSubTitle("следующая попытка через " + (5 - i) + " сек");
+            TimeUnit.SECONDS.sleep(1);
+        }
+
+        this.update();
+    }
+
+    private void update() throws InterruptedException {
+        try {
+            this.run();
+        } catch (LauncherProcessFailedException e) {
+            Bootstrap.getInstance().getLogger().error("Failed to start launcher!", e);
+            Bootstrap.getInstance().getLogger().info("Launcher output:\n" + e.getProcessOutput());
+
+            this.panelUpdate.setLabelTitle("Что-то пошло не так");
+            this.panelUpdate.setLabelSubTitle("не удалось запустить лаунчер");
+            this.retryUpdate();
+        } catch (HttpServiceException | JsonProcessingException | ResourceWriteException |
+                 ResourceServerException | LauncherServiceException | ResourceException e) {
+
+            Bootstrap.getInstance().getLogger().error("Update ended with an exception!", e);
+
+            this.panelUpdate.setLabelTitle("Что-то пошло не так");
+            this.panelUpdate.setLabelSubTitle("не удалось обновить лаунчер");
+            this.retryUpdate();
+        }
     }
 
     private void run() throws HttpServiceException, JsonProcessingException,
