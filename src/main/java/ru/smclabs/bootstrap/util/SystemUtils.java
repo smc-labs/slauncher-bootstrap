@@ -108,7 +108,7 @@ public class SystemUtils {
 
         @Override
         public String toString() {
-            return this.id + (this.x64 ? "-x64" : "i586");
+            return this.id + (this.x64 ? "-x64" : "-i586");
         }
     }
 

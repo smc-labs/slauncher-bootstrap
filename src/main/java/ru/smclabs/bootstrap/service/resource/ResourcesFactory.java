@@ -57,17 +57,8 @@ public class ResourcesFactory implements IResourcesFactory {
 
     @Override
     public Path preparePath(ResourceModel model) {
-        String filePath = model.getPath()
+        return Paths.get(model.getPath()
                 .replace("%bootstrap-dir%", this.bootstrapDir.toString())
-                .replace("%runtime-dir%", this.runtimeDir.toString());
-
-        /*
-        Path path = Paths.get(filePath);
-
-        if (IS_LAUNCHER_MODEL.test(model)) {
-            path = Paths.get(path.toString().replace(path.getFileName().toString(), "slauncher.jar"));
-        }
-         */
-        return Paths.get(filePath);
+                .replace("%runtime-dir%", this.runtimeDir.toString()));
     }
 }
