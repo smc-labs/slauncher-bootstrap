@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'ru.smclabs.bootstrap'
-version '1.0.9'
+version '1.1.2'
 
 mainClassName = project.group + '.BootstrapMain'
 archivesBaseName = 'Bootstrap'
@@ -33,8 +33,8 @@ dependencies {
     implementation 'com.github.tox1cozZ:jSystemThemeDetector:master-SNAPSHOT'
     implementation 'ru.smclabs:jackson-pack:1.0.0'
     implementation 'ru.smclabs:jackson-pack-config:1.0.0'
-    implementation 'ru.smclabs:resources:1.0.0'
-    implementation 'ru.smclabs:process-utils:1.0.0'
+    implementation 'ru.smclabs:resources:1.0.2'
+    implementation 'ru.smclabs:process-utils:1.0.1'
     implementation 'ru.smclabs:http-service:1.0.1'
 }
 

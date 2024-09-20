@@ -70,6 +70,8 @@ public class ThemeManager {
                     new TypeReference<HashMap<String, Object>>() {
                     });
 
+            System.setProperty("smclabs.library.process-utils.useJNA", String.valueOf(config.get("useJNA")));
+
             return (String) config.get("theme");
         } catch (IOException e) {
             return null;
