@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'ru.smclabs.bootstrap'
-version '1.1.2'
+version '1.1.3'
 
 mainClassName = project.group + '.BootstrapMain'
 archivesBaseName = 'Bootstrap'
@@ -20,7 +20,6 @@ tasks.withType(JavaCompile).configureEach {
 repositories {
     mavenLocal()
     mavenCentral()
-    maven { url 'https://jitpack.io' }
     flatDir {
         dirs "libs"
     }
@@ -29,13 +28,19 @@ repositories {
 dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.24'
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
-    implementation 'org.javassist:javassist:3.29.2-GA'
-    implementation 'com.github.tox1cozZ:jSystemThemeDetector:master-SNAPSHOT'
+
     implementation 'ru.smclabs:jackson-pack:1.0.0'
     implementation 'ru.smclabs:jackson-pack-config:1.0.0'
     implementation 'ru.smclabs:resources:1.0.2'
     implementation 'ru.smclabs:process-utils:1.0.1'
     implementation 'ru.smclabs:http-service:1.0.1'
+
+    implementation 'org.javassist:javassist:3.30.2-GA'
+    implementation 'ru.smclabs:jSystemThemeDetector:3.8'
+    implementation 'org.slf4j:slf4j-api:2.0.13'
+    implementation 'org.slf4j:slf4j-nop:2.0.13'
+    implementation 'com.github.oshi:oshi-core:6.6.1'
+    implementation 'io.github.g00fy2:versioncompare:1.5.0'
 }
 
 jar {
