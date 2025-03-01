@@ -17,7 +17,6 @@ public class ResourcesService extends AbstractService {
     }
 
     private final ReentrantLock lock;
-
     private final @Getter ResourcesFinder finder;
 
     private volatile ResourcesUpdateTask currentTask;
