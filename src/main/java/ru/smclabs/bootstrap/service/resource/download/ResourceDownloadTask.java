@@ -15,6 +15,7 @@ import ru.smclabs.http.logger.IHttpLogger;
 import ru.smclabs.resources.exception.ResourceException;
 import ru.smclabs.resources.type.Resource;
 
+import javax.net.ssl.SSLException;
 import java.io.BufferedInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -113,16 +114,18 @@ public class ResourceDownloadTask {
     private void download(boolean append) throws HttpClientException, ResourceServerException, ResourceWriteException, InterruptedException {
         HttpURLConnection connection = this.openConnection(append);
 
-        try (BufferedInputStream connectionInputStream = new BufferedInputStream(connection.getInputStream())) {
+        try (BufferedInputStream inputStream = new BufferedInputStream(connection.getInputStream())) {
             try (FileOutputStream fileOutputStream = new FileOutputStream(this.tempPath.toString(), append)) {
                 byte[] buffer = new byte[1024];
                 int bytesRead;
 
                 while (true) {
                     try {
-                        if ((bytesRead = connectionInputStream.read(buffer, 0, 1024)) == -1) {
+                        if ((bytesRead = inputStream.read(buffer, 0, buffer.length)) == -1) {
                             break;
                         }
+                    } catch (SSLException e) {
+                        throw new HttpClientException(e);
                     } catch (IOException e) {
                         throw new ResourceServerException(e);
                     }
