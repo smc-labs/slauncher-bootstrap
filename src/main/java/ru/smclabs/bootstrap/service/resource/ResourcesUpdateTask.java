@@ -16,12 +16,12 @@ import ru.smclabs.bootstrap.service.resource.dto.BootstrapResourceList;
 import ru.smclabs.bootstrap.service.resource.exception.ResourceServerException;
 import ru.smclabs.bootstrap.service.resource.exception.ResourceWriteException;
 import ru.smclabs.bootstrap.service.resource.type.ResourceLauncher;
-import ru.smclabs.http.HttpService;
-import ru.smclabs.http.exception.HttpServiceException;
-import ru.smclabs.http.request.HttpRequest;
-import ru.smclabs.resources.exception.ResourceException;
-import ru.smclabs.resources.type.ResourceCompressed;
-import ru.smclabs.resources.type.ResourceCompressedRuntime;
+import ru.smclabs.slauncher.http.HttpService;
+import ru.smclabs.slauncher.http.exception.HttpServiceException;
+import ru.smclabs.slauncher.http.request.HttpRequest;
+import ru.smclabs.slauncher.resources.exception.ResourceException;
+import ru.smclabs.slauncher.resources.type.ResourceCompressed;
+import ru.smclabs.slauncher.resources.type.ResourceCompressedRuntime;
 
 import java.util.ArrayList;
 import java.util.List;

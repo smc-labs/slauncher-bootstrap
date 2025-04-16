@@ -1,6 +1,6 @@
 package ru.smclabs.bootstrap.util;
 
-import ru.smclabs.resources.type.Resource;
+import ru.smclabs.slauncher.resources.type.Resource;
 
 import java.io.IOException;
 import java.nio.file.Files;

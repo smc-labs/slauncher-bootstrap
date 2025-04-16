@@ -4,12 +4,12 @@ import lombok.Getter;
 import ru.smclabs.bootstrap.Bootstrap;
 import ru.smclabs.bootstrap.service.resource.dto.BootstrapResourceList;
 import ru.smclabs.bootstrap.service.resource.type.ResourceLauncher;
-import ru.smclabs.bootstrap.util.SystemUtils;
-import ru.smclabs.resources.factory.IResourcesFactory;
-import ru.smclabs.resources.model.ResourceModel;
-import ru.smclabs.resources.provider.DirProvider;
-import ru.smclabs.resources.type.Resource;
-import ru.smclabs.resources.type.ResourceCompressedRuntime;
+import ru.smclabs.slauncher.model.resource.ResourceModel;
+import ru.smclabs.slauncher.resources.factory.IResourcesFactory;
+import ru.smclabs.slauncher.resources.provider.DirProvider;
+import ru.smclabs.slauncher.resources.type.Resource;
+import ru.smclabs.slauncher.resources.type.ResourceCompressedRuntime;
+import ru.smclabs.system.info.SystemInfo;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -42,7 +42,7 @@ public class ResourcesFactory implements IResourcesFactory {
         }).forEach(this.build::compile);
 
         models.getRuntime().stream()
-                .filter(model -> model.getName().contains(SystemUtils.getId()))
+                .filter(model -> model.getName().contains(SystemInfo.get().toString()))
                 .map(model -> new ResourceCompressedRuntime(this, model, "bootstrap"))
                 .forEach(this.build::compile);
 

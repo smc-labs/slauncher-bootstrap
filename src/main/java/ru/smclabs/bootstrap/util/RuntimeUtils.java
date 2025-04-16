@@ -1,6 +1,7 @@
 package ru.smclabs.bootstrap.util;
 
 import ru.smclabs.bootstrap.BootstrapMain;
+import ru.smclabs.system.info.SystemInfo;
 
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Field;
@@ -38,11 +39,11 @@ public class RuntimeUtils {
     }
 
     public static boolean isStartedByWrongPackagedJre() {
-        return isStartedByPackagedJre() && SystemUtils.isX64() && !System.getProperty("os.arch").contains("64");
+        return isStartedByPackagedJre() && SystemInfo.get().isX64() && !System.getProperty("os.arch").contains("64");
     }
 
     public static boolean isStartedByPackagedJre() {
-        return SystemUtils.isWindows() && Files.exists(Paths.get(getWorkingDir() + "/runtime/"));
+        return SystemInfo.get().isWindows() && Files.exists(Paths.get(getWorkingDir() + "/runtime/"));
     }
 
     public static Path getExecutableFilePath() throws URISyntaxException {

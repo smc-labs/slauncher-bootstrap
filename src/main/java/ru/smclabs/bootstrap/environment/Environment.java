@@ -2,15 +2,17 @@ package ru.smclabs.bootstrap.environment;
 
 import lombok.Getter;
 import lombok.ToString;
-import ru.smclabs.resources.provider.DirEnvironment;
+import ru.smclabs.slauncher.http.environment.impl.SLauncherHttpEnvironment;
+import ru.smclabs.slauncher.resources.provider.DirEnvironment;
+import ru.smclabs.system.info.SystemInfo;
 
 @Getter
 @ToString
 public class Environment {
 
-    private final String version = "1.1.5";
+    private final String version = "1.1.6";
     private final GuiEnvironment gui = new GuiEnvironment();
-    private final HttpEnvironment http = new HttpEnvironment(this.version);
+    private final SLauncherHttpEnvironment http = new SLauncherHttpEnvironment(this.version, SystemInfo.get().getName());
     private final DirEnvironment dir = DirEnvironment.builder().persistenceDir("SIMPLEMINECRAFT").build();
 
 }

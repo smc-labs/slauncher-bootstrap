@@ -1,7 +1,7 @@
 package ru.smclabs.bootstrap.service.resource.dto;
 
 import lombok.Data;
-import ru.smclabs.resources.model.ResourceModel;
+import ru.smclabs.slauncher.model.resource.ResourceModel;
 
 import java.util.ArrayList;
 import java.util.List;

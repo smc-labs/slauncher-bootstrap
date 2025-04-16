@@ -1,7 +1,7 @@
 package ru.smclabs.bootstrap.service.resource.exception;
 
 import lombok.Getter;
-import ru.smclabs.resources.type.Resource;
+import ru.smclabs.slauncher.resources.type.Resource;
 
 @Getter
 public class ResourceWriteException extends Exception {

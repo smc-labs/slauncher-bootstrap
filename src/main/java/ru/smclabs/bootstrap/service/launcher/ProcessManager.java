@@ -4,9 +4,9 @@ import ru.smclabs.bootstrap.Bootstrap;
 import ru.smclabs.bootstrap.service.launcher.exception.LauncherServiceException;
 import ru.smclabs.bootstrap.service.launcher.process.LauncherProcess;
 import ru.smclabs.bootstrap.service.resource.type.ResourceLauncher;
-import ru.smclabs.bootstrap.util.logger.Logger;
-import ru.smclabs.resources.provider.DirProvider;
-import ru.smclabs.resources.type.ResourceCompressedRuntime;
+import ru.smclabs.slauncher.resources.provider.DirProvider;
+import ru.smclabs.slauncher.resources.type.ResourceCompressedRuntime;
+import ru.smclabs.slauncher.util.logger.ILogger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,10 +24,10 @@ public class ProcessManager {
     private static final BiPredicate<Path, BasicFileAttributes> PROCESS_FILE_FILTER = (path, attributes)
             -> attributes.isRegularFile() && path.getFileName().toString().endsWith(".json");
 
-    private final Logger logger;
+    private final ILogger logger;
     private final List<LauncherProcess> processes = new ArrayList<>();
 
-    public ProcessManager(Logger logger) {
+    public ProcessManager(ILogger logger) {
         this.logger = logger;
     }
 

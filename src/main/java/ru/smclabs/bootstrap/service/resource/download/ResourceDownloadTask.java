@@ -6,14 +6,13 @@ import ru.smclabs.bootstrap.Bootstrap;
 import ru.smclabs.bootstrap.service.resource.exception.ResourceNotCompleteException;
 import ru.smclabs.bootstrap.service.resource.exception.ResourceServerException;
 import ru.smclabs.bootstrap.service.resource.exception.ResourceWriteException;
-import ru.smclabs.bootstrap.util.logger.Logger;
-import ru.smclabs.http.HttpService;
-import ru.smclabs.http.environment.HttpEnvironment;
-import ru.smclabs.http.exception.HttpClientException;
-import ru.smclabs.http.exception.HttpServiceException;
-import ru.smclabs.http.logger.IHttpLogger;
-import ru.smclabs.resources.exception.ResourceException;
-import ru.smclabs.resources.type.Resource;
+import ru.smclabs.slauncher.http.HttpService;
+import ru.smclabs.slauncher.http.environment.HttpEnvironment;
+import ru.smclabs.slauncher.http.exception.HttpClientException;
+import ru.smclabs.slauncher.http.exception.HttpServiceException;
+import ru.smclabs.slauncher.resources.exception.ResourceException;
+import ru.smclabs.slauncher.resources.type.Resource;
+import ru.smclabs.slauncher.util.logger.ILogger;
 
 import javax.net.ssl.SSLException;
 import java.io.BufferedInputStream;
@@ -68,12 +67,10 @@ public class ResourceDownloadTask {
     }
 
     private void prepareDir() {
-        if (!Files.exists(this.tempPath.getParent())) {
-            try {
-                Files.createDirectories(this.tempPath.getParent());
-            } catch (IOException e) {
-                throw new ResourceException(e);
-            }
+        try {
+            Files.createDirectories(this.tempPath.getParent());
+        } catch (IOException e) {
+            throw new ResourceException(e);
         }
     }
 
@@ -84,7 +81,7 @@ public class ResourceDownloadTask {
             this.download(append);
         } catch (ResourceServerException | HttpClientException e) {
             HttpEnvironment environment = httpService.getEnvironment();
-            IHttpLogger logger = httpService.getLogger();
+            ILogger logger = httpService.getLogger();
 
             logger.warn("Failed to send request to " + this.resource.getUrl() + "! (zone: ."
                     + environment.getZone() + ", protocol: " + environment.getProtocol() + ")");
@@ -153,19 +150,17 @@ public class ResourceDownloadTask {
             connection.disconnect();
         }
 
-        if (!Files.exists(this.tempPath)) {
+        if (Files.notExists(this.tempPath)) {
             throw new ResourceNotCompleteException(this.resource, "Resource not exists!");
         }
 
-        if (!Files.exists(this.tempPath)) {
-            try {
-                if (Files.size(this.tempPath) < this.resource.getSize() && !this.resource.getName().endsWith(".js")) {
-                    throw new ResourceNotCompleteException(this.resource, "Files size not equals! (" +
-                            Files.size(this.tempPath) + " vs " + this.resource.getSize() + ")");
-                }
-            } catch (IOException e) {
-                throw new ResourceNotCompleteException(this.resource, e);
+        try {
+            if (Files.size(this.tempPath) < this.resource.getSize() && !this.resource.getName().endsWith(".js")) {
+                throw new ResourceNotCompleteException(this.resource, "Files size not equals! (" +
+                        Files.size(this.tempPath) + " vs " + this.resource.getSize() + ")");
             }
+        } catch (IOException e) {
+            throw new ResourceNotCompleteException(this.resource, e);
         }
 
         try {

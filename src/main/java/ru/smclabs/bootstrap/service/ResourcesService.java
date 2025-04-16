@@ -2,9 +2,9 @@ package ru.smclabs.bootstrap.service;
 
 import lombok.Getter;
 import ru.smclabs.bootstrap.Bootstrap;
+import ru.smclabs.bootstrap.service.resource.ResourcesFinder;
 import ru.smclabs.bootstrap.service.resource.ResourcesUpdateTask;
-import ru.smclabs.resources.ResourcesFinder;
-import ru.smclabs.resources.exception.ResourceException;
+import ru.smclabs.slauncher.resources.exception.ResourceException;
 
 import java.util.concurrent.locks.ReentrantLock;
 

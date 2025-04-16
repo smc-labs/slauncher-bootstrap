@@ -8,9 +8,10 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import ru.smclabs.bootstrap.service.launcher.exception.LauncherServiceException;
 import ru.smclabs.jacksonpack.Jackson;
-import ru.smclabs.processutils.ProcessUtils;
-import ru.smclabs.processutils.exception.ProcessException;
-import ru.smclabs.resources.provider.DirProvider;
+import ru.smclabs.slauncher.resources.provider.DirProvider;
+import ru.smclabs.system.exception.SystemException;
+import ru.smclabs.system.process.ProcessActions;
+import ru.smclabs.system.process.ProcessId;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -70,7 +71,7 @@ public class LauncherProcess {
 
         try {
             this.process = builder.start();
-            this.pid = ProcessUtils.getProcessId(this.process);
+            this.pid = ProcessId.from(this.process);
             this.writeToDisk();
         } catch (Throwable e) {
             this.destroy();
@@ -81,8 +82,8 @@ public class LauncherProcess {
     public void destroy() throws LauncherServiceException {
         try {
             if (this.process != null) this.process.destroy();
-            else if (this.pid != null) ProcessUtils.destroyProcessById(this.pid);
-        } catch (ProcessException e) {
+            else if (this.pid != null) ProcessActions.kill(this.pid);
+        } catch (SystemException e) {
             throw new LauncherServiceException("Failed to destroy process!", e);
         } finally {
             this.removeFromDisk();

@@ -5,17 +5,17 @@ import ru.smclabs.bootstrap.environment.Environment;
 import ru.smclabs.bootstrap.service.GuiService;
 import ru.smclabs.bootstrap.service.LauncherService;
 import ru.smclabs.bootstrap.service.ResourcesService;
-import ru.smclabs.bootstrap.util.LoggingUtils;
-import ru.smclabs.bootstrap.util.logger.Logger;
-import ru.smclabs.http.HttpService;
-import ru.smclabs.resources.provider.DirProvider;
+import ru.smclabs.slauncher.http.HttpService;
+import ru.smclabs.slauncher.resources.provider.DirProvider;
+import ru.smclabs.slauncher.util.logger.ILogger;
+import ru.smclabs.slauncher.util.logger.LoggerFactory;
 
 @Getter
 public class Bootstrap {
 
     private static @Getter Bootstrap instance;
 
-    private final Logger logger;
+    private final ILogger logger;
     private final Environment environment;
     private final GuiService guiService;
     private final DirProvider dirProvider;
@@ -27,7 +27,7 @@ public class Bootstrap {
         instance = this;
         this.environment = new Environment();
         this.dirProvider = new DirProvider(this.environment.getDir());
-        this.logger = LoggingUtils.create(this.dirProvider.getLogsDir(), "bootstrap");
+        this.logger = LoggerFactory.create(this.dirProvider.getLogsDir(), "bootstrap");
         this.httpService = new HttpService(this.environment.getHttp(), this.logger);
         this.resourcesService = new ResourcesService(this);
         this.launcherService = new LauncherService(this);
@@ -46,5 +46,4 @@ public class Bootstrap {
         this.logger.info("Bootstrap closed. Bye-bye!");
         this.resourcesService.cancelTask();
     }
-
 }

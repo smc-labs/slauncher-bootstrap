@@ -1,9 +1,9 @@
 package ru.smclabs.bootstrap.service.resource.type;
 
 import ru.smclabs.bootstrap.Bootstrap;
-import ru.smclabs.resources.factory.IResourcesFactory;
-import ru.smclabs.resources.model.ResourceModel;
-import ru.smclabs.resources.type.Resource;
+import ru.smclabs.slauncher.model.resource.ResourceModel;
+import ru.smclabs.slauncher.resources.factory.IResourcesFactory;
+import ru.smclabs.slauncher.resources.type.Resource;
 
 import java.io.IOException;
 import java.nio.file.Files;

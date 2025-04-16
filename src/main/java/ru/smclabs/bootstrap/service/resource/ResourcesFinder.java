@@ -1,7 +1,7 @@
 package ru.smclabs.bootstrap.service.resource;
 
-import ru.smclabs.resources.exception.ResourceException;
-import ru.smclabs.resources.provider.DirProvider;
+import ru.smclabs.slauncher.resources.exception.ResourceException;
+import ru.smclabs.slauncher.resources.provider.DirProvider;
 
 import java.io.IOException;
 import java.nio.file.Files;

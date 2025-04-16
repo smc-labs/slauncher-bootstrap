@@ -5,7 +5,7 @@ import lombok.Setter;
 import ru.smclabs.bootstrap.Bootstrap;
 import ru.smclabs.bootstrap.service.GuiService;
 import ru.smclabs.bootstrap.util.LocalResourceHelper;
-import ru.smclabs.bootstrap.util.SystemUtils;
+import ru.smclabs.system.info.SystemInfo;
 
 import javax.swing.*;
 import java.awt.*;
@@ -60,7 +60,7 @@ public class PanelUpdate extends AbstractPanel {
                     }
                 }
 
-                if (SystemUtils.isMacOS()) {
+                if (SystemInfo.get().isMacOS()) {
                     guiService.getPanelBackground().repaint();
                 } else {
                     repaint();

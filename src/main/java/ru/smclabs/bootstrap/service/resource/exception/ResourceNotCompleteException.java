@@ -1,6 +1,6 @@
 package ru.smclabs.bootstrap.service.resource.exception;
 
-import ru.smclabs.resources.type.Resource;
+import ru.smclabs.slauncher.resources.type.Resource;
 
 public class ResourceNotCompleteException extends ResourceWriteException {
 
