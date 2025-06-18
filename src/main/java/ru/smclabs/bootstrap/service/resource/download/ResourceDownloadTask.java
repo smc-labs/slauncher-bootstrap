@@ -36,7 +36,7 @@ public class ResourceDownloadTask {
         this.tempPath = Paths.get(resource.getPath() + ".download");
     }
 
-    public void run() throws ResourceWriteException, HttpServiceException, ResourceServerException, InterruptedException {
+    public void run() throws ResourceWriteException, ResourceServerException, InterruptedException {
         this.prepareDir();
 
         try {
@@ -74,7 +74,7 @@ public class ResourceDownloadTask {
         }
     }
 
-    private void downloadWithRetry(boolean append) throws ResourceWriteException, ResourceServerException, InterruptedException {
+    private void downloadWithRetry(boolean append) throws ResourceWriteException, InterruptedException {
         HttpService httpService = Bootstrap.getInstance().getHttpService();
 
         try {
@@ -100,7 +100,7 @@ public class ResourceDownloadTask {
                         logger.info("Found working zone: ." + environment.getZone()
                                 + ", protocol: " + environment.getProtocol());
                         return;
-                    } catch (HttpServiceException e1) {
+                    } catch (HttpServiceException | ResourceServerException e1) {
                         e.addSuppressed(e1);
                     }
                 }
@@ -112,7 +112,7 @@ public class ResourceDownloadTask {
         HttpURLConnection connection = this.openConnection(append);
 
         try (BufferedInputStream inputStream = new BufferedInputStream(connection.getInputStream())) {
-            try (FileOutputStream fileOutputStream = new FileOutputStream(this.tempPath.toString(), append)) {
+            try (FileOutputStream outputStream = new FileOutputStream(this.tempPath.toString(), append)) {
                 byte[] buffer = new byte[1024];
                 int bytesRead;
 
@@ -128,7 +128,7 @@ public class ResourceDownloadTask {
                     }
 
                     try {
-                        fileOutputStream.write(buffer, 0, bytesRead);
+                        outputStream.write(buffer, 0, bytesRead);
                     } catch (IOException e) {
                         throw new ResourceWriteException(this.resource, e);
                     }
