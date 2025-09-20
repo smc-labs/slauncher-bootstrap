@@ -5,7 +5,7 @@ import ru.smclabs.bootstrap.Bootstrap;
 import ru.smclabs.bootstrap.service.resource.dto.BootstrapResourceList;
 import ru.smclabs.bootstrap.service.resource.type.ResourceLauncher;
 import ru.smclabs.slauncher.model.resource.ResourceModel;
-import ru.smclabs.slauncher.resources.factory.IResourcesFactory;
+import ru.smclabs.slauncher.resources.factory.ResourcesFactory;
 import ru.smclabs.slauncher.resources.provider.DirProvider;
 import ru.smclabs.slauncher.resources.type.Resource;
 import ru.smclabs.slauncher.resources.type.ResourceCompressedRuntime;
@@ -15,7 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.function.Predicate;
 
-public class ResourcesFactory implements IResourcesFactory {
+public class BootstrapResourcesFactory implements ResourcesFactory {
 
     private static final Predicate<ResourceModel> IS_LAUNCHER_MODEL = model ->
             model.getName().contains("slauncher-") && model.getName().endsWith(".jar");
@@ -25,7 +25,7 @@ public class ResourcesFactory implements IResourcesFactory {
     private final @Getter DirProvider dirProvider;
     private final ResourcesBuild build;
 
-    public ResourcesFactory() {
+    public BootstrapResourcesFactory() {
         this.dirProvider = Bootstrap.getInstance().getDirProvider();
         this.bootstrapDir = this.dirProvider.getPersistenceDir("bootstrap");
         this.runtimeDir = this.dirProvider.getPersistenceDir("runtime/bootstrap");

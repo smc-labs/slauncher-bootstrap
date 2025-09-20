@@ -5,6 +5,7 @@ import ru.smclabs.bootstrap.environment.Environment;
 import ru.smclabs.bootstrap.service.GuiService;
 import ru.smclabs.bootstrap.service.LauncherService;
 import ru.smclabs.bootstrap.service.ResourcesService;
+import ru.smclabs.bootstrap.util.report.BootstrapReportProvider;
 import ru.smclabs.slauncher.http.HttpService;
 import ru.smclabs.slauncher.resources.provider.DirProvider;
 import ru.smclabs.slauncher.util.logger.ILogger;
@@ -14,6 +15,7 @@ import ru.smclabs.slauncher.util.logger.LoggerFactory;
 public class Bootstrap {
 
     private static @Getter Bootstrap instance;
+    private static final @Getter BootstrapReportProvider reportProvider = new BootstrapReportProvider();
 
     private final ILogger logger;
     private final Environment environment;
@@ -36,7 +38,6 @@ public class Bootstrap {
 
     public void start() {
         this.logger.info("Starting Bootstrap " + this.environment.getVersion());
-        System.setProperty("java.net.preferIPv4Stack", "true");
         System.setProperty("http.agent", this.environment.getHttp().getUserAgent());
         this.guiService.postInit();
         this.resourcesService.createTask();

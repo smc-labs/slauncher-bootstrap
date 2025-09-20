@@ -2,7 +2,7 @@ package ru.smclabs.bootstrap.service.resource.type;
 
 import ru.smclabs.bootstrap.Bootstrap;
 import ru.smclabs.slauncher.model.resource.ResourceModel;
-import ru.smclabs.slauncher.resources.factory.IResourcesFactory;
+import ru.smclabs.slauncher.resources.factory.ResourcesFactory;
 import ru.smclabs.slauncher.resources.type.Resource;
 
 import java.io.IOException;
@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 
 public class ResourceLauncher extends Resource {
 
-    public ResourceLauncher(IResourcesFactory factory, ResourceModel model) {
+    public ResourceLauncher(ResourcesFactory factory, ResourceModel model) {
         super(factory, model);
     }
 

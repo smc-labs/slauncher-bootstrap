@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'ru.smclabs.bootstrap'
-version '1.1.8'
+version '1.2.0'
 
 mainClassName = project.group + '.BootstrapMain'
 archivesBaseName = 'Bootstrap'
@@ -29,26 +29,29 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.24'
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
 
+    implementation 'ru.smclabs:report-api-1.0.0'
+    compileOnly 'ru.smclabs:report-api-1.0.0-sources'
+
+    implementation 'ru.smclabs:slauncher-http-1.0.2'
+    compileOnly 'ru.smclabs:slauncher-http-1.0.2-sources'
+
+    implementation 'ru.smclabs:slauncher-logger-1.0.0'
+    compileOnly 'ru.smclabs:slauncher-logger-1.0.0-sources'
+
+    implementation 'ru.smclabs:slauncher-models-1.0.2'
+    compileOnly 'ru.smclabs:slauncher-models-1.0.2-sources'
+
+    implementation 'ru.smclabs:slauncher-resources-1.0.4'
+    compileOnly 'ru.smclabs:slauncher-resources-1.0.4-sources'
+
+    implementation 'ru.smclabs:jackson-pack:1.0.0'
+    implementation 'ru.smclabs:jackson-pack-config:1.0.0'
+
     implementation 'ru.smclabs:system-utils-1.0.0'
     compileOnly 'ru.smclabs:system-utils-1.0.0-sources'
 
     implementation 'ru.smclabs:system-utils-process-1.0.0'
     compileOnly 'ru.smclabs:system-utils-process-1.0.0-sources'
-
-    implementation 'ru.smclabs:slauncher-http-1.0.0'
-    compileOnly 'ru.smclabs:slauncher-http-1.0.0-sources'
-
-    implementation 'ru.smclabs:slauncher-logger-1.0.0'
-    compileOnly 'ru.smclabs:slauncher-logger-1.0.0-sources'
-
-    implementation 'ru.smclabs:slauncher-models-1.0.0'
-    compileOnly 'ru.smclabs:slauncher-models-1.0.0-sources'
-
-    implementation 'ru.smclabs:slauncher-resources-1.0.3'
-    compileOnly 'ru.smclabs:slauncher-resources-1.0.3-sources'
-
-    implementation 'ru.smclabs:jackson-pack:1.0.0'
-    implementation 'ru.smclabs:jackson-pack-config:1.0.0'
 
     implementation 'org.javassist:javassist:3.30.2-GA'
     implementation 'ru.smclabs:jSystemThemeDetector:3.8'

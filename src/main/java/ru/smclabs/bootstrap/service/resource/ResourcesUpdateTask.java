@@ -16,6 +16,7 @@ import ru.smclabs.bootstrap.service.resource.dto.BootstrapResourceList;
 import ru.smclabs.bootstrap.service.resource.exception.ResourceServerException;
 import ru.smclabs.bootstrap.service.resource.exception.ResourceWriteException;
 import ru.smclabs.bootstrap.service.resource.type.ResourceLauncher;
+import ru.smclabs.bootstrap.util.report.BootstrapReportProvider;
 import ru.smclabs.slauncher.http.HttpService;
 import ru.smclabs.slauncher.http.exception.HttpServiceException;
 import ru.smclabs.slauncher.http.request.HttpRequest;
@@ -30,14 +31,14 @@ import java.util.concurrent.TimeUnit;
 public class ResourcesUpdateTask {
 
     private final ResourcesService service;
-    private final ResourcesFactory factory;
+    private final BootstrapResourcesFactory factory;
     private final @Getter PanelUpdate panelUpdate;
     private final Thread thread;
 
     public ResourcesUpdateTask(ResourcesService service, PanelUpdate panelUpdate) {
         this.service = service;
         this.panelUpdate = panelUpdate;
-        this.factory = new ResourcesFactory();
+        this.factory = new BootstrapResourcesFactory();
         this.thread = this.createThread();
     }
 
@@ -70,8 +71,12 @@ public class ResourcesUpdateTask {
         try {
             this.run();
         } catch (LauncherProcessFailedException e) {
-            Bootstrap.getInstance().getLogger().error("Failed to start launcher!", e);
-            Bootstrap.getInstance().getLogger().info("Launcher output:\n" + e.getProcessOutput());
+            BootstrapReportProvider reportProvider = Bootstrap.getReportProvider();
+            String reportPayload = reportProvider.createReport(e)
+                    + "\n\nLauncher process output:\n"
+                    + e.getProcessOutput();
+
+            reportProvider.send("Launcher process startup", reportPayload);
 
             this.panelUpdate.setLabelTitle("Что-то пошло не так");
             this.panelUpdate.setLabelSubTitle("не удалось запустить лаунчер");
@@ -79,8 +84,7 @@ public class ResourcesUpdateTask {
         } catch (HttpServiceException | JsonProcessingException | ResourceWriteException |
                  ResourceServerException | LauncherServiceException | ResourceException e) {
 
-            Bootstrap.getInstance().getLogger().error("Update ended with an exception!", e);
-
+            Bootstrap.getReportProvider().send("Bootstrap update process", e);
             this.panelUpdate.setLabelTitle("Что-то пошло не так");
             this.panelUpdate.setLabelSubTitle("не удалось обновить лаунчер");
             this.retryUpdate();

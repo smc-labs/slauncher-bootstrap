@@ -1,6 +1,9 @@
 package ru.smclabs.bootstrap;
 
 import ru.smclabs.bootstrap.util.RuntimeUtils;
+import ru.smclabs.bootstrap.util.report.BootstrapReportProvider;
+import ru.smclabs.report.api.Report;
+import ru.smclabs.report.api.provider.ReportException;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -15,9 +18,13 @@ public class BootstrapMain {
             return;
         }
 
-        Bootstrap bootstrap = new Bootstrap();
-        createShutdownHook(bootstrap);
-        bootstrap.start();
+        try {
+            Bootstrap bootstrap = new Bootstrap();
+            createShutdownHook(bootstrap);
+            bootstrap.start();
+        } catch (Throwable e) {
+            Bootstrap.getReportProvider().send("Bootstrap starting", e);
+        }
     }
 
     private static void createShutdownHook(Bootstrap bootstrap) {
@@ -39,7 +46,7 @@ public class BootstrapMain {
                 processBuilder.start();
                 return true;
             } catch (IOException e) {
-                e.printStackTrace();
+                Bootstrap.getReportProvider().send("Switch to bundle runtime", e);
             }
         }
 

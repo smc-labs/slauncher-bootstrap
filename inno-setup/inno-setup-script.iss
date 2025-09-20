@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "SIMPLEMINECRAFT"
-#define MyAppVersion "1.1.8"
+#define MyAppVersion "1.2.0"
 #define MyAppPublisher "SIMPLEMINECRAFT, Inc."
 #define MyAppURL "https://simpleminecraft.net"
 #define MyAppExeName "Bootstrap.exe"
