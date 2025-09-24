@@ -39,6 +39,8 @@ public class Bootstrap {
     public void start() {
         this.logger.info("Starting Bootstrap " + this.environment.getVersion());
         System.setProperty("http.agent", this.environment.getHttp().getUserAgent());
+        System.setProperty("jna.tmpdir", this.dirProvider.getPersistenceDir("native").toString());
+
         this.guiService.postInit();
         this.resourcesService.createTask();
     }

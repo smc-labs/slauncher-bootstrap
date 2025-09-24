@@ -23,6 +23,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 public class ResourceDownloadTask {
 
@@ -164,8 +165,7 @@ public class ResourceDownloadTask {
         }
 
         try {
-            Files.deleteIfExists(this.resource.getPath());
-            Files.move(this.tempPath, this.resource.getPath());
+            Files.move(this.tempPath, this.resource.getPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new ResourceException("Failed to move resource file!", e);
         }

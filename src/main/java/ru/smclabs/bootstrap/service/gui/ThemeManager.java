@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-
 public class ThemeManager {
 
     private final @Getter boolean dark;
@@ -54,14 +53,19 @@ public class ThemeManager {
             return true;
         }
 
-        return OsThemeDetector.isSupported() && OsThemeDetector.getDetector().isDark();
+        try {
+            return OsThemeDetector.isSupported() && OsThemeDetector.getDetector().isDark();
+        } catch (Throwable e) {
+            Bootstrap.getInstance().getLogger().error("Failed to detect OS theme!", e);
+            return false;
+        }
     }
 
     private String getLauncherTheme() {
         Path configPath = Paths.get(Bootstrap.getInstance().getDirProvider()
                 .getPersistenceDir("data/config") + "/launcher.json");
 
-        if (!Files.exists(configPath)) {
+        if (Files.notExists(configPath)) {
             return null;
         }
 
@@ -69,8 +73,6 @@ public class ThemeManager {
             Map<String, Object> config = Jackson.getMapper().readValue(configPath.toFile(),
                     new TypeReference<HashMap<String, Object>>() {
                     });
-
-            System.setProperty("smclabs.library.process-utils.useJNA", String.valueOf(config.get("useJNA")));
 
             return (String) config.get("theme");
         } catch (IOException e) {
