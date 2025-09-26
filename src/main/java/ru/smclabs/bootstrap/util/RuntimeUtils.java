@@ -3,14 +3,10 @@ package ru.smclabs.bootstrap.util;
 import ru.smclabs.bootstrap.BootstrapMain;
 import ru.smclabs.system.info.SystemInfo;
 
-import java.lang.management.ManagementFactory;
-import java.lang.reflect.Field;
 import java.net.URISyntaxException;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 
 public class RuntimeUtils {
 

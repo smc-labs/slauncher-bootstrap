@@ -1,6 +1,6 @@
 package ru.smclabs.bootstrap.util;
 
-import ru.smclabs.bootstrap.util.resource.ResourceManagerException;
+import ru.smclabs.bootstrap.util.resource.LocalResourceException;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -10,21 +10,21 @@ import java.net.URL;
 
 public class LocalResourceHelper {
 
-    public static URL toUrl(String path) throws ResourceManagerException {
+    public static URL toUrl(String path) throws LocalResourceException {
         URL url = LocalResourceHelper.class.getResource(path);
-        if (url == null) throw new ResourceManagerException("Resource not found: " + path);
+        if (url == null) throw new LocalResourceException("Resource not found: " + path);
         return url;
     }
 
-    public static String toUrlExternal(String path) throws ResourceManagerException {
+    public static String toUrlExternal(String path) throws LocalResourceException {
         return toUrl(path).toExternalForm();
     }
 
-    private static BufferedImage loadBufferedImage(String path) throws ResourceManagerException {
+    private static BufferedImage loadBufferedImage(String path) throws LocalResourceException {
         try {
             return ImageIO.read(toUrl(path));
         } catch (Throwable e) {
-            throw new ResourceManagerException("Failed to load local image!", e);
+            throw new LocalResourceException("Failed to load local image!", e);
         }
     }
 

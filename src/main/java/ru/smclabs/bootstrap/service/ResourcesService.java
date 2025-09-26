@@ -1,8 +1,6 @@
 package ru.smclabs.bootstrap.service;
 
-import lombok.Getter;
 import ru.smclabs.bootstrap.Bootstrap;
-import ru.smclabs.bootstrap.service.resource.ResourcesFinder;
 import ru.smclabs.bootstrap.service.resource.ResourcesUpdateTask;
 import ru.smclabs.slauncher.resources.exception.ResourceException;
 
@@ -12,39 +10,37 @@ public class ResourcesService extends AbstractService {
 
     public ResourcesService(Bootstrap bootstrap) {
         super(bootstrap);
-        this.lock = new ReentrantLock();
-        this.finder = new ResourcesFinder(bootstrap.getDirProvider());
+        lock = new ReentrantLock();
     }
 
     private final ReentrantLock lock;
-    private final @Getter ResourcesFinder finder;
 
     private volatile ResourcesUpdateTask currentTask;
 
     public void createTask() {
-        this.lock.lock();
+        lock.lock();
         try {
-            if (this.currentTask == null || this.currentTask.isCancelled()) {
-                this.currentTask = new ResourcesUpdateTask(this,
-                        this.getBootstrap().getGuiService().getPanelBackground().getPanelUpdate());
+            if (currentTask == null || currentTask.isCancelled()) {
+                currentTask = new ResourcesUpdateTask(this,
+                        getBootstrap().getGuiService().getPanelBackground().getPanelUpdate());
             } else {
                 throw new ResourceException("Resource service is busy!");
             }
 
-            this.currentTask.start();
+            currentTask.start();
         } finally {
-            this.lock.unlock();
+            lock.unlock();
         }
     }
 
     public void cancelTask() {
-        this.lock.lock();
+        lock.lock();
         try {
-            if (this.currentTask == null) return;
-            this.currentTask.interrupt();
-            this.currentTask = null;
+            if (currentTask == null) return;
+            currentTask.interrupt();
+            currentTask = null;
         } finally {
-            this.lock.unlock();
+            lock.unlock();
         }
     }
 }

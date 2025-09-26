@@ -21,7 +21,7 @@ public class BootstrapReportProvider extends HttpReportProvider {
 
         @Override
         public Thread newThread(Runnable runnable) {
-            return new Thread(runnable, "BootstrapReportProvider #" + this.counter++);
+            return new Thread(runnable, "BootstrapReportProvider #" + counter++);
         }
     });
 
@@ -35,17 +35,17 @@ public class BootstrapReportProvider extends HttpReportProvider {
     }
 
     public void send(String context, Throwable error) {
-        this.send(context, this.createReport(error));
+        send(context, createReport(error));
     }
 
     public void send(String context, String reportPayload) {
-        this.executor.execute(() -> {
-            this.printToLogger(reportPayload);
+        executor.execute(() -> {
+            printToLogger(reportPayload);
 
             try {
-                this.send(Report.of(Report.Type.LAUNCHER, context, reportPayload));
+                send(Report.of(Report.Type.LAUNCHER, context, reportPayload));
             } catch (ReportException re) {
-                this.printToLogger(this.createReport(re));
+                printToLogger(createReport(re));
             }
         });
     }

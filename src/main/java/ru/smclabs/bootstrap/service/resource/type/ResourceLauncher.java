@@ -17,10 +17,10 @@ public class ResourceLauncher extends Resource {
     }
 
     public void removeOlderVersions() {
-        try (Stream<Path> files = Files.find(this.path.getParent(), 1, (path, attributes) -> {
+        try (Stream<Path> files = Files.find(path.getParent(), 1, (path, attributes) -> {
             if (attributes.isRegularFile()) {
                 String fileName = path.getFileName().toString();
-                return fileName.endsWith(".jar") && fileName.startsWith("slauncher") && !fileName.equals(this.name);
+                return fileName.endsWith(".jar") && fileName.startsWith("slauncher") && !fileName.equals(name);
             }
 
             return false;

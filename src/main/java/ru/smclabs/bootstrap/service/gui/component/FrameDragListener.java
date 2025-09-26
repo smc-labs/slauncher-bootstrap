@@ -15,15 +15,15 @@ public class FrameDragListener extends MouseAdapter {
     }
 
     public void mouseReleased(MouseEvent e) {
-        this.coords = null;
+        coords = null;
     }
 
     public void mousePressed(MouseEvent e) {
-        this.coords = e.getPoint();
+        coords = e.getPoint();
     }
 
     public void mouseDragged(MouseEvent e) {
         Point currCoords = e.getLocationOnScreen();
-        this.frame.setLocation(currCoords.x - coords.x, currCoords.y - coords.y);
+        frame.setLocation(currCoords.x - coords.x, currCoords.y - coords.y);
     }
 }

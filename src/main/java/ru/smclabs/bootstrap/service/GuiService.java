@@ -16,19 +16,18 @@ import java.lang.reflect.Field;
 public class GuiService extends AbstractService {
 
     private final ThemeManager themeManager;
-
     private final JFrame frame;
     private final PanelBackground panelBackground;
 
     public GuiService(Bootstrap bootstrap) {
         super(bootstrap);
-        this.themeManager = new ThemeManager();
-        this.frame = this.createFrame();
-        this.frame.setContentPane(this.panelBackground = new PanelBackground(this));
+        themeManager = new ThemeManager();
+        frame = createFrame();
+        frame.setContentPane(panelBackground = new PanelBackground(this));
     }
 
     private JFrame createFrame() {
-        GuiEnvironment guiEnvironment = this.getBootstrap().getEnvironment().getGui();
+        GuiEnvironment guiEnvironment = getBootstrap().getEnvironment().getGui();
         try {
             Toolkit defaultToolkit = Toolkit.getDefaultToolkit();
             Field awtAppClassNameField = defaultToolkit.getClass().getDeclaredField("awtAppClassName");
@@ -55,8 +54,8 @@ public class GuiService extends AbstractService {
     }
 
     public void postInit() {
-        this.frame.pack();
-        this.frame.setLocationRelativeTo(null);
-        this.frame.setVisible(true);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
     }
 }

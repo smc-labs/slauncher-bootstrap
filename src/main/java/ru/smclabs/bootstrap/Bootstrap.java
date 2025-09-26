@@ -27,26 +27,26 @@ public class Bootstrap {
 
     public Bootstrap() {
         instance = this;
-        this.environment = new Environment();
-        this.dirProvider = new DirProvider(this.environment.getDir());
-        this.logger = LoggerFactory.create(this.dirProvider.getLogsDir(), "bootstrap");
-        this.httpService = new HttpService(this.environment.getHttp(), this.logger);
-        this.resourcesService = new ResourcesService(this);
-        this.launcherService = new LauncherService(this);
-        this.guiService = new GuiService(this);
+        environment = new Environment();
+        dirProvider = new DirProvider(environment.getDir());
+        logger = LoggerFactory.create(dirProvider.getLogsDir(), "bootstrap");
+        httpService = new HttpService(environment.getHttp(), logger);
+        resourcesService = new ResourcesService(this);
+        launcherService = new LauncherService(this);
+        guiService = new GuiService(this);
     }
 
     public void start() {
-        this.logger.info("Starting Bootstrap " + this.environment.getVersion());
-        System.setProperty("http.agent", this.environment.getHttp().getUserAgent());
-        System.setProperty("jna.tmpdir", this.dirProvider.getPersistenceDir("native").toString());
+        logger.info("Starting Bootstrap " + environment.getVersion());
+        System.setProperty("http.agent", environment.getHttp().getUserAgent());
+        System.setProperty("jna.tmpdir", dirProvider.getPersistenceDir("native").toString());
 
-        this.guiService.postInit();
-        this.resourcesService.createTask();
+        guiService.postInit();
+        resourcesService.createTask();
     }
 
     public void stop() {
-        this.logger.info("Bootstrap closed. Bye-bye!");
-        this.resourcesService.cancelTask();
+        logger.info("Bootstrap closed. Bye-bye!");
+        resourcesService.cancelTask();
     }
 }

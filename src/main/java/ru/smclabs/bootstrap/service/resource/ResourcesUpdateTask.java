@@ -30,26 +30,25 @@ import java.util.concurrent.TimeUnit;
 
 public class ResourcesUpdateTask {
 
-    private final ResourcesService service;
-    private final BootstrapResourcesFactory factory;
+    private final BootstrapResourcesFactory factory = new BootstrapResourcesFactory();
     private final @Getter PanelUpdate panelUpdate;
+    private final ResourcesService service;
     private final Thread thread;
 
     public ResourcesUpdateTask(ResourcesService service, PanelUpdate panelUpdate) {
         this.service = service;
         this.panelUpdate = panelUpdate;
-        this.factory = new BootstrapResourcesFactory();
-        this.thread = this.createThread();
+        thread = createThread();
     }
 
     private Thread createThread() {
         Thread thread = new Thread(() -> {
             try {
-                this.update();
+                update();
             } catch (InterruptedException e) {
                 Bootstrap.getInstance().getLogger().info("Update cancelled.");
             } finally {
-                this.service.cancelTask();
+                service.cancelTask();
             }
         });
         thread.setName("ResourceUpdateTask Thread");
@@ -60,16 +59,16 @@ public class ResourcesUpdateTask {
         TimeUnit.SECONDS.sleep(5);
 
         for (int i = 0; i < 5; i++) {
-            this.panelUpdate.setLabelSubTitle("следующая попытка через " + (5 - i) + " сек");
+            panelUpdate.setLabelSubTitle("следующая попытка через " + (5 - i) + " сек");
             TimeUnit.SECONDS.sleep(1);
         }
 
-        this.update();
+        update();
     }
 
     private void update() throws InterruptedException {
         try {
-            this.run();
+            run();
         } catch (LauncherProcessFailedException e) {
             BootstrapReportProvider reportProvider = Bootstrap.getReportProvider();
             String reportPayload = reportProvider.createReport(e)
@@ -78,23 +77,23 @@ public class ResourcesUpdateTask {
 
             reportProvider.send("Launcher process startup", reportPayload);
 
-            this.panelUpdate.setLabelTitle("Что-то пошло не так");
-            this.panelUpdate.setLabelSubTitle("не удалось запустить лаунчер");
-            this.retryUpdate();
+            panelUpdate.setLabelTitle("Что-то пошло не так");
+            panelUpdate.setLabelSubTitle("не удалось запустить лаунчер");
+            retryUpdate();
         } catch (HttpServiceException | JsonProcessingException | ResourceWriteException |
                  ResourceServerException | LauncherServiceException | ResourceException e) {
 
             Bootstrap.getReportProvider().send("Bootstrap update process", e);
-            this.panelUpdate.setLabelTitle("Что-то пошло не так");
-            this.panelUpdate.setLabelSubTitle("не удалось обновить лаунчер");
-            this.retryUpdate();
+            panelUpdate.setLabelTitle("Что-то пошло не так");
+            panelUpdate.setLabelSubTitle("не удалось обновить лаунчер");
+            retryUpdate();
         }
     }
 
     private void run() throws HttpServiceException, JsonProcessingException,
             ResourceWriteException, ResourceServerException, InterruptedException, LauncherServiceException {
 
-        ResourcesBuild resourcesBuild = this.factory.buildModels(this.fetchResourceList());
+        ResourcesBuild resourcesBuild = factory.buildModels(fetchResourceList());
 
         ResourceCompressedRuntime runtime = resourcesBuild.getResources().stream()
                 .filter(resource -> resource instanceof ResourceCompressedRuntime)
@@ -108,12 +107,12 @@ public class ResourcesUpdateTask {
                 .map(ResourceLauncher.class::cast)
                 .orElseThrow(() -> new ResourceException("Launcher not found!"));
 
-        this.downloadInvalidFiles(resourcesBuild, runtime, launcher);
-        this.removeOldLauncherVersions(runtime, launcher);
+        downloadInvalidFiles(resourcesBuild, runtime, launcher);
+        removeOldLauncherVersions(runtime, launcher);
 
-        this.panelUpdate.setLabelTitle("Все готово");
-        this.panelUpdate.setLabelSubTitle("запуск лаунчера...");
-        this.checkIfCancelled();
+        panelUpdate.setLabelTitle("Все готово");
+        panelUpdate.setLabelSubTitle("запуск лаунчера...");
+        checkIfCancelled();
 
         LauncherProcess launcherProcess = Bootstrap.getInstance().getLauncherService().getProcessManager()
                 .create(launcher.getPath(), runtime.getExecutableBinary());
@@ -148,26 +147,27 @@ public class ResourcesUpdateTask {
         List<ResourceDownloadTask> downloads = resourcesBuild.findInvalidResources();
 
         if (!downloads.isEmpty()) {
-            List<ResourceCompressed> compressedResources = new ArrayList<>();
             ProcessManager processManager = Bootstrap.getInstance().getLauncherService().getProcessManager();
             processManager.readProcessesFromDisk();
-
             processManager.destroyLauncherProcesses(runtime, launcher);
+
             TimeUnit.SECONDS.sleep(1);
 
-            try (ResourceDownloadTaskStats stats = new ResourceDownloadTaskStats(this.panelUpdate)) {
-                this.panelUpdate.setLabelTitle("Обновление");
-                this.panelUpdate.setLabelSubTitle("скачивание обновления...");
-                this.panelUpdate.setLabelTimeRemain("...");
-                this.panelUpdate.setLabelFileName("...");
-                this.panelUpdate.setLabelSpeed("...");
-                this.panelUpdate.setProgress(0.01D);
-                this.panelUpdate.getPanelDownloadInfo().setVisible(true);
+            List<ResourceCompressed> compressedResources = new ArrayList<>();
+
+            try (ResourceDownloadTaskStats stats = new ResourceDownloadTaskStats(panelUpdate)) {
+                panelUpdate.setLabelTitle("Обновление");
+                panelUpdate.setLabelSubTitle("скачивание обновления...");
+                panelUpdate.setLabelTimeRemain("...");
+                panelUpdate.setLabelFileName("...");
+                panelUpdate.setLabelSpeed("...");
+                panelUpdate.setProgress(0.01D);
+                panelUpdate.getPanelDownloadInfo().setVisible(true);
 
                 stats.start(downloads.stream().mapToLong(task -> task.getResource().getSize()).sum());
 
                 for (ResourceDownloadTask download : downloads) {
-                    this.panelUpdate.setLabelFileName(download.getResource().getName());
+                    panelUpdate.setLabelFileName(download.getResource().getName());
                     download.setStats(stats);
                     download.run();
 
@@ -177,30 +177,30 @@ public class ResourcesUpdateTask {
                 }
             }
 
-            this.panelUpdate.setLabelSubTitle("установка обновления...");
-            this.panelUpdate.setProgress(0D);
-            this.panelUpdate.getPanelDownloadInfo().setVisible(false);
+            panelUpdate.setLabelSubTitle("установка обновления...");
+            panelUpdate.setProgress(0D);
+            panelUpdate.getPanelDownloadInfo().setVisible(false);
 
             for (ResourceCompressed resource : compressedResources) {
-                this.checkIfCancelled();
+                checkIfCancelled();
                 resource.extract();
             }
         }
     }
 
     public void start() {
-        this.thread.start();
+        thread.start();
     }
 
     public void interrupt() {
-        this.thread.interrupt();
+        thread.interrupt();
     }
 
     public boolean isCancelled() {
-        return this.thread.isInterrupted();
+        return thread.isInterrupted();
     }
 
     public void checkIfCancelled() throws InterruptedException {
-        if (this.isCancelled()) throw new InterruptedException("Update cancelled by user");
+        if (isCancelled()) throw new InterruptedException("Update cancelled by user");
     }
 }

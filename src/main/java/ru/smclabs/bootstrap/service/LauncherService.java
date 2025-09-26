@@ -11,6 +11,6 @@ public class LauncherService extends AbstractService {
 
     public LauncherService(Bootstrap bootstrap) {
         super(bootstrap);
-        this.processManager = new ProcessManager(bootstrap.getLogger());
+        processManager = new ProcessManager(bootstrap.getLogger());
     }
 }

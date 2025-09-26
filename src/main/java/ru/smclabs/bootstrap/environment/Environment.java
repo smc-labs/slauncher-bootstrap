@@ -12,7 +12,7 @@ public class Environment {
 
     private final String version = "1.2.1";
     private final GuiEnvironment gui = new GuiEnvironment();
-    private final SLauncherHttpEnvironment http = new SLauncherHttpEnvironment(this.version, SystemInfo.get().getName());
+    private final SLauncherHttpEnvironment http = new SLauncherHttpEnvironment(version, SystemInfo.get().getName());
     private final DirEnvironment dir = DirEnvironment.builder().persistenceDir("SIMPLEMINECRAFT").build();
 
 }

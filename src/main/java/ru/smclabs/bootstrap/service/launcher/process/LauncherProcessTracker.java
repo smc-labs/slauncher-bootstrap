@@ -19,36 +19,36 @@ public class LauncherProcessTracker {
     public LauncherProcessTracker(ResourcesUpdateTask updateTask, LauncherProcess launcherProcess) {
         this.updateTask = updateTask;
         this.launcherProcess = launcherProcess;
-        this.processOutput = new StringBuilder();
+        processOutput = new StringBuilder();
     }
 
     public void track() throws LauncherProcessFailedException, InterruptedException {
-        try (InputStreamReader isr = new InputStreamReader(this.launcherProcess.getProcess().getInputStream());
+        try (InputStreamReader isr = new InputStreamReader(launcherProcess.getProcess().getInputStream());
              BufferedReader reader = new BufferedReader(isr)) {
 
             String line = reader.readLine();
             while (line != null) {
-                this.updateTask.checkIfCancelled();
-                if (this.checkIfStarted(line)) break;
+                updateTask.checkIfCancelled();
+                if (checkIfStarted(line)) break;
                 line = reader.readLine();
             }
         } catch (IOException e) {
-            throw new LauncherProcessFailedException(e, this.processOutput());
+            throw new LauncherProcessFailedException(e, processOutput());
         } finally {
-            if (this.processFailed) {
-                this.launcherProcess.destroy();
+            if (processFailed) {
+                launcherProcess.destroy();
             }
         }
 
-        if (this.processFailed) throw new LauncherProcessFailedException(this.processOutput());
+        if (processFailed) throw new LauncherProcessFailedException(processOutput());
     }
 
     private boolean checkIfStarted(String line) {
-        this.processOutput.append(line).append("\n");
+        processOutput.append(line).append("\n");
 
         if (line.contains("Starting SLauncher")) {
             Bootstrap.getInstance().getLogger().info("Launcher process started.");
-            this.processFailed = false;
+            processFailed = false;
             return true;
         }
 
@@ -56,6 +56,6 @@ public class LauncherProcessTracker {
     }
 
     private String processOutput() {
-        return this.processOutput.length() == 0 ? null : this.processOutput.toString();
+        return processOutput.length() == 0 ? null : processOutput.toString();
     }
 }

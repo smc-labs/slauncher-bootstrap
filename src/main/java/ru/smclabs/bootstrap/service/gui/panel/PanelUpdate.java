@@ -34,16 +34,16 @@ public class PanelUpdate extends AbstractPanel {
     public PanelUpdate(GuiService guiService) {
         super(guiService);
 
-        this.panelDownloadInfo = new PanelDownloadInfo(guiService.getThemeManager());
+        panelDownloadInfo = new PanelDownloadInfo(guiService.getThemeManager());
 
-        this.setLayout(null);
-        this.setBackground(null);
-        this.setBounds(0, 72, Bootstrap.getInstance().getEnvironment().getGui().getFrameWidth(),
+        setLayout(null);
+        setBackground(null);
+        setBounds(0, 72, Bootstrap.getInstance().getEnvironment().getGui().getFrameWidth(),
                 Bootstrap.getInstance().getEnvironment().getGui().getFrameHeight() - 54);
 
-        this.progressBarPosY = (int) (this.getBounds().getHeight() - this.progressPrefHeight - 92);
-        this.progressPrefWidth = 442;
-        this.startRepaintTimer();
+        progressBarPosY = (int) (getBounds().getHeight() - progressPrefHeight - 92);
+        progressPrefWidth = 442;
+        startRepaintTimer();
     }
 
     private void startRepaintTimer() {
@@ -77,20 +77,20 @@ public class PanelUpdate extends AbstractPanel {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         RoundRectangle2D.Double roundRectangle = new RoundRectangle2D.Double(36, 36,
-                this.getBounds().width - 36 * 2,
-                this.getBounds().height - 36 * 2,
+                getBounds().width - 36 * 2,
+                getBounds().height - 36 * 2,
                 0,
                 0);
 
-        g2d.setColor(this.guiService.getThemeManager().getColor("bg"));
+        g2d.setColor(guiService.getThemeManager().getColor("bg"));
         g2d.fill(new Area(roundRectangle));
 
         int titlePosY = 36;
 
-        this.drawProgressBar(g2d);
-        this.drawCenteredString(g2d, this.labelTitle, this.labelTitleFont, this.guiService.getThemeManager().getColor("title"), 0, titlePosY);
-        this.drawCenteredString(g2d, this.labelSubTitle, this.labelSubTitleFont, this.guiService.getThemeManager().getColor("sub-title"), 0, titlePosY + 33);
-        this.panelDownloadInfo.paintComponent(g);
+        drawProgressBar(g2d);
+        drawCenteredString(g2d, labelTitle, labelTitleFont, guiService.getThemeManager().getColor("title"), 0, titlePosY);
+        drawCenteredString(g2d, labelSubTitle, labelSubTitleFont, guiService.getThemeManager().getColor("sub-title"), 0, titlePosY + 33);
+        panelDownloadInfo.paintComponent(g);
 
         g2d.dispose();
     }
@@ -99,27 +99,27 @@ public class PanelUpdate extends AbstractPanel {
         int posX = 115;
 
         RoundRectangle2D.Double roundRectangle = new RoundRectangle2D.Double(posX,
-                this.progressBarPosY,
-                this.progressPrefWidth,
-                this.progressPrefHeight,
+                progressBarPosY,
+                progressPrefWidth,
+                progressPrefHeight,
                 23,
                 23);
 
-        g2d.setColor(this.guiService.getThemeManager().getColor("progress-bar"));
+        g2d.setColor(guiService.getThemeManager().getColor("progress-bar"));
         g2d.fill(new Area(roundRectangle));
 
-        int width = this.progress <= 0D
-                ? this.progressBouncerPrefWidth
-                : (int) (this.progressPrefWidth * this.progress);
+        int width = progress <= 0D
+                ? progressBouncerPrefWidth
+                : (int) (progressPrefWidth * progress);
 
-        RoundRectangle2D.Double roundRectangle3 = new RoundRectangle2D.Double(posX + this.platformPosX,
-                this.progressBarPosY,
+        RoundRectangle2D.Double roundRectangle3 = new RoundRectangle2D.Double(posX + platformPosX,
+                progressBarPosY,
                 width,
-                this.progressPrefHeight,
+                progressPrefHeight,
                 23,
                 23);
 
-        g2d.setPaint(this.guiService.getThemeManager().getColor("progress-bar-track"));
+        g2d.setPaint(guiService.getThemeManager().getColor("progress-bar-track"));
         g2d.fill(new Area(roundRectangle3));
     }
 
@@ -127,23 +127,23 @@ public class PanelUpdate extends AbstractPanel {
         g2d.setPaint(paint);
         g2d.setFont(font);
         int stringWidth = g2d.getFontMetrics().stringWidth(text);
-        g2d.drawString(text, this.getBounds().x + ((this.getBounds().width / 2) - (stringWidth / 2)), y + this.getBounds().y + 5);
+        g2d.drawString(text, getBounds().x + ((getBounds().width / 2) - (stringWidth / 2)), y + getBounds().y + 5);
     }
 
     public void setProgress(double progress) {
         this.progress = progress <= 0D ? progress : Math.max(progress, 0.05);
-        this.platformPosX = 0;
+        platformPosX = 0;
     }
 
     public void setLabelTimeRemain(String time) {
-        this.panelDownloadInfo.setLabelTimeRemain(time);
+        panelDownloadInfo.setLabelTimeRemain(time);
     }
 
     public void setLabelSpeed(String speed) {
-        this.panelDownloadInfo.setLabelSpeed(speed);
+        panelDownloadInfo.setLabelSpeed(speed);
     }
 
     public void setLabelFileName(String fileName) {
-        this.panelDownloadInfo.setLabelFileName(fileName);
+        panelDownloadInfo.setLabelFileName(fileName);
     }
 }

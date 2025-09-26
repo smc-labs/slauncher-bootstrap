@@ -1,9 +1,6 @@
 package ru.smclabs.bootstrap;
 
 import ru.smclabs.bootstrap.util.RuntimeUtils;
-import ru.smclabs.bootstrap.util.report.BootstrapReportProvider;
-import ru.smclabs.report.api.Report;
-import ru.smclabs.report.api.provider.ReportException;
 
 import java.io.IOException;
 import java.nio.file.Paths;

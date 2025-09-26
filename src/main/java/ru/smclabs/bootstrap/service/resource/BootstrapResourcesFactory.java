@@ -26,10 +26,10 @@ public class BootstrapResourcesFactory implements ResourcesFactory {
     private final ResourcesBuild build;
 
     public BootstrapResourcesFactory() {
-        this.dirProvider = Bootstrap.getInstance().getDirProvider();
-        this.bootstrapDir = this.dirProvider.getPersistenceDir("bootstrap");
-        this.runtimeDir = this.dirProvider.getPersistenceDir("runtime/bootstrap");
-        this.build = new ResourcesBuild();
+        dirProvider = Bootstrap.getInstance().getDirProvider();
+        bootstrapDir = dirProvider.getPersistenceDir("bootstrap");
+        runtimeDir = dirProvider.getPersistenceDir("runtime/bootstrap");
+        build = new ResourcesBuild();
     }
 
     public ResourcesBuild buildModels(BootstrapResourceList models) {
@@ -39,15 +39,15 @@ public class BootstrapResourcesFactory implements ResourcesFactory {
             }
 
             return new Resource(this, model);
-        }).forEach(this.build::compile);
+        }).forEach(build::compile);
 
         models.getRuntime().stream()
                 .filter(model -> model.getName().contains(SystemInfo.get().toString()))
                 .map(model -> new ResourceCompressedRuntime(this, model, "bootstrap"))
-                .forEach(this.build::compile);
+                .forEach(build::compile);
 
-        this.build.sort();
-        return this.build;
+        build.sort();
+        return build;
     }
 
     @Override
@@ -58,7 +58,7 @@ public class BootstrapResourcesFactory implements ResourcesFactory {
     @Override
     public Path preparePath(ResourceModel model) {
         return Paths.get(model.getPath()
-                .replace("%bootstrap-dir%", this.bootstrapDir.toString())
-                .replace("%runtime-dir%", this.runtimeDir.toString()));
+                .replace("%bootstrap-dir%", bootstrapDir.toString())
+                .replace("%runtime-dir%", runtimeDir.toString()));
     }
 }

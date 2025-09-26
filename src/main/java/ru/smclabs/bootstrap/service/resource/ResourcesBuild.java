@@ -15,19 +15,15 @@ public class ResourcesBuild {
     private final ResourcesList<Resource> resources = new ResourcesList<>();
 
     public void sort() {
-        this.resources.sort(Comparator.comparingLong(Resource::getSize).reversed());
+        resources.sort(Comparator.comparingLong(Resource::getSize).reversed());
     }
 
     public void compile(Resource resource) {
-        this.resources.add(resource);
-    }
-
-    public boolean isEmpty() {
-        return this.resources.isEmpty();
+        resources.add(resource);
     }
 
     public List<ResourceDownloadTask> findInvalidResources() {
-        return this.resources.stream()
+        return resources.stream()
                 .filter(Resource::isInvalid)
                 .map(ResourceDownloadTask::new)
                 .collect(Collectors.toList());

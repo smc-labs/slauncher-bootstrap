@@ -1,8 +1,8 @@
 package ru.smclabs.bootstrap.service.resource.download;
 
 import ru.smclabs.bootstrap.service.gui.panel.PanelUpdate;
-import ru.smclabs.bootstrap.util.FileUtils;
 import ru.smclabs.bootstrap.util.TimeUtils;
+import ru.smclabs.slauncher.resources.util.FileUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -16,20 +16,20 @@ public class ResourceDownloadTaskStats implements AutoCloseable {
 
     public ResourceDownloadTaskStats(PanelUpdate panelUpdate) {
         this.panelUpdate = panelUpdate;
-        this.thread = new Thread(() -> {
+        thread = new Thread(() -> {
             try {
-                this.update();
+                update();
             } catch (InterruptedException e) {
-                this.close();
+                close();
             }
         });
-        this.thread.setName("ResourceDownloadTaskStats Thread");
-        this.thread.setDaemon(true);
+        thread.setName("ResourceDownloadTaskStats Thread");
+        thread.setDaemon(true);
     }
 
     public void start(long bytesMustBeRead) {
         this.bytesMustBeRead = bytesMustBeRead;
-        this.thread.start();
+        thread.start();
     }
 
     private void update() throws InterruptedException {
@@ -42,23 +42,23 @@ public class ResourceDownloadTaskStats implements AutoCloseable {
             long currentTimeMillis = System.currentTimeMillis();
 
             if (currentTimeMillis % 100 == 0) {
-                long bytesReadCopy = this.bytesRead;
-                double progress = (double) (bytesReadCopy >> 10) / (this.bytesMustBeRead >> 10);
+                long bytesReadCopy = bytesRead;
+                double progress = (double) (bytesReadCopy >> 10) / (bytesMustBeRead >> 10);
 
-                if (bytesReadCopy > 0 && this.bytesMustBeRead > 0) {
+                if (bytesReadCopy > 0 && bytesMustBeRead > 0) {
                     long elapsedTime = System.currentTimeMillis() - startTime;
-                    remainingTime = (elapsedTime * this.bytesMustBeRead / bytesReadCopy) - elapsedTime;
+                    remainingTime = (elapsedTime * bytesMustBeRead / bytesReadCopy) - elapsedTime;
                 }
 
-                this.panelUpdate.setProgress(progress);
+                panelUpdate.setProgress(progress);
             }
 
             if (currentTimeMillis % 1000 == 0) {
-                bytesDifference = this.bytesRead - bytesReadedLast;
-                bytesReadedLast = this.bytesRead;
+                bytesDifference = bytesRead - bytesReadedLast;
+                bytesReadedLast = bytesRead;
 
-                this.panelUpdate.setLabelSpeed(FileUtils.sizeForHuman(bytesDifference) + "/сек ~");
-                this.panelUpdate.setLabelTimeRemain(TimeUtils.toHumanTime(Math.max(1000, remainingTime)) + " ~");
+                panelUpdate.setLabelSpeed(FileUtils.humanSize(bytesDifference) + "/сек ~");
+                panelUpdate.setLabelTimeRemain(TimeUtils.toHumanTime(Math.max(1000, remainingTime)) + " ~");
             }
         }
     }
@@ -68,7 +68,7 @@ public class ResourceDownloadTaskStats implements AutoCloseable {
             TimeUnit.MILLISECONDS.sleep(1);
             return true;
         } catch (InterruptedException e) {
-            this.close();
+            close();
             return false;
         }
     }
@@ -79,6 +79,6 @@ public class ResourceDownloadTaskStats implements AutoCloseable {
 
     @Override
     public void close() {
-        this.thread.interrupt();
+        thread.interrupt();
     }
 }

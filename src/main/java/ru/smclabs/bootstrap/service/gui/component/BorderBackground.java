@@ -15,10 +15,10 @@ public class BorderBackground extends AbstractBorder {
     private final Color borderColor;
 
     public BorderBackground(ThemeManager themeManager) {
-        this.stroke = new BasicStroke(1);
-        this.hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        this.insets = new Insets(0, 0, 0, 0);
-        this.borderColor = themeManager.getColor("bg-border");
+        stroke = new BasicStroke(1);
+        hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        insets = new Insets(0, 0, 0, 0);
+        borderColor = themeManager.getColor("bg-border");
     }
 
     @Override
@@ -34,14 +34,14 @@ public class BorderBackground extends AbstractBorder {
     @Override
     public void paintBorder(Component component, Graphics graphics, int x, int y, int width, int height) {
         RoundRectangle2D.Double roundRectangle = new RoundRectangle2D.Double(0, 0,
-                width - this.stroke.getLineWidth(),
-                height - this.stroke.getLineWidth(),
+                width - stroke.getLineWidth(),
+                height - stroke.getLineWidth(),
                 (17D / 2D) * Math.PI, (17D / 2D) * Math.PI);
 
         Graphics2D g2 = (Graphics2D) graphics;
-        g2.setPaint(this.borderColor);
-        g2.setRenderingHints(this.hints);
-        g2.setStroke(this.stroke);
+        g2.setPaint(borderColor);
+        g2.setRenderingHints(hints);
+        g2.setStroke(stroke);
         g2.draw(new Area(roundRectangle));
     }
 }

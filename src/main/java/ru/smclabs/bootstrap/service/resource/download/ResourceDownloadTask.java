@@ -12,6 +12,7 @@ import ru.smclabs.slauncher.http.exception.HttpClientException;
 import ru.smclabs.slauncher.http.exception.HttpServiceException;
 import ru.smclabs.slauncher.resources.exception.ResourceException;
 import ru.smclabs.slauncher.resources.type.Resource;
+import ru.smclabs.slauncher.resources.util.FileUtils;
 import ru.smclabs.slauncher.util.logger.ILogger;
 
 import javax.net.ssl.SSLException;
@@ -34,42 +35,42 @@ public class ResourceDownloadTask {
 
     public ResourceDownloadTask(Resource resource) {
         this.resource = resource;
-        this.tempPath = Paths.get(resource.getPath() + ".download");
+        tempPath = Paths.get(resource.getPath() + ".download");
     }
 
-    public void run() throws ResourceWriteException, ResourceServerException, InterruptedException {
-        this.prepareDir();
+    public void run() throws ResourceWriteException, InterruptedException {
+        prepareDir();
 
         try {
-            this.downloadWithRetry(false);
+            downloadWithRetry(false);
         } catch (ResourceNotCompleteException e) {
             int errors = 0;
 
             while (true) {
                 Bootstrap.getInstance()
                         .getLogger()
-                        .info("Retry #" + errors + " file downloading: " + this.resource.getUrl());
+                        .info("Retry #" + errors + " file downloading: " + resource.getUrl());
 
                 try {
-                    this.downloadWithRetry(true);
+                    downloadWithRetry(true);
                     break;
                 } catch (ResourceNotCompleteException exception) {
                     if (errors++ == 10) {
-                        throw new ResourceNotCompleteException(this.resource,
+                        throw new ResourceNotCompleteException(resource,
                                 "Не удалось загрузить поврежденный файл: " + exception.getResource().getName());
                     }
                 }
             }
         }
 
-        if (this.resource instanceof IHasAfterDownloadAction) {
-            ((IHasAfterDownloadAction) this.resource).runAction();
+        if (resource instanceof AfterDownloadAction) {
+            ((AfterDownloadAction) resource).afterDownload();
         }
     }
 
     private void prepareDir() {
         try {
-            Files.createDirectories(this.tempPath.getParent());
+            Files.createDirectories(tempPath.getParent());
         } catch (IOException e) {
             throw new ResourceException(e);
         }
@@ -79,12 +80,12 @@ public class ResourceDownloadTask {
         HttpService httpService = Bootstrap.getInstance().getHttpService();
 
         try {
-            this.download(append);
+            download(append);
         } catch (ResourceServerException | HttpClientException e) {
             HttpEnvironment environment = httpService.getEnvironment();
             ILogger logger = httpService.getLogger();
 
-            logger.warn("Failed to send request to " + this.resource.getUrl() + "! (zone: ."
+            logger.warn("Failed to send request to " + resource.getUrl() + "! (zone: ."
                     + environment.getZone() + ", protocol: " + environment.getProtocol() + ")");
 
             logger.info("Search working zone...");
@@ -97,7 +98,7 @@ public class ResourceDownloadTask {
                     logger.info("Try zone: ." + environment.getZone() + ", protocol: " + environment.getProtocol());
 
                     try {
-                        this.download(append);
+                        download(append);
                         logger.info("Found working zone: ." + environment.getZone()
                                 + ", protocol: " + environment.getProtocol());
                         return;
@@ -110,10 +111,10 @@ public class ResourceDownloadTask {
     }
 
     private void download(boolean append) throws HttpClientException, ResourceServerException, ResourceWriteException, InterruptedException {
-        HttpURLConnection connection = this.openConnection(append);
+        HttpURLConnection connection = openConnection(append);
 
         try (BufferedInputStream inputStream = new BufferedInputStream(connection.getInputStream())) {
-            try (FileOutputStream outputStream = new FileOutputStream(this.tempPath.toString(), append)) {
+            try (FileOutputStream outputStream = new FileOutputStream(tempPath.toString(), append)) {
                 byte[] buffer = new byte[1024];
                 int bytesRead;
 
@@ -131,19 +132,19 @@ public class ResourceDownloadTask {
                     try {
                         outputStream.write(buffer, 0, bytesRead);
                     } catch (IOException e) {
-                        throw new ResourceWriteException(this.resource, e);
+                        throw new ResourceWriteException(resource, e);
                     }
 
-                    if (this.stats != null) {
-                        this.stats.addReadBytes(bytesRead);
+                    if (stats != null) {
+                        stats.addReadBytes(bytesRead);
                     }
 
                     if (Thread.interrupted()) {
-                        throw new InterruptedException("Resource download " + this.resource.getName() + " cancelled.");
+                        throw new InterruptedException("Resource download " + resource.getName() + " cancelled.");
                     }
                 }
             } catch (IOException e) {
-                throw new ResourceWriteException(this.resource, e);
+                throw new ResourceWriteException(resource, e);
             }
         } catch (IOException e) {
             throw new ResourceServerException(e);
@@ -151,21 +152,21 @@ public class ResourceDownloadTask {
             connection.disconnect();
         }
 
-        if (Files.notExists(this.tempPath)) {
-            throw new ResourceNotCompleteException(this.resource, "Resource not exists!");
+        if (Files.notExists(tempPath)) {
+            throw new ResourceNotCompleteException(resource, "Resource not exists!");
         }
 
         try {
-            if (Files.size(this.tempPath) < this.resource.getSize() && !this.resource.getName().endsWith(".js")) {
-                throw new ResourceNotCompleteException(this.resource, "Files size not equals! (" +
-                        Files.size(this.tempPath) + " vs " + this.resource.getSize() + ")");
+            if (Files.size(tempPath) < resource.getSize() && !resource.getName().endsWith(".js")) {
+                throw new ResourceNotCompleteException(resource, "Files size not equals! (" +
+                        Files.size(tempPath) + " vs " + resource.getSize() + ")");
             }
         } catch (IOException e) {
-            throw new ResourceNotCompleteException(this.resource, e);
+            throw new ResourceNotCompleteException(resource, e);
         }
 
         try {
-            Files.move(this.tempPath, this.resource.getPath(), StandardCopyOption.REPLACE_EXISTING);
+            FileUtils.atomicMove(tempPath, resource.getPath(), 10);
         } catch (IOException e) {
             throw new ResourceException("Failed to move resource file!", e);
         }
@@ -173,12 +174,12 @@ public class ResourceDownloadTask {
 
     private HttpURLConnection openConnection(boolean append) throws HttpClientException, ResourceServerException {
         HttpService httpService = Bootstrap.getInstance().getHttpService();
-        URL url = httpService.createUrl(this.resource.getUrl());
+        URL url = httpService.createUrl(resource.getUrl());
         HttpURLConnection connection = httpService.openConnection(url, "GET");
 
         if (append) {
             try {
-                connection.setRequestProperty("Range", "bytes=" + Files.size(this.tempPath) + "-" + this.resource.getSize());
+                connection.setRequestProperty("Range", "bytes=" + Files.size(tempPath) + "-" + resource.getSize());
             } catch (IOException e) {
                 throw new ResourceException("Failed to check temp file size!", e);
             }
@@ -193,7 +194,7 @@ public class ResourceDownloadTask {
 
         if (responseCode == 416) {
             try {
-                Files.deleteIfExists(this.tempPath);
+                Files.deleteIfExists(tempPath);
             } catch (IOException e) {
                 throw new ResourceException("Failed to remove temp file!", e);
             }

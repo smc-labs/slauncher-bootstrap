@@ -35,10 +35,10 @@ public class ProcessManager {
         DirProvider dirProvider = Bootstrap.getInstance().getDirProvider();
 
         LauncherProcess launcherProcess = new LauncherProcess(dirProvider, executableBinary);
-        launcherProcess.param("-cp").param(launcherPath.toUri().getPath()).param("ru.smclabs.slauncher.SLauncherMain");
+        launcherProcess.addParam("-cp").addParam(launcherPath.toUri().getPath()).addParam("ru.smclabs.slauncher.SLauncherMain");
         launcherProcess.start(dirProvider);
 
-        this.processes.add(launcherProcess);
+        processes.add(launcherProcess);
         return launcherProcess;
     }
 
@@ -72,36 +72,36 @@ public class ProcessManager {
                 }
             }
         } catch (Throwable e) {
-            this.logger.error("Failed to destroy game processes!", e);
+            logger.error("Failed to destroy game processes!", e);
         }
     }
 
     public void destroyLauncherProcesses(ResourceCompressedRuntime runtime, ResourceLauncher launcher) {
-        this.destroyGameProcesses(runtime, launcher);
+        destroyGameProcesses(runtime, launcher);
 
-        if (this.processes.isEmpty()){
+        if (processes.isEmpty()) {
             return;
         }
 
-        this.processes.forEach(process -> {
+        processes.forEach(process -> {
             try {
                 process.destroy();
             } catch (LauncherServiceException e) {
-                this.logger.error("Failed to destroy process", e);
+                logger.error("Failed to destroy process", e);
             }
         });
-        this.processes.clear();
+        processes.clear();
     }
 
     public void readProcessesFromDisk() throws LauncherServiceException {
-        this.processes.clear();
+        processes.clear();
         DirProvider dirProvider = Bootstrap.getInstance().getDirProvider();
         try (Stream<Path> files = Files.find(dirProvider.getPersistenceDir("data/process/launcher"), 1, PROCESS_FILE_FILTER)) {
             files.forEach(file -> {
                 try {
-                    this.processes.add(new LauncherProcess(file));
+                    processes.add(new LauncherProcess(file));
                 } catch (LauncherServiceException e) {
-                    this.logger.error("Failed to read launcher process data!", e);
+                    logger.error("Failed to read launcher process data!", e);
                 }
             });
         } catch (IOException e) {

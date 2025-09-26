@@ -22,31 +22,31 @@ public class ThemeManager {
     private final Map<String, Color> colors = new HashMap<>();
 
     public ThemeManager() {
-        this.dark = this.isDarkTheme();
-        this.registerColor("bg", Color.decode("#F8E6D6"), Color.decode("#15151D"));
-        this.registerColor("bg-border", new Color(0, 0, 0, (int) (255 * 0.04)), new Color(255, 255, 255, (int) (255 * 0.04)));
-        this.registerColor("title", Color.BLACK, Color.WHITE);
-        this.registerColor("sub-title", new Color(0, 0, 0, (int) (255 * 0.6)), new Color(255, 255, 255, (int) (255 * 0.6)));
-        this.registerColor("progress-bar", new Color(0, 0, 0, (int) (255 * 0.06)), new Color(255, 255, 255, (int) (255 * 0.06)));
-        this.registerColor("progress-bar-track", Color.decode("#A2BE06"), Color.decode("#A2BE06"));
+        dark = isDarkTheme();
+        registerColor("bg", Color.decode("#F8E6D6"), Color.decode("#15151D"));
+        registerColor("bg-border", new Color(0, 0, 0, (int) (255 * 0.04)), new Color(255, 255, 255, (int) (255 * 0.04)));
+        registerColor("title", Color.BLACK, Color.WHITE);
+        registerColor("sub-title", new Color(0, 0, 0, (int) (255 * 0.6)), new Color(255, 255, 255, (int) (255 * 0.6)));
+        registerColor("progress-bar", new Color(0, 0, 0, (int) (255 * 0.06)), new Color(255, 255, 255, (int) (255 * 0.06)));
+        registerColor("progress-bar-track", Color.decode("#A2BE06"), Color.decode("#A2BE06"));
     }
 
     private void registerColor(String type, Color lightDark, Color darkColor) {
-        this.colors.put(type, this.dark ? darkColor : lightDark);
+        colors.put(type, dark ? darkColor : lightDark);
     }
 
     public Color getColor(String type) {
-        if (!this.colors.containsKey(type)) throw new IllegalArgumentException(type + " color not registered!");
-        return this.colors.get(type);
+        if (!colors.containsKey(type)) throw new IllegalArgumentException(type + " color not registered!");
+        return colors.get(type);
     }
 
     public Image getImage(String type, String name, int width, int height) {
         return LocalResourceHelper.loadScaledImage("/assets/" + type + "/" + name
-                + "-" + (this.dark ? "dark" : "light") + ".png", width, height);
+                + "-" + (dark ? "dark" : "light") + ".png", width, height);
     }
 
     private boolean isDarkTheme() {
-        String theme = this.getLauncherTheme();
+        String theme = getLauncherTheme();
         if (Objects.equals(theme, "light")) {
             return false;
         } else if (Objects.equals(theme, "dark")) {
