@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'ru.smclabs.bootstrap'
-version '1.2.2'
+version '1.2.3'
 
 mainClassName = project.group + '.BootstrapMain'
 archivesBaseName = 'Bootstrap'
@@ -41,8 +41,8 @@ dependencies {
     implementation 'ru.smclabs:slauncher-models-1.0.2'
     compileOnly 'ru.smclabs:slauncher-models-1.0.2-sources'
 
-    implementation 'ru.smclabs:slauncher-resources-1.0.6'
-    compileOnly 'ru.smclabs:slauncher-resources-1.0.6-sources'
+    implementation 'ru.smclabs:slauncher-resources-1.0.7'
+    compileOnly 'ru.smclabs:slauncher-resources-1.0.7-sources'
 
     implementation 'ru.smclabs:jackson-pack:1.0.0'
     implementation 'ru.smclabs:jackson-pack-config:1.0.0'
