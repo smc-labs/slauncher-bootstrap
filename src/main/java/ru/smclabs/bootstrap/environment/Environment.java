@@ -10,9 +10,9 @@ import ru.smclabs.system.info.SystemInfo;
 @ToString
 public class Environment {
 
-    private final String version = "1.2.3";
+    private final String version = "1.2.4";
     private final GuiEnvironment gui = new GuiEnvironment();
-    private final SLauncherHttpEnvironment http = new SLauncherHttpEnvironment(version, SystemInfo.get().getName());
+    private final SLauncherHttpEnvironment http = new SLauncherHttpEnvironment("BOOTSTRAP-" + version, SystemInfo.get().getName());
     private final DirEnvironment dir = DirEnvironment.builder().persistenceDir("SIMPLEMINECRAFT").build();
 
 }

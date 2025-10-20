@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'ru.smclabs.bootstrap'
-version '1.2.3'
+version '1.2.4'
 
 mainClassName = project.group + '.BootstrapMain'
 archivesBaseName = 'Bootstrap'
@@ -32,8 +32,8 @@ dependencies {
     implementation 'ru.smclabs:report-api-1.0.0'
     compileOnly 'ru.smclabs:report-api-1.0.0-sources'
 
-    implementation 'ru.smclabs:slauncher-http-1.0.2'
-    compileOnly 'ru.smclabs:slauncher-http-1.0.2-sources'
+    implementation 'ru.smclabs:slauncher-http-1.0.3'
+    compileOnly 'ru.smclabs:slauncher-http-1.0.3-sources'
 
     implementation 'ru.smclabs:slauncher-logger-1.0.0'
     compileOnly 'ru.smclabs:slauncher-logger-1.0.0-sources'
