@@ -1,6 +1,7 @@
 package ru.smclabs.bootstrap.service.gui.panel;
 
 import ru.smclabs.bootstrap.service.GuiService;
+import ru.smclabs.bootstrap.service.gui.ThemeManager;
 import ru.smclabs.bootstrap.service.gui.component.button.ButtonControl;
 
 import java.awt.*;
@@ -12,8 +13,24 @@ public class PanelHeader extends AbstractPanel {
         super(guiService);
         setLayout(createLayoutManager());
         setBackground(null);
-        setBounds(0, 7, guiService.getBootstrap().getEnvironment().getGui().getFrameWidth() + 6 - 32, 90);
+        setBounds();
+        addButtons();
+    }
 
+    private LayoutManager createLayoutManager() {
+        FlowLayout layout = new FlowLayout(FlowLayout.RIGHT);
+        layout.setVgap(PanelBackground.PADDING_Y);
+        layout.setHgap(6);
+        layout.setAlignOnBaseline(false);
+        return layout;
+    }
+
+    private void setBounds() {
+        int width = guiService.getBootstrap().getEnvironment().getGui().getFrameWidth();
+        setBounds(0, 0, width - PanelBackground.PADDING_X + 2, 40 + (PanelBackground.PADDING_Y));
+    }
+
+    private void addButtons() {
         add(new ButtonControl(guiService.getThemeManager(), "turn") {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -27,13 +44,5 @@ public class PanelHeader extends AbstractPanel {
                 System.exit(0);
             }
         });
-    }
-
-    private LayoutManager createLayoutManager() {
-        FlowLayout flowLayout = new FlowLayout(FlowLayout.RIGHT);
-        flowLayout.setVgap(18);
-        flowLayout.setHgap(6);
-        flowLayout.setAlignOnBaseline(false);
-        return flowLayout;
     }
 }

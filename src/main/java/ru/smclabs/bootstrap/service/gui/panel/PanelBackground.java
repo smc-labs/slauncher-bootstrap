@@ -10,16 +10,22 @@ import java.awt.geom.RoundRectangle2D;
 
 public class PanelBackground extends AbstractPanel {
 
+    public static final int PADDING_X = 34;
+    public static final int PADDING_Y = 28;
+
+    private static final int LOGO_WIDTH = 40;
+    private static final int LOGO_HEIGHT = 40;
+
     private final Image imageLogo;
-    private final Font titleFont = LocalResourceHelper.loadFont("Inter-Bold", 28);
     private final @Getter PanelUpdate panelUpdate;
 
     public PanelBackground(GuiService guiService) {
         super(guiService);
+        imageLogo = LocalResourceHelper.loadScaledImage("/assets/icons/512.png", LOGO_WIDTH, LOGO_HEIGHT);
+
+        setLayout(null);
         setBackground(null);
         setBorder(new BorderBackground(guiService.getThemeManager()));
-        setLayout(null);
-        imageLogo = LocalResourceHelper.loadScaledImage("/assets/icons/512.png", 44, 44);
         add(new PanelHeader(guiService));
         add(panelUpdate = new PanelUpdate(guiService));
     }
@@ -30,23 +36,18 @@ public class PanelBackground extends AbstractPanel {
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        g2d.setColor(guiService.getThemeManager().getColor("bg"));
-        g2d.fill(new RoundRectangle2D.Double(0, 0, getWidth(), getHeight(), (18D / 2D) * Math.PI, (18D / 2D) * Math.PI));
-
-        int logoPosX = 32;
-        int logoPosY = 23;
-        int logoWidth = 44;
-        int logoHeight = 44;
-        g2d.drawImage(imageLogo, logoPosX, logoPosY, logoWidth, logoHeight, this);
-
-        g2d.setPaint(guiService.getThemeManager().getColor("title"));
-        g2d.setFont(titleFont);
-        g2d.drawString("SIMPLEMINECRAFT", logoPosX + logoWidth + 12, logoPosY + 22 + 11);
-
-        g2d.setColor(guiService.getThemeManager().getColor("bg-border"));
-        g2d.fill(new RoundRectangle2D.Double(0, 90, getWidth(), 1, 0, 0));
+        drawBackground(g2d);
+        drawLogo(g2d);
 
         super.paintComponent(g);
     }
 
+    private void drawBackground(Graphics2D g2d) {
+        g2d.setColor(guiService.getThemeManager().getColor("bg"));
+        g2d.fill(new RoundRectangle2D.Double(0, 0, getWidth(), getHeight(), (18D / 2D) * Math.PI, (18D / 2D) * Math.PI));
+    }
+
+    private void drawLogo(Graphics2D g2d) {
+        g2d.drawImage(imageLogo, PADDING_X, PADDING_Y, LOGO_WIDTH, LOGO_HEIGHT, this);
+    }
 }

@@ -158,11 +158,12 @@ public class ResourcesUpdateTask {
             try (ResourceDownloadTaskStats stats = new ResourceDownloadTaskStats(panelUpdate)) {
                 panelUpdate.setLabelTitle("Обновление");
                 panelUpdate.setLabelSubTitle("скачивание обновления...");
+
                 panelUpdate.setLabelTimeRemain("...");
                 panelUpdate.setLabelFileName("...");
                 panelUpdate.setLabelSpeed("...");
-                panelUpdate.setProgress(0.01D);
-                panelUpdate.getPanelDownloadInfo().setVisible(true);
+                panelUpdate.setProgress(0.0);
+                panelUpdate.setFileDownloadingVisible(true);
 
                 stats.start(downloads.stream().mapToLong(task -> task.getResource().getSize()).sum());
 
@@ -178,8 +179,8 @@ public class ResourcesUpdateTask {
             }
 
             panelUpdate.setLabelSubTitle("установка обновления...");
-            panelUpdate.setProgress(0D);
-            panelUpdate.getPanelDownloadInfo().setVisible(false);
+            panelUpdate.setProgress(-1.0);
+            panelUpdate.setFileDownloadingVisible(false);
 
             for (ResourceCompressed resource : compressedResources) {
                 checkIfCancelled();
