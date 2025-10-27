@@ -53,7 +53,7 @@ public class PanelUpdate extends AbstractPanel {
         drawBackground(g2d);
 
         drawCenteredString(g2d, labelTitle, titleFont, guiService.getThemeManager().getColor("title"), 25);
-        drawCenteredString(g2d, labelSubTitle, subTitleFont, guiService.getThemeManager().getColor("sub-title"), 48);
+        drawCenteredString(g2d, labelSubTitle, subTitleFont, guiService.getThemeManager().getColor("sub-title"), 25 + 24);
     }
 
     private void drawBackground(Graphics2D g2d) {
@@ -95,6 +95,7 @@ public class PanelUpdate extends AbstractPanel {
 
     public void setFileDownloadingVisible(boolean visible) {
         fileDownloading.setVisible(visible);
+        repaint();
     }
 
     /*

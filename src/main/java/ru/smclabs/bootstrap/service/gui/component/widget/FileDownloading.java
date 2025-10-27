@@ -13,7 +13,6 @@ public class FileDownloading extends JComponent {
     private final Font labelFont;
     private final Image[] images;
 
-    private boolean visible = false;
     private String fileName = "...";
     private String timeRemain = "...";
     private String speed = "...";
@@ -23,6 +22,7 @@ public class FileDownloading extends JComponent {
         labelFont = LocalResourceHelper.loadFont("GolosText-Regular", 14);
         images = loadImages();
         setBounds(0, parent.getHeight() - 74 - 24 - PanelUpdate.VERTICAL_GAP, parent.getWidth(), 74);
+        setVisible(false);
     }
 
     private Image[] loadImages() {
@@ -35,30 +35,10 @@ public class FileDownloading extends JComponent {
 
     @Override
     protected void paintComponent(Graphics g) {
-        if (!visible) return;
-
         Graphics2D g2d = (Graphics2D) g;
-
-        g2d.setColor(new Color(0, 0, 0, 255 / 2));
-        g2d.fill(new Rectangle(0, 0, getWidth(), getHeight()));
-
-        drawLabel(g2d,
-                images[0],
-                themeManager.getColor("sub-title"),
-                fileName,
-                0);
-
-        drawLabel(g2d,
-                images[1],
-                themeManager.getColor("sub-title"),
-                timeRemain,
-                28);
-
-        drawLabel(g2d,
-                images[2],
-                themeManager.getColor("sub-title"),
-                speed,
-                28 * 2);
+        drawLabel(g2d, images[0], themeManager.getColor("sub-title"), fileName, 0);
+        drawLabel(g2d, images[1], themeManager.getColor("sub-title"), timeRemain, 28);
+        drawLabel(g2d, images[2], themeManager.getColor("sub-title"), speed, 28 * 2);
     }
 
     private void drawLabel(Graphics2D g2d, Image icon, Color color, String text, int posY) {
@@ -87,11 +67,6 @@ public class FileDownloading extends JComponent {
 
     public void setSpeed(String value) {
         speed = value;
-        repaint();
-    }
-
-    public void setVisible(boolean value) {
-        visible = value;
         repaint();
     }
 }
