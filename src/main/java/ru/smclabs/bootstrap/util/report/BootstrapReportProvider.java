@@ -6,8 +6,8 @@ import ru.smclabs.jacksonpack.Jackson;
 import ru.smclabs.report.api.Report;
 import ru.smclabs.report.api.provider.ReportException;
 import ru.smclabs.report.impl.HttpReportProvider;
-import ru.smclabs.slauncher.util.logger.ILogger;
-import ru.smclabs.slauncher.util.logger.LoggerFactory;
+import ru.smclabs.slauncher.logger.Logger;
+import ru.smclabs.slauncher.logger.LoggerFactory;
 import ru.smclabs.system.info.SystemInfo;
 
 import java.util.concurrent.ExecutorService;
@@ -73,7 +73,7 @@ public class BootstrapReportProvider extends HttpReportProvider {
             return;
         }
 
-        ILogger logger = bootstrap.getLogger();
+        Logger logger = bootstrap.getLogger();
         if (logger == null) {
             System.err.println(report);
             return;

@@ -1,14 +1,12 @@
-package ru.smclabs.bootstrap.service.gui.panel;
+package ru.smclabs.bootstrap.gui.panel;
 
-import ru.smclabs.bootstrap.service.GuiService;
-import ru.smclabs.bootstrap.service.gui.ThemeManager;
-import ru.smclabs.bootstrap.service.gui.component.button.ButtonControl;
+import ru.smclabs.bootstrap.gui.core.GuiService;
+import ru.smclabs.bootstrap.gui.widget.ButtonControl;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
-public class PanelHeader extends AbstractPanel {
-
+public class PanelHeader extends Panel {
     public PanelHeader(GuiService guiService) {
         super(guiService);
         setLayout(createLayoutManager());

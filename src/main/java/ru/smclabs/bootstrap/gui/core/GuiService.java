@@ -1,29 +1,44 @@
-package ru.smclabs.bootstrap.service;
+package ru.smclabs.bootstrap.gui.core;
 
-import lombok.Getter;
 import ru.smclabs.bootstrap.Bootstrap;
-import ru.smclabs.bootstrap.environment.GuiEnvironment;
-import ru.smclabs.bootstrap.service.gui.ThemeManager;
-import ru.smclabs.bootstrap.service.gui.component.FrameDragListener;
-import ru.smclabs.bootstrap.service.gui.panel.PanelBackground;
-import ru.smclabs.bootstrap.util.LocalResourceHelper;
+import ru.smclabs.bootstrap.gui.environment.GuiEnvironment;
+import ru.smclabs.bootstrap.gui.listener.FrameDragListener;
+import ru.smclabs.bootstrap.gui.panel.PanelBackground;
+import ru.smclabs.bootstrap.util.resources.ResourcesHelper;
 
 import javax.swing.*;
 import java.awt.*;
 import java.lang.reflect.Field;
 
-@Getter
 public class GuiService extends AbstractService {
-
-    private final ThemeManager themeManager;
     private final JFrame frame;
+    private final ThemeManager themeManager;
     private final PanelBackground panelBackground;
 
     public GuiService(Bootstrap bootstrap) {
         super(bootstrap);
-        themeManager = new ThemeManager();
         frame = createFrame();
-        frame.setContentPane(panelBackground = new PanelBackground(this));
+        themeManager = new ThemeManager();
+        panelBackground = new PanelBackground(this);
+    }
+
+    public void postInit() {
+        frame.setContentPane(panelBackground);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+
+    public JFrame getFrame() {
+        return frame;
+    }
+
+    public ThemeManager getThemeManager() {
+        return themeManager;
+    }
+
+    public PanelBackground getPanelBackground() {
+        return panelBackground;
     }
 
     private JFrame createFrame() {
@@ -40,7 +55,7 @@ public class GuiService extends AbstractService {
         frame.setTitle(guiEnvironment.getFrameTitle());
         frame.setName(guiEnvironment.getFrameTitle());
         frame.setPreferredSize(new Dimension(guiEnvironment.getFrameWidth(), guiEnvironment.getFrameHeight()));
-        frame.setIconImage(LocalResourceHelper.loadScaledImage("/assets/icons/512.png", 128, 128));
+        frame.setIconImage(ResourcesHelper.loadScaledImage("/assets/icons/512.png", 128, 128));
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setUndecorated(true);
         frame.setResizable(false);
@@ -51,11 +66,5 @@ public class GuiService extends AbstractService {
         frame.addMouseMotionListener(dragListener);
 
         return frame;
-    }
-
-    public void postInit() {
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
     }
 }

@@ -1,6 +1,4 @@
-package ru.smclabs.bootstrap.util;
-
-import ru.smclabs.bootstrap.util.resource.LocalResourceException;
+package ru.smclabs.bootstrap.util.resources;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -8,10 +6,9 @@ import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.net.URL;
 
-public class LocalResourceHelper {
-
+public class ResourcesHelper {
     public static URL toUrl(String path) throws LocalResourceException {
-        URL url = LocalResourceHelper.class.getResource(path);
+        URL url = ResourcesHelper.class.getResource(path);
         if (url == null) throw new LocalResourceException("Resource not found: " + path);
         return url;
     }
@@ -23,7 +20,7 @@ public class LocalResourceHelper {
     private static BufferedImage loadBufferedImage(String path) throws LocalResourceException {
         try {
             return ImageIO.read(toUrl(path));
-        } catch (Throwable e) {
+        } catch (Exception e) {
             throw new LocalResourceException("Failed to load local image!", e);
         }
     }
@@ -33,24 +30,36 @@ public class LocalResourceHelper {
     }
 
     public static Font loadFont(String name, float size) {
+        Font font;
+        try {
+            font = readFont(name, size);
+        } catch (Exception e) {
+            font = findFont(name, size);
+        }
+
+        if (font == null) {
+            font = new Font(null, Font.PLAIN, (int) size);
+        }
+
+        return font;
+    }
+
+    private static Font readFont(String name, float size) throws Exception {
         try (InputStream inputStream = toUrl("/assets/fonts/" + name + ".ttf").openStream()) {
-            return Font.createFont(0, inputStream).deriveFont(size);
-        } catch (Throwable e) {
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            Font[] fonts = ge.getAllFonts();
+            return Font.createFont(Font.TRUETYPE_FONT, inputStream).deriveFont(size);
+        }
+    }
 
-            for (Font font : fonts) {
-                if (font.getName().equals(name)) {
-                    return font.deriveFont(size);
-                }
-            }
+    private static Font findFont(String name, float size) {
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        Font[] fonts = ge.getAllFonts();
 
-            for (Font font : fonts) {
-                if (font.getName().startsWith(name)) return font.deriveFont(size);
+        for (Font font : fonts) {
+            if (font.getName().equals(name) || font.getName().startsWith(name)) {
+                return font.deriveFont(size);
             }
         }
 
-        return new Font(null, Font.PLAIN, (int) size);
+        return null;
     }
-
 }

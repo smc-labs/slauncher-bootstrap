@@ -1,14 +1,13 @@
-package ru.smclabs.bootstrap.service.gui.component.widget;
+package ru.smclabs.bootstrap.gui.widget;
 
-import ru.smclabs.bootstrap.service.gui.ThemeManager;
-import ru.smclabs.bootstrap.service.gui.panel.PanelUpdate;
-import ru.smclabs.bootstrap.util.LocalResourceHelper;
+import ru.smclabs.bootstrap.gui.core.ThemeManager;
+import ru.smclabs.bootstrap.gui.panel.PanelUpdate;
+import ru.smclabs.bootstrap.util.resources.ResourcesHelper;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class FileDownloading extends JComponent {
-
     private final ThemeManager themeManager;
     private final Font labelFont;
     private final Image[] images;
@@ -19,18 +18,25 @@ public class FileDownloading extends JComponent {
 
     public FileDownloading(ThemeManager themeManager, PanelUpdate parent) {
         this.themeManager = themeManager;
-        labelFont = LocalResourceHelper.loadFont("GolosText-Regular", 14);
+        labelFont = ResourcesHelper.loadFont("GolosText-Regular", 14);
         images = loadImages();
         setBounds(0, parent.getHeight() - 74 - 24 - PanelUpdate.VERTICAL_GAP, parent.getWidth(), 74);
         setVisible(false);
     }
 
-    private Image[] loadImages() {
-        return new Image[]{
-                themeManager.getImage("icons", "file", 18, 18),
-                themeManager.getImage("icons", "time", 18, 18),
-                themeManager.getImage("icons", "speed", 18, 18)
-        };
+    public void setFileName(String value) {
+        fileName = value;
+        repaint();
+    }
+
+    public void setTimeRemain(String value) {
+        timeRemain = value;
+        repaint();
+    }
+
+    public void setSpeed(String value) {
+        speed = value;
+        repaint();
     }
 
     @Override
@@ -55,18 +61,11 @@ public class FileDownloading extends JComponent {
         g2d.drawImage(icon, labelPosX, posY, imageWidth, imageHeight, this);
     }
 
-    public void setFileName(String value) {
-        fileName = value;
-        repaint();
-    }
-
-    public void setTimeRemain(String value) {
-        timeRemain = value;
-        repaint();
-    }
-
-    public void setSpeed(String value) {
-        speed = value;
-        repaint();
+    private Image[] loadImages() {
+        return new Image[]{
+                themeManager.getImage("icons", "file", 18, 18),
+                themeManager.getImage("icons", "time", 18, 18),
+                themeManager.getImage("icons", "speed", 18, 18)
+        };
     }
 }

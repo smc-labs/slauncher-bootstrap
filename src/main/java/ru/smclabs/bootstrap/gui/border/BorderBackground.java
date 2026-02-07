@@ -1,6 +1,6 @@
-package ru.smclabs.bootstrap.service.gui.component;
+package ru.smclabs.bootstrap.gui.border;
 
-import ru.smclabs.bootstrap.service.gui.ThemeManager;
+import ru.smclabs.bootstrap.gui.core.ThemeManager;
 
 import javax.swing.border.AbstractBorder;
 import java.awt.*;
@@ -8,7 +8,6 @@ import java.awt.geom.Area;
 import java.awt.geom.RoundRectangle2D;
 
 public class BorderBackground extends AbstractBorder {
-
     private final Insets insets;
     private final BasicStroke stroke;
     private final RenderingHints hints;

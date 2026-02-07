@@ -1,4 +1,4 @@
-package ru.smclabs.bootstrap.util.resource;
+package ru.smclabs.bootstrap.util.resources;
 
 public class LocalResourceException extends RuntimeException {
 

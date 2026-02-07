@@ -1,7 +1,7 @@
-package ru.smclabs.bootstrap.service.gui.component.widget;
+package ru.smclabs.bootstrap.gui.widget;
 
-import ru.smclabs.bootstrap.service.gui.ThemeManager;
-import ru.smclabs.bootstrap.service.gui.panel.PanelUpdate;
+import ru.smclabs.bootstrap.gui.core.ThemeManager;
+import ru.smclabs.bootstrap.gui.panel.PanelUpdate;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,6 +34,21 @@ public class ProgressBar extends JComponent {
         }
     }
 
+    @Override
+    protected void paintComponent(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g.create();
+        Rectangle bounds = getBounds();
+        drawBackground(g2d, bounds);
+
+        if (bounceMode) {
+            drawBounce(g2d, bounds);
+        } else {
+            drawProgress(g2d, bounds);
+        }
+
+        g2d.dispose();
+    }
+
     private void startBounce() {
         if (bounceMode) return;
         bounceMode = true;
@@ -62,21 +77,6 @@ public class ProgressBar extends JComponent {
             bounceTimer.stop();
             bounceTimer = null;
         }
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g.create();
-        Rectangle bounds = getBounds();
-        drawBackground(g2d, bounds);
-
-        if (bounceMode) {
-            drawBounce(g2d, bounds);
-        } else {
-            drawProgress(g2d, bounds);
-        }
-
-        g2d.dispose();
     }
 
     private void drawBackground(Graphics2D g2d, Rectangle bounds) {

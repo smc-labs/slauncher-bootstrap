@@ -1,6 +1,6 @@
 package ru.smclabs.bootstrap.service.resource.download;
 
-import ru.smclabs.bootstrap.service.gui.panel.PanelUpdate;
+import ru.smclabs.bootstrap.gui.panel.PanelUpdate;
 import ru.smclabs.bootstrap.util.TimeUtils;
 import ru.smclabs.slauncher.resources.util.FileUtils;
 

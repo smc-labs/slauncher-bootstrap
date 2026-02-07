@@ -3,8 +3,9 @@ package ru.smclabs.bootstrap.service.resource;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.Getter;
 import ru.smclabs.bootstrap.Bootstrap;
+import ru.smclabs.bootstrap.http.reqeust.FetchResourcesRequest;
 import ru.smclabs.bootstrap.service.ResourcesService;
-import ru.smclabs.bootstrap.service.gui.panel.PanelUpdate;
+import ru.smclabs.bootstrap.gui.panel.PanelUpdate;
 import ru.smclabs.bootstrap.service.launcher.ProcessManager;
 import ru.smclabs.bootstrap.service.launcher.exception.LauncherProcessFailedException;
 import ru.smclabs.bootstrap.service.launcher.exception.LauncherServiceException;
@@ -20,16 +21,15 @@ import ru.smclabs.bootstrap.util.report.BootstrapReportProvider;
 import ru.smclabs.slauncher.http.HttpService;
 import ru.smclabs.slauncher.http.exception.HttpServiceException;
 import ru.smclabs.slauncher.http.request.HttpRequest;
+import ru.smclabs.slauncher.resources.compressed.resource.ResourceCompressed;
+import ru.smclabs.slauncher.resources.compressed.resource.ResourceCompressedRuntime;
 import ru.smclabs.slauncher.resources.exception.ResourceException;
-import ru.smclabs.slauncher.resources.type.ResourceCompressed;
-import ru.smclabs.slauncher.resources.type.ResourceCompressedRuntime;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class ResourcesUpdateTask {
-
     private final BootstrapResourcesFactory factory = new BootstrapResourcesFactory();
     private final @Getter PanelUpdate panelUpdate;
     private final ResourcesService service;
@@ -124,12 +124,9 @@ public class ResourcesUpdateTask {
     }
 
     private BootstrapResourceList fetchResourceList() throws HttpServiceException, JsonProcessingException {
-        HttpRequest<HttpService, BootstrapResourceList> request = new HttpRequest<>(Bootstrap.getInstance().getHttpService(),
-                "GET",
-                "application/json",
-                "%slauncher-backend%/bootstrap");
+        FetchResourcesRequest resourcesRequest = new FetchResourcesRequest();
 
-        return request.execute(BootstrapResourceList.class);
+        return resourcesRequest.execute(BootstrapResourceList.class);
     }
 
     private void removeOldLauncherVersions(ResourceCompressedRuntime runtime, ResourceLauncher launcher) throws InterruptedException {

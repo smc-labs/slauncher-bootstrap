@@ -1,15 +1,14 @@
-package ru.smclabs.bootstrap.service.gui.panel;
+package ru.smclabs.bootstrap.gui.panel;
 
 import lombok.Getter;
-import ru.smclabs.bootstrap.service.GuiService;
-import ru.smclabs.bootstrap.service.gui.component.BorderBackground;
-import ru.smclabs.bootstrap.util.LocalResourceHelper;
+import ru.smclabs.bootstrap.gui.core.GuiService;
+import ru.smclabs.bootstrap.gui.border.BorderBackground;
+import ru.smclabs.bootstrap.util.resources.ResourcesHelper;
 
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 
-public class PanelBackground extends AbstractPanel {
-
+public class PanelBackground extends Panel {
     public static final int PADDING_X = 34;
     public static final int PADDING_Y = 28;
 
@@ -21,7 +20,7 @@ public class PanelBackground extends AbstractPanel {
 
     public PanelBackground(GuiService guiService) {
         super(guiService);
-        imageLogo = LocalResourceHelper.loadScaledImage("/assets/icons/512.png", LOGO_WIDTH, LOGO_HEIGHT);
+        imageLogo = ResourcesHelper.loadScaledImage("/assets/icons/512.png", LOGO_WIDTH, LOGO_HEIGHT);
 
         setLayout(null);
         setBackground(null);

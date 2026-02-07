@@ -10,10 +10,10 @@ import ru.smclabs.slauncher.http.HttpService;
 import ru.smclabs.slauncher.http.environment.HttpEnvironment;
 import ru.smclabs.slauncher.http.exception.HttpClientException;
 import ru.smclabs.slauncher.http.exception.HttpServiceException;
+import ru.smclabs.slauncher.logger.Logger;
 import ru.smclabs.slauncher.resources.exception.ResourceException;
 import ru.smclabs.slauncher.resources.type.Resource;
 import ru.smclabs.slauncher.resources.util.FileUtils;
-import ru.smclabs.slauncher.util.logger.ILogger;
 
 import javax.net.ssl.SSLException;
 import java.io.BufferedInputStream;
@@ -24,10 +24,8 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 
 public class ResourceDownloadTask {
-
     private final @Getter Resource resource;
     private final Path tempPath;
 
@@ -78,15 +76,14 @@ public class ResourceDownloadTask {
 
     private void downloadWithRetry(boolean append) throws ResourceWriteException, InterruptedException {
         HttpService httpService = Bootstrap.getInstance().getHttpService();
-
         try {
             download(append);
         } catch (ResourceServerException | HttpClientException e) {
             HttpEnvironment environment = httpService.getEnvironment();
-            ILogger logger = httpService.getLogger();
 
-            logger.warn("Failed to send request to " + resource.getUrl() + "! (zone: ."
-                    + environment.getZone() + ", protocol: " + environment.getProtocol() + ")");
+            Logger logger = httpService.getLogger();
+            logger.warn("Failed to send request to " + resource.getUrl() + "! " +
+                    "(zone: ." + environment.getZone() + ", protocol: " + environment.getProtocol() + ")");
 
             logger.info("Search working zone...");
 

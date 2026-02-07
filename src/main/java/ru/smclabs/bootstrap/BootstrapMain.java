@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 public class BootstrapMain {
 
     public static void main(String[] args) {
-        System.out.println("Launcher is started");
+        BootstrapContext context = new BootstrapContext();
 
         if (switchToSystemRuntime()) {
             System.exit(0);
@@ -16,22 +16,18 @@ public class BootstrapMain {
         }
 
         try {
-            Bootstrap bootstrap = new Bootstrap();
-            createShutdownHook(bootstrap);
+            Bootstrap bootstrap = new Bootstrap(context);
+            bootstrap.createShutdownHook();
             bootstrap.start();
-        } catch (Throwable e) {
+        } catch (Exception e) {
             Bootstrap.getReportProvider().send("Bootstrap starting", e);
         }
     }
 
-    private static void createShutdownHook(Bootstrap bootstrap) {
-        Thread thread = new Thread(bootstrap::stop);
-        thread.setName("ShutdownHook Thread");
-        Runtime.getRuntime().addShutdownHook(thread);
-    }
-
     private static boolean switchToSystemRuntime() {
-        if (RuntimeUtils.isExecutableFileExtension("jar")) return false;
+        if (RuntimeUtils.isExecutableFileExtension("jar")) {
+            return false;
+        }
 
         if (RuntimeUtils.isStartedByWrongPackagedJre()) {
             ProcessBuilder processBuilder = new ProcessBuilder();

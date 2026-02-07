@@ -9,7 +9,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class RuntimeUtils {
-
     public static Path getWorkingDir() {
         return Paths.get(System.getProperty("user.dir"));
     }

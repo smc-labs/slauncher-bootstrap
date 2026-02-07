@@ -1,10 +1,9 @@
-package ru.smclabs.bootstrap.service.gui;
+package ru.smclabs.bootstrap.gui.core;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.jthemedetecor.OsThemeDetector;
-import lombok.Getter;
 import ru.smclabs.bootstrap.Bootstrap;
-import ru.smclabs.bootstrap.util.LocalResourceHelper;
+import ru.smclabs.bootstrap.util.resources.ResourcesHelper;
 import ru.smclabs.jacksonpack.Jackson;
 
 import java.awt.*;
@@ -17,8 +16,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class ThemeManager {
-
-    private final @Getter boolean dark;
+    private final boolean dark;
     private final Map<String, Color> colors = new HashMap<>();
 
     public ThemeManager() {
@@ -31,8 +29,8 @@ public class ThemeManager {
         registerColor("progress-bar-track", Color.decode("#A2BE06"), Color.decode("#A2BE06"));
     }
 
-    private void registerColor(String type, Color lightDark, Color darkColor) {
-        colors.put(type, dark ? darkColor : lightDark);
+    public boolean isDark() {
+        return dark;
     }
 
     public Color getColor(String type) {
@@ -41,8 +39,12 @@ public class ThemeManager {
     }
 
     public Image getImage(String type, String name, int width, int height) {
-        return LocalResourceHelper.loadScaledImage("/assets/" + type + "/" + name
+        return ResourcesHelper.loadScaledImage("/assets/" + type + "/" + name
                 + "-" + (dark ? "dark" : "light") + ".png", width, height);
+    }
+
+    private void registerColor(String type, Color lightDark, Color darkColor) {
+        colors.put(type, dark ? darkColor : lightDark);
     }
 
     private boolean isDarkTheme() {
@@ -79,5 +81,4 @@ public class ThemeManager {
             return null;
         }
     }
-
 }
