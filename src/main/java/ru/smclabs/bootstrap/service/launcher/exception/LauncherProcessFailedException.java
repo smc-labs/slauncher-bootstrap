@@ -1,12 +1,8 @@
 package ru.smclabs.bootstrap.service.launcher.exception;
 
-import lombok.Getter;
-
 import java.io.IOException;
 
-@Getter
 public class LauncherProcessFailedException extends LauncherServiceException {
-
     private final String processOutput;
 
     public LauncherProcessFailedException(String processOutput) {
@@ -17,5 +13,9 @@ public class LauncherProcessFailedException extends LauncherServiceException {
     public LauncherProcessFailedException(IOException exception, String processOutput) {
         super(exception);
         this.processOutput = processOutput;
+    }
+
+    public String getProcessOutput() {
+        return processOutput;
     }
 }

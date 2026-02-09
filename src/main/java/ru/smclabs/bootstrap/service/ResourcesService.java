@@ -1,13 +1,12 @@
 package ru.smclabs.bootstrap.service;
 
-import ru.smclabs.bootstrap.Bootstrap;
+import ru.smclabs.bootstrap.core.app.Bootstrap;
 import ru.smclabs.bootstrap.service.resource.ResourcesUpdateTask;
 import ru.smclabs.slauncher.resources.exception.ResourceException;
 
 import java.util.concurrent.locks.ReentrantLock;
 
 public class ResourcesService extends AbstractService {
-
     public ResourcesService(Bootstrap bootstrap) {
         super(bootstrap);
         lock = new ReentrantLock();

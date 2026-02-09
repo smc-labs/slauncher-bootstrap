@@ -1,6 +1,6 @@
 package ru.smclabs.bootstrap.gui.widget;
 
-import ru.smclabs.bootstrap.Bootstrap;
+import ru.smclabs.bootstrap.core.app.Bootstrap;
 import ru.smclabs.bootstrap.gui.core.ThemeManager;
 import ru.smclabs.bootstrap.util.resources.ResourcesHelper;
 

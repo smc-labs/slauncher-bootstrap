@@ -2,8 +2,8 @@ package ru.smclabs.bootstrap.service.resource;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.Getter;
-import ru.smclabs.bootstrap.Bootstrap;
-import ru.smclabs.bootstrap.http.reqeust.FetchResourcesRequest;
+import ru.smclabs.bootstrap.core.app.Bootstrap;
+import ru.smclabs.bootstrap.resources.reqeust.FetchResourcesRequest;
 import ru.smclabs.bootstrap.service.ResourcesService;
 import ru.smclabs.bootstrap.gui.panel.PanelUpdate;
 import ru.smclabs.bootstrap.service.launcher.ProcessManager;
@@ -17,10 +17,8 @@ import ru.smclabs.bootstrap.service.resource.dto.BootstrapResourceList;
 import ru.smclabs.bootstrap.service.resource.exception.ResourceServerException;
 import ru.smclabs.bootstrap.service.resource.exception.ResourceWriteException;
 import ru.smclabs.bootstrap.service.resource.type.ResourceLauncher;
-import ru.smclabs.bootstrap.util.report.BootstrapReportProvider;
-import ru.smclabs.slauncher.http.HttpService;
+import ru.smclabs.bootstrap.report.BootstrapReportProvider;
 import ru.smclabs.slauncher.http.exception.HttpServiceException;
-import ru.smclabs.slauncher.http.request.HttpRequest;
 import ru.smclabs.slauncher.resources.compressed.resource.ResourceCompressed;
 import ru.smclabs.slauncher.resources.compressed.resource.ResourceCompressedRuntime;
 import ru.smclabs.slauncher.resources.exception.ResourceException;
@@ -70,20 +68,20 @@ public class ResourcesUpdateTask {
         try {
             run();
         } catch (LauncherProcessFailedException e) {
-            BootstrapReportProvider reportProvider = Bootstrap.getReportProvider();
-            String reportPayload = reportProvider.createReport(e)
+            String reportPayload = BootstrapReportProvider.INSTANCE.createReport(e)
                     + "\n\nLauncher process output:\n"
                     + e.getProcessOutput();
 
-            reportProvider.send("Launcher process startup", reportPayload);
+            //reportProvider.send("Launcher process startup", reportPayload);
 
             panelUpdate.setLabelTitle("Что-то пошло не так");
             panelUpdate.setLabelSubTitle("не удалось запустить лаунчер");
             retryUpdate();
-        } catch (HttpServiceException | JsonProcessingException | ResourceWriteException |
-                 ResourceServerException | LauncherServiceException | ResourceException e) {
-
-            Bootstrap.getReportProvider().send("Bootstrap update process", e);
+        } catch (
+                HttpServiceException | JsonProcessingException | ResourceWriteException |
+                ResourceServerException | LauncherServiceException | ResourceException e
+        ) {
+            //Bootstrap.getReportProvider().send("Bootstrap update process", e);
             panelUpdate.setLabelTitle("Что-то пошло не так");
             panelUpdate.setLabelSubTitle("не удалось обновить лаунчер");
             retryUpdate();

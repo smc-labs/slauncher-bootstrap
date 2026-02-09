@@ -1,6 +1,6 @@
 package ru.smclabs.bootstrap.service.resource.type;
 
-import ru.smclabs.bootstrap.Bootstrap;
+import ru.smclabs.bootstrap.core.app.Bootstrap;
 import ru.smclabs.slauncher.model.resource.ResourceModel;
 import ru.smclabs.slauncher.resources.factory.ResourcesFactory;
 import ru.smclabs.slauncher.resources.type.Resource;

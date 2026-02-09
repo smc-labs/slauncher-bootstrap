@@ -1,7 +1,7 @@
 package ru.smclabs.bootstrap.service;
 
 import lombok.Getter;
-import ru.smclabs.bootstrap.Bootstrap;
+import ru.smclabs.bootstrap.core.app.Bootstrap;
 import ru.smclabs.bootstrap.service.launcher.ProcessManager;
 
 @Getter

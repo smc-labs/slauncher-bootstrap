@@ -1,6 +1,6 @@
 package ru.smclabs.bootstrap.service.launcher.process;
 
-import ru.smclabs.bootstrap.Bootstrap;
+import ru.smclabs.bootstrap.core.app.Bootstrap;
 import ru.smclabs.bootstrap.service.launcher.exception.LauncherProcessFailedException;
 import ru.smclabs.bootstrap.service.resource.ResourcesUpdateTask;
 

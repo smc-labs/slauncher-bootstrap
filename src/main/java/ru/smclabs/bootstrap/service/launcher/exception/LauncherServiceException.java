@@ -1,7 +1,6 @@
 package ru.smclabs.bootstrap.service.launcher.exception;
 
 public class LauncherServiceException extends RuntimeException {
-
     public LauncherServiceException(String message) {
         super(message);
     }
@@ -13,5 +12,4 @@ public class LauncherServiceException extends RuntimeException {
     public LauncherServiceException(Throwable cause) {
         super(cause);
     }
-
 }

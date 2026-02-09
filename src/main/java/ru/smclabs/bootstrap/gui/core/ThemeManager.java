@@ -2,7 +2,7 @@ package ru.smclabs.bootstrap.gui.core;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.jthemedetecor.OsThemeDetector;
-import ru.smclabs.bootstrap.Bootstrap;
+import ru.smclabs.bootstrap.core.app.Bootstrap;
 import ru.smclabs.bootstrap.util.resources.ResourcesHelper;
 import ru.smclabs.jacksonpack.Jackson;
 
@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class ThemeManager {
+    private final Bootstrap bootstrap;
     private final boolean dark;
     private final Map<String, Color> colors = new HashMap<>();
 

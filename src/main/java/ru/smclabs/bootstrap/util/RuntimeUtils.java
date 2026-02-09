@@ -1,6 +1,6 @@
 package ru.smclabs.bootstrap.util;
 
-import ru.smclabs.bootstrap.BootstrapMain;
+import ru.smclabs.bootstrap.core.entrypoint.BootstrapMain;
 import ru.smclabs.system.info.SystemInfo;
 
 import java.net.URISyntaxException;

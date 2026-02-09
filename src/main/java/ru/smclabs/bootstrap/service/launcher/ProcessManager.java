@@ -1,6 +1,6 @@
 package ru.smclabs.bootstrap.service.launcher;
 
-import ru.smclabs.bootstrap.Bootstrap;
+import ru.smclabs.bootstrap.core.app.Bootstrap;
 import ru.smclabs.bootstrap.service.launcher.exception.LauncherServiceException;
 import ru.smclabs.bootstrap.service.launcher.process.LauncherProcess;
 import ru.smclabs.bootstrap.service.resource.type.ResourceLauncher;
@@ -36,7 +36,10 @@ public class ProcessManager {
         DirProvider dirProvider = Bootstrap.getInstance().getDirProvider();
 
         LauncherProcess launcherProcess = new LauncherProcess(dirProvider, executableBinary);
-        launcherProcess.addParam("-cp").addParam(launcherPath.toUri().getPath()).addParam("ru.smclabs.slauncher.SLauncherMain");
+        launcherProcess.addParam("-cp")
+                .addParam(launcherPath.toUri().getPath())
+                .addParam("ru.smclabs.slauncher.SLauncherMain");
+
         launcherProcess.start(dirProvider);
 
         processes.add(launcherProcess);

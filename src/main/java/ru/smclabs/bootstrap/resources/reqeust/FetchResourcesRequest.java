@@ -1,23 +1,23 @@
-package ru.smclabs.bootstrap.http.reqeust;
+package ru.smclabs.bootstrap.resources.reqeust;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import ru.smclabs.bootstrap.Bootstrap;
+import ru.smclabs.bootstrap.resources.dto.BootstrapResources;
 import ru.smclabs.bootstrap.service.resource.dto.BootstrapResourceList;
 import ru.smclabs.slauncher.http.HttpService;
 import ru.smclabs.slauncher.http.exception.HttpServiceException;
 import ru.smclabs.slauncher.http.request.HttpRequest;
 
-public class FetchResourcesRequest extends HttpRequest<HttpService, BootstrapResourceList> {
-    public FetchResourcesRequest() {
+public class FetchResourcesRequest extends HttpRequest<HttpService, BootstrapResources> {
+    public FetchResourcesRequest(HttpService httpService) {
         super(
-                Bootstrap.getInstance().getHttpService(),
+                httpService,
                 "GET",
                 "application/json",
                 "%slauncher-backend%/bootstrap"
         );
     }
 
-    public BootstrapResourceList execute() throws HttpServiceException, JsonProcessingException {
-        return execute(BootstrapResourceList.class);
+    public BootstrapResources execute() throws HttpServiceException, JsonProcessingException {
+        return execute(BootstrapResources.class);
     }
 }

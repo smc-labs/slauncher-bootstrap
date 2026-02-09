@@ -1,15 +1,15 @@
 package ru.smclabs.bootstrap.service.resource;
 
 import ru.smclabs.bootstrap.service.resource.download.ResourceDownloadTask;
-import ru.smclabs.slauncher.resources.collection.ResourcesList;
 import ru.smclabs.slauncher.resources.type.Resource;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ResourcesBuild {
-    private final ResourcesList<Resource> resources = new ResourcesList<>();
+    private final List<Resource> resources = new ArrayList<>();
 
     public void sort() {
         resources.sort(

@@ -1,6 +1,6 @@
 package ru.smclabs.bootstrap.gui.panel;
 
-import ru.smclabs.bootstrap.Bootstrap;
+import ru.smclabs.bootstrap.core.app.Bootstrap;
 import ru.smclabs.bootstrap.gui.core.GuiService;
 import ru.smclabs.bootstrap.gui.widget.FileDownloading;
 import ru.smclabs.bootstrap.gui.widget.ProgressBar;

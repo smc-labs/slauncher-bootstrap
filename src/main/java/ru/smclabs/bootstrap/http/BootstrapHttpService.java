@@ -1,6 +1,6 @@
 package ru.smclabs.bootstrap.http;
 
-import ru.smclabs.bootstrap.Bootstrap;
+import ru.smclabs.bootstrap.core.app.Bootstrap;
 import ru.smclabs.slauncher.http.HttpService;
 
 public class BootstrapHttpService extends HttpService {

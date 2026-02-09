@@ -1,5 +1,6 @@
-package ru.smclabs.bootstrap;
+package ru.smclabs.bootstrap.core.context;
 
+import org.jetbrains.annotations.NotNullByDefault;
 import ru.smclabs.slauncher.logger.Logger;
 import ru.smclabs.slauncher.logger.LoggerFactory;
 import ru.smclabs.slauncher.resources.provider.DirProvider;
@@ -7,6 +8,7 @@ import ru.smclabs.slauncher.resources.provider.DirProvider;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+@NotNullByDefault
 public class BootstrapContext {
     private final Path workingDir;
     private final DirProvider dirProvider;

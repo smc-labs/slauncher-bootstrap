@@ -2,7 +2,7 @@ package ru.smclabs.bootstrap.service.resource.download;
 
 import lombok.Getter;
 import lombok.Setter;
-import ru.smclabs.bootstrap.Bootstrap;
+import ru.smclabs.bootstrap.core.app.Bootstrap;
 import ru.smclabs.bootstrap.service.resource.exception.ResourceNotCompleteException;
 import ru.smclabs.bootstrap.service.resource.exception.ResourceServerException;
 import ru.smclabs.bootstrap.service.resource.exception.ResourceWriteException;
