@@ -131,7 +131,7 @@ tasks.register("appImageBuild", Exec) {
 tasks.register("packageApp", Exec) {
     dependsOn(tasks.named("appImagePrepare"))
 
-    def os = System.getProperty("os.name").toLowerCase()
+    def osName = System.getProperty("os.name").toLowerCase()
     def outputDir = layout.buildDirectory.dir("installer").get().asFile
     def jarFile = tasks.named("jar").get().archiveFile.get().asFile
     def inputDir = layout.buildDirectory.dir("app-image").get().asFile
