@@ -150,9 +150,9 @@ tasks.register("packageDmg", Exec) {
 
     doLast {
         println("Removing quarantine for dev/debug...")
-        project.exec {
-            commandLine("xattr", "-dr", "com.apple.quarantine", new File(outputDir, "bootstrap.app"))
-        }
+        def appFile = new File(outputDir, "bootstrap.app")
+        def process = ["xattr", "-dr", "com.apple.quarantine", appFile.absolutePath].execute()
+        process.waitFor()
     }
 }
 
