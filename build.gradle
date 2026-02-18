@@ -128,32 +128,35 @@ tasks.register("appImageBuild", Exec) {
     }
 }
 
-tasks.register("packageApp", Exec) {
+tasks.register("packageDmg", Exec) {
     dependsOn(tasks.named("appImagePrepare"))
 
-    def outputDir = layout.buildDirectory.dir("installer").get().asFile
-    def jarFile = tasks.named("jar").get().archiveFile.get().asFile
-    outputDir.mkdirs()
+    doFirst {
+        def outputDir = layout.buildDirectory.dir("installer").get().asFile
+        def appImageDir = layout.buildDirectory.dir("app-image").get().asFile.absolutePath
+        def jarFile = tasks.named("jar").get().archiveFile.get().asFile
+        outputDir.mkdirs()
 
-    commandLine(
-            "jpackage",
-            "--type", "dmg",
-            "--name", "bootstrap",
-            "--app-version", project.version,
-            "--vendor", "SMC Labs, Inc.",
-            "--input", layout.buildDirectory.dir("app-image").get().asFile,
-            "--main-jar", jarFile.name,
-            "--main-class", application.mainClass.get(),
-            "--dest", outputDir,
-            "--icon", "icons/icon.icns",
-            "--no-sign",
-            "--no-notarize"
-    )
+        commandLine(
+                "jpackage",
+                "--type", "dmg",
+                "--name", "SimpleMinecraft",
+                "--app-version", project.version,
+                "--vendor", "SMC Labs, Inc.",
+                "--input", appImageDir,
+                "--main-jar", jarFile.name,
+                "--main-class", application.mainClass.get(),
+                "--dest", outputDir.absolutePath,
+                "--icon", "icons/icon.icns",
+                "--no-sign",
+                "--no-notarize"
+        )
+    }
 
     doLast {
         println("Removing quarantine for dev/debug...")
         project.exec {
-            commandLine("xattr", "-dr", "com.apple.quarantine", new File(outputDir, "bootstrap.app"))
+            commandLine("xattr", "-dr", "com.apple.quarantine", new File(layout.buildDirectory.dir("installer").get().asFile, "bootstrap.app"))
         }
     }
 }
