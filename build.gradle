@@ -135,11 +135,14 @@ tasks.register("packageDmg", Exec) {
     def jarFile = tasks.named("jar").get().archiveFile.get().asFile
     outputDir.mkdirs()
 
+    def arch = System.getProperty("os.arch").contains("aarch64") ? 'arm64' : 'x64'
+    def dmgName = "simpleminecraft-installer-${project.version}-${arch}.dmg"
+
     commandLine(
             "jpackage",
             "--type", "dmg",
             "--name", "SimpleMinecraft",
-            "--app-version", project.version,
+            "--app-version", version,
             "--vendor", "SMC Labs, Inc.",
             "--input", layout.buildDirectory.dir("app-image").get().asFile,
             "--main-jar", jarFile.name,
@@ -153,6 +156,15 @@ tasks.register("packageDmg", Exec) {
         def appFile = new File(outputDir, "bootstrap.app")
         def process = ["xattr", "-dr", "com.apple.quarantine", appFile.absolutePath].execute()
         process.waitFor()
+
+        def originalDmg = new File(outputDir, "SimpleMinecraft-${project.version}.dmg")
+        def finalDmg = new File(outputDir, dmgName)
+        if (originalDmg.exists()) {
+            println("Renaming ${originalDmg.name} -> ${finalDmg.name}")
+            originalDmg.renameTo(finalDmg)
+        } else {
+            println("Warning: expected DMG not found: ${originalDmg.absolutePath}")
+        }
     }
 }
 
