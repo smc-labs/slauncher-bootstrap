@@ -10,9 +10,9 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-lastest
+          - os: macos-14
             arch: x64
-          - os: macos-lastest
+          - os: macos-14
             arch: aarch64
 
     runs-on: ${{ matrix.os }}
