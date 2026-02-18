@@ -127,3 +127,40 @@ tasks.register("appImageBuild", Exec) {
         println("App Image built successfully in ${layout.buildDirectory.dir("app-image").get().asFile}")
     }
 }
+
+tasks.register("packageApp", Exec) {
+    dependsOn(tasks.named("appImagePrepare"))
+
+    def os = OperatingSystem.current()
+    def outputDir = layout.buildDirectory.dir("installer").get().asFile
+    def jarFile = tasks.named("jar").get().archiveFile.get().asFile
+    def inputDir = layout.buildDirectory.dir("app-image").get().asFile
+
+    outputDir.mkdirs()
+
+    def packageType
+    def iconPath = null
+
+    if (os.isMacOsX()) {
+        packageType = "dmg"
+        iconPath = "icons/icon.icns"
+    } else if (os.isLinux()) {
+        packageType = "deb"
+        iconPath = "icons/icon.png"
+    } else {
+        throw new GradleException("Unsupported OS for packaging")
+    }
+
+    commandLine(
+            "jpackage",
+            "--type", packageType,
+            "--name", "bootstrap",
+            "--app-version", project.version,
+            "--vendor", "SMC Labs, Inc.",
+            "--input", inputDir,
+            "--main-jar", jarFile.name,
+            "--main-class", application.mainClass.get(),
+            "--dest", outputDir,
+            "--icon", iconPath
+    )
+}
