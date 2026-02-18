@@ -152,11 +152,6 @@ tasks.register("buildMacOsInstaller", Exec) {
     )
 
     doLast {
-        println("Removing quarantine for dev/debug...")
-        def appFile = new File(outputDir, "bootstrap.app")
-        def process = ["xattr", "-dr", "com.apple.quarantine", appFile.absolutePath].execute()
-        process.waitFor()
-
         def originalDmg = new File(outputDir, "SimpleMinecraft-${project.version}.dmg")
         def finalDmg = new File(outputDir, dmgName)
         if (originalDmg.exists()) {
