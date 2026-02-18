@@ -64,6 +64,10 @@ public class BootstrapResourcesFactory implements ResourcesFactory {
             }
         }
 
+        if (runtime == null) {
+            throw new IllegalStateException("No runtime found for " + os + "/" + arch);
+        }
+
         resources.add(runtime);
     }
 
