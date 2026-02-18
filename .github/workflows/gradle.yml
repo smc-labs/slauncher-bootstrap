@@ -22,16 +22,16 @@ jobs:
 
       - uses: actions/setup-java@v4
         with:
-          java-version: '25'
+          java-version: '17'
           distribution: 'temurin'
           architecture: ${{ matrix.arch }}
 
       - uses: gradle/actions/setup-gradle@v4
 
       - run: chmod +x gradlew
-      - run: ./gradlew packageApp --info --stacktrace
+      - run: ./gradlew packageDmg --info --stacktrace
 
       - uses: actions/upload-artifact@v4
         with:
-          name: bootstrap-macos-${{ matrix.arch }}
+          name: simpleminecraft-macos-${{ matrix.arch }}
           path: build/installer
