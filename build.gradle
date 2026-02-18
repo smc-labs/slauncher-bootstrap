@@ -147,9 +147,7 @@ tasks.register("packageDmg", Exec) {
                 "--main-jar", jarFile.name,
                 "--main-class", application.mainClass.get(),
                 "--dest", outputDir.absolutePath,
-                "--icon", "icons/icon.icns",
-                "--no-sign",
-                "--no-notarize"
+                "--icon", "icons/icon.icns"
         )
     }
 
