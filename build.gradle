@@ -135,27 +135,9 @@ tasks.register("packageApp", Exec) {
     def jarFile = tasks.named("jar").get().archiveFile.get().asFile
     outputDir.mkdirs()
 
-    // Определяем ОС
-    def osName = System.getProperty("os.name").toLowerCase()
-    def packageType
-    def iconPath = null
-
-    if (osName.contains("mac")) {
-        packageType = "dmg"
-        iconPath = "icons/icon.icns"
-    } else if (osName.contains("linux")) {
-        packageType = "deb"
-        iconPath = "icons/icon.png"
-    } else {
-        throw new GradleException("Unsupported OS for packaging")
-    }
-
-    def appOutputDir = new File(outputDir, "bootstrap.app")
-
-    // jpackage
     commandLine(
             "jpackage",
-            "--type", packageType,
+            "--type", "dmg",
             "--name", "bootstrap",
             "--app-version", project.version,
             "--vendor", "SMC Labs, Inc.",
@@ -163,20 +145,14 @@ tasks.register("packageApp", Exec) {
             "--main-jar", jarFile.name,
             "--main-class", application.mainClass.get(),
             "--dest", outputDir,
-            "--icon", iconPath
+            "--icon", "icons/icon.icns"
     )
 
     doLast {
-        if (osName.contains("mac")) {
-            println("Removing quarantine for dev/debug...")
-            exec {
-                commandLine("xattr", "-dr", "com.apple.quarantine", appOutputDir)
-            }
-
-            // Создаём лог запуска
-            def logFile = new File(outputDir, "bootstrap.log")
-            logFile.text = ""
-            println("To debug, you can run: ./bootstrap.app/Contents/MacOS/bootstrap &> bootstrap.log")
+        println("Removing quarantine for dev/debug...")
+        project.exec {
+            commandLine("xattr", "-dr", "com.apple.quarantine", new File(outputDir, "bootstrap.app"))
         }
     }
 }
+
