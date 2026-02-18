@@ -145,7 +145,9 @@ tasks.register("packageApp", Exec) {
             "--main-jar", jarFile.name,
             "--main-class", application.mainClass.get(),
             "--dest", outputDir,
-            "--icon", "icons/icon.icns"
+            "--icon", "icons/icon.icns",
+            "--no-sign",
+            "--no-notarize"
     )
 
     doLast {
