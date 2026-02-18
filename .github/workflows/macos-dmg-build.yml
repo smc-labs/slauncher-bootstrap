@@ -40,15 +40,9 @@ jobs:
         env:
           ARCH: ${{ matrix.arch }}
 
-      # 6. Получаем версию из Gradle
-      - name: Get project version
-        id: gradle_version
-        run: |
-          echo "PROJECT_VERSION=$(./gradlew -q printVersion)" >> $GITHUB_ENV
-
-      # 7. Загружаем DMG без ZIP
+      # 6. Загружаем DMG без ZIP
       - name: Upload DMG artifact
         uses: actions/upload-artifact@v4
         with:
           name: simpleminecraft-macos-${{ matrix.arch }}
-          path: build/installer/simpleminecraft-installer-${{ env.PROJECT_VERSION }}-${{ matrix.arch }}.dmg
+          path: build/installer/*.dmg
