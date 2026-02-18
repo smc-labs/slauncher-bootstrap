@@ -1,5 +1,6 @@
 package ru.smclabs.bootstrap.gui.border;
 
+import ru.smclabs.bootstrap.gui.core.GuiService;
 import ru.smclabs.bootstrap.gui.core.ThemeManager;
 
 import javax.swing.border.AbstractBorder;

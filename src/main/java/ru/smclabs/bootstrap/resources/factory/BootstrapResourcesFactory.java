@@ -2,12 +2,13 @@ package ru.smclabs.bootstrap.resources.factory;
 
 import ru.smclabs.bootstrap.resources.dto.BootstrapResources;
 import ru.smclabs.bootstrap.resources.model.LauncherResource;
-import ru.smclabs.bootstrap.service.resource.ResourcesBuild;
 import ru.smclabs.slauncher.model.resource.ResourceModel;
 import ru.smclabs.slauncher.resources.compressed.resource.ResourceCompressedRuntime;
 import ru.smclabs.slauncher.resources.factory.ResourcesFactory;
 import ru.smclabs.slauncher.resources.provider.DirProvider;
 import ru.smclabs.slauncher.resources.type.Resource;
+import ru.smclabs.system.info.arch.ArchType;
+import ru.smclabs.system.info.os.OsType;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,11 +26,11 @@ public class BootstrapResourcesFactory implements ResourcesFactory {
         runtimeDir = dirProvider.getPersistenceDir("runtime/bootstrap");
     }
 
-    public List<Resource> build(BootstrapResources dto) {
+    public ResourcesPack build(BootstrapResources dto) {
         List<Resource> resources = new ArrayList<>();
         buildRuntime(dto, resources);
         buildFiles(dto, resources);
-        return resources;
+        return new ResourcesPack(resources);
     }
 
     @Override
@@ -52,9 +53,18 @@ public class BootstrapResourcesFactory implements ResourcesFactory {
     }
 
     private void buildRuntime(BootstrapResources dto, List<Resource> resources) {
+        String os = OsType.current().id();
+        String arch = ArchType.current().id();
+        ResourceCompressedRuntime runtime = null;
+
         for (ResourceModel model : dto.getRuntime()) {
-            resources.add(new ResourceCompressedRuntime(this, model, "bootstrap"));
+            if (model.getName().contains(os) && model.getName().contains(arch)) {
+                runtime = new ResourceCompressedRuntime(this, model, "bootstrap");
+                break;
+            }
         }
+
+        resources.add(runtime);
     }
 
     private void buildFiles(BootstrapResources dto, List<Resource> resources) {

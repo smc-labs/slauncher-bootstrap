@@ -2,7 +2,6 @@ package ru.smclabs.bootstrap.resources.reqeust;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import ru.smclabs.bootstrap.resources.dto.BootstrapResources;
-import ru.smclabs.bootstrap.service.resource.dto.BootstrapResourceList;
 import ru.smclabs.slauncher.http.HttpService;
 import ru.smclabs.slauncher.http.exception.HttpServiceException;
 import ru.smclabs.slauncher.http.request.HttpRequest;

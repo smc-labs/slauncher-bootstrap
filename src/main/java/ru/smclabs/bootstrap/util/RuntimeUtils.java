@@ -1,7 +1,8 @@
 package ru.smclabs.bootstrap.util;
 
 import ru.smclabs.bootstrap.core.entrypoint.BootstrapMain;
-import ru.smclabs.system.info.SystemInfo;
+import ru.smclabs.system.info.arch.ArchType;
+import ru.smclabs.system.info.os.OsType;
 
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -14,11 +15,13 @@ public class RuntimeUtils {
     }
 
     public static boolean isStartedByWrongPackagedJre() {
-        return isStartedByPackagedJre() && SystemInfo.get().isX64() && !System.getProperty("os.arch").contains("64");
+        return isStartedByPackagedJre()
+                && ArchType.current().is64Bit()
+                && !System.getProperty("os.arch").contains("64");
     }
 
     public static boolean isStartedByPackagedJre() {
-        return SystemInfo.get().isWindows() && Files.exists(Paths.get(getWorkingDir() + "/runtime/"));
+        return OsType.current() == OsType.WINDOWS && Files.exists(Paths.get(getWorkingDir() + "/runtime/"));
     }
 
     public static Path getExecutableFilePath() throws URISyntaxException {

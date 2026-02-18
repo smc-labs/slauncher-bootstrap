@@ -1,8 +1,8 @@
 package ru.smclabs.bootstrap.core.context;
 
 import org.jetbrains.annotations.NotNullByDefault;
-import ru.smclabs.slauncher.logger.Logger;
-import ru.smclabs.slauncher.logger.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.smclabs.slauncher.resources.provider.DirProvider;
 
 import java.nio.file.Path;
@@ -12,12 +12,16 @@ import java.nio.file.Paths;
 public class BootstrapContext {
     private final Path workingDir;
     private final DirProvider dirProvider;
-    private final Logger logger;
 
     public BootstrapContext() {
         workingDir = Paths.get(System.getProperty("user.dir"));
         dirProvider = new DirProvider("SIMPLEMINECRAFT");
-        logger = LoggerFactory.create(dirProvider.getLogsDir(), "bootstrap");
+        initProperties();
+    }
+
+    private void initProperties() {
+        System.setProperty("slauncher.logDir", dirProvider.getLogsDir().toString());
+        System.setProperty("slauncher.logName", "bootstrap");
     }
 
     public Path getWorkingDir() {
@@ -26,9 +30,5 @@ public class BootstrapContext {
 
     public DirProvider getDirProvider() {
         return dirProvider;
-    }
-
-    public Logger getLogger() {
-        return logger;
     }
 }

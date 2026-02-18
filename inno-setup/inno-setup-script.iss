@@ -2,10 +2,10 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "SimpleMinecraft"
-#define MyAppVersion "1.2.6"
-#define MyAppPublisher "SimpleMinecraft, Inc."
+#define MyAppVersion "26.1.0"
+#define MyAppPublisher "SMC Labs, Inc."
 #define MyAppURL "https://simpleminecraft.ru"
-#define MyAppExeName "Bootstrap.exe"
+#define MyAppExeName "bootstrap.exe"
 #define OutputDir "F:\smc-labs\slauncher-bootstrap\inno-setup"
 
 [Setup]
@@ -25,10 +25,12 @@ DisableProgramGroupPage=yes
 ;PrivilegesRequired=lowest
 OutputDir={#OutputDir}
 OutputBaseFilename=simpleminecraft-installer-{#MyAppVersion}
-SetupIconFile={#OutputDir}\64.ico
+SetupIconFile={#OutputDir}\favicon.ico
 Compression=lzma
 SolidCompression=yes
-WizardStyle=modern
+WizardStyle=modern dynamic
+WizardSmallImageFile={#OutputDir}\wizard-small.bmp
+WizardImageAlphaFormat=defined
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -38,8 +40,8 @@ Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "F:\smc-labs\slauncher-bootstrap\build\launch4j\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "F:\smc-labs\slauncher-bootstrap\inno-setup\runtime\*"; DestDir: "{app}\runtime"; Flags: ignoreversion recursesubdirs createallsubdirs
+; Source: "F:\smc-labs\slauncher-bootstrap\build\launch4j\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\build\app-image\bootstrap\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

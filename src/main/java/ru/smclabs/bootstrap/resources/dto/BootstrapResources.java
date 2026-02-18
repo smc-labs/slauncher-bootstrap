@@ -14,8 +14,8 @@ public class BootstrapResources {
 
     @JsonCreator
     public BootstrapResources(
-            @JsonProperty List<ResourceModel> files,
-            @JsonProperty List<ResourceModel> runtime
+            @JsonProperty("files") List<ResourceModel> files,
+            @JsonProperty("runtime") List<ResourceModel> runtime
     ) {
         this.files = files;
         this.runtime = runtime;

@@ -13,10 +13,6 @@ public class ResourcesHelper {
         return url;
     }
 
-    public static String toUrlExternal(String path) throws LocalResourceException {
-        return toUrl(path).toExternalForm();
-    }
-
     private static BufferedImage loadBufferedImage(String path) throws LocalResourceException {
         try {
             return ImageIO.read(toUrl(path));

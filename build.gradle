@@ -1,18 +1,21 @@
 plugins {
     id 'java'
-    id 'edu.sc.seis.launch4j' version '2.4.6'
-    id 'com.github.johnrengelman.shadow' version '6.1.0'
     id 'application'
 }
 
 group 'ru.smclabs.bootstrap'
-version '2026.1'
+version '26.1.0'
 
-mainClassName = project.group + '.BootstrapMain'
-archivesBaseName = 'Bootstrap'
+application {
+    mainClass = 'ru.smclabs.bootstrap.core.entrypoint.BootstrapMain'
+}
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
@@ -24,6 +27,10 @@ repositories {
         name = "smcLabsReleases"
         url = uri("https://maven.simpleminecraft.ru/releases")
     }
+    maven {
+        name = "JitPack"
+        url = uri("https://jitpack.io")
+    }
     flatDir {
         dirs "libs"
     }
@@ -32,45 +39,91 @@ repositories {
 dependencies {
     compileOnly 'org.jetbrains:annotations:26.0.2-1'
 
-    implementation 'ru.smclabs:report-api:[1.0,)'
-    implementation 'ru.smclabs.system:system-process:[1.0.0,)'
+    // logging
+    implementation 'org.slf4j:slf4j-api:2.0.17'
+    implementation 'org.apache.logging.log4j:log4j-core:2.25.3'
+    implementation 'org.apache.logging.log4j:log4j-slf4j2-impl:2.25.3'
+
+    // utils
+    implementation 'ru.smclabs:report-api:1.1.0'
     implementation 'ru.smclabs.jackson:jackson-pack-config:1.2.0'
+    implementation "ru.smclabs.system:system-core:2026.1.4"
+    implementation 'ru.smclabs.slauncher.resources:resources-compressed:2026.2'
+    implementation 'ru.smclabs.slauncher.resources:resources-downloader:2026.2'
 
-    implementation 'ru.smclabs.slauncher.resources:resources-compressed:2026.1.2'
-    implementation 'ru.smclabs.slauncher.resources:resources-downloader:2026.1.2'
-
-    implementation 'org.javassist:javassist:3.30.2-GA'
-    implementation 'ru.smclabs:jSystemThemeDetector:3.8'
-    implementation 'org.slf4j:slf4j-api:2.0.13'
-    implementation 'org.slf4j:slf4j-nop:2.0.13'
-    implementation 'com.github.oshi:oshi-core:6.6.1'
-    implementation 'io.github.g00fy2:versioncompare:1.5.0'
+    // theme detector
+    implementation("com.github.oshi:oshi-core-java25:6.9.3")
+    implementation("net.java.dev.jna:jna-platform-jpms:5.18.1")
+    implementation("com.github.Dansoftowner:jSystemThemeDetector:3.9") {
+        exclude group: "net.java.dev.jna"
+        exclude group: "com.github.oshi", module: "oshi-core"
+    }
 }
 
 jar {
     manifest {
-        attributes 'Main-Class': mainClassName
+        attributes 'Main-Class': application.mainClass
     }
 }
 
-shadowJar {
-    archiveBaseName.set('SimpleMinecraft')
-    archiveClassifier.set('')
+// Убираем старый app-image, если он есть
+tasks.register("appImageCleanup", Delete) {
+    delete layout.buildDirectory.dir("app-image")
 }
 
-launch4j {
-    version = project.version
-    textVersion = project.version
-    mainClassName = mainClassName
-    icon = "${projectDir}/inno-setup/64.ico"
-    jar = "${projectDir}/build/libs/SimpleMinecraft-${version}.jar"
-    errTitle = 'Bootstrap'
-    supportUrl = 'https://f.simpleminecraft.ru/'
-    language = 'RUSSIAN'
-    copyright = 'Created by SMC-Labs'
-    fileDescription = archivesBaseName
-    productName = archivesBaseName
-    internalName = archivesBaseName
-    outfile = archivesBaseName + '.exe'
-    bundledJrePath = 'runtime/i586'
+// Подготавливаем папку app-image: копируем JAR и зависимости
+tasks.register("appImagePrepare") {
+    dependsOn(tasks.named("jar"), tasks.named("appImageCleanup"))
+
+    doLast {
+        def outputDir = layout.buildDirectory.dir("app-image").get().asFile
+        outputDir.mkdirs()
+
+        // Копируем основной JAR
+        def jarFile = tasks.named("jar").get().archiveFile.get().asFile
+        copy {
+            from jarFile
+            into outputDir
+        }
+
+        // Копируем runtime зависимости
+        configurations.runtimeClasspath.files.each { file ->
+            copy {
+                from file
+                into outputDir
+            }
+        }
+    }
+}
+
+// Строим app-image через jpackage
+tasks.register("appImageBuild", Exec) {
+    dependsOn(tasks.named("appImagePrepare"))
+
+    doFirst {
+        println("Starting jpackage build...")
+        println("JDK: " + System.getProperty("java.vendor.version"))
+    }
+
+    doFirst {
+        def outputDir = layout.buildDirectory.dir("app-image").get().asFile
+        def jarFile = tasks.named("jar").get().archiveFile.get().asFile
+
+        commandLine(
+                "jpackage",
+                "--type", "app-image",
+                "--name", "bootstrap",
+                "--app-version", project.version,
+                "--vendor", "SMC Labs, Inc.",
+                "--input", outputDir,
+                "--main-jar", jarFile.name,
+                "--main-class", application.mainClass.get(),
+                "--icon", "inno-setup/favicon.ico",
+                "--dest", outputDir
+        )
+    }
+
+    doLast {
+        println("App Image built successfully in ${layout.buildDirectory.dir("app-image").get().asFile}")
+    }
 }

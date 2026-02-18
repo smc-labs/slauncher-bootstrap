@@ -2,7 +2,7 @@ package ru.smclabs.bootstrap.core.entrypoint;
 
 import ru.smclabs.bootstrap.core.app.Bootstrap;
 import ru.smclabs.bootstrap.core.context.BootstrapContext;
-import ru.smclabs.bootstrap.report.BootstrapReportProvider;
+import ru.smclabs.bootstrap.report.ReportProvider;
 import ru.smclabs.bootstrap.util.RuntimeUtils;
 
 import java.io.IOException;
@@ -20,10 +20,10 @@ public class BootstrapMain {
 
         try {
             Bootstrap bootstrap = new Bootstrap(context);
-            bootstrap.createShutdownHook();
+            bootstrap.registerShutdownHook();
             bootstrap.start();
         } catch (Exception e) {
-            BootstrapReportProvider.INSTANCE.send("Bootstrap starting", e);
+            ReportProvider.INSTANCE.send("Bootstrap starting", e);
         }
     }
 
@@ -42,7 +42,7 @@ public class BootstrapMain {
                 processBuilder.start();
                 return true;
             } catch (IOException e) {
-                BootstrapReportProvider.INSTANCE.send("Switch to bundle runtime", e);
+                ReportProvider.INSTANCE.send("Switch to bundle runtime", e);
             }
         }
 

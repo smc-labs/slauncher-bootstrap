@@ -1,7 +1,7 @@
 package ru.smclabs.bootstrap.gui.widget;
 
 import ru.smclabs.bootstrap.gui.core.ThemeManager;
-import ru.smclabs.bootstrap.gui.panel.PanelUpdate;
+import ru.smclabs.bootstrap.gui.panel.UpdatePanel;
 import ru.smclabs.bootstrap.util.resources.ResourcesHelper;
 
 import javax.swing.*;
@@ -16,11 +16,11 @@ public class FileDownloading extends JComponent {
     private String timeRemain = "...";
     private String speed = "...";
 
-    public FileDownloading(ThemeManager themeManager, PanelUpdate parent) {
+    public FileDownloading(ThemeManager themeManager, UpdatePanel parent) {
         this.themeManager = themeManager;
         labelFont = ResourcesHelper.loadFont("GolosText-Regular", 14);
-        images = loadImages();
-        setBounds(0, parent.getHeight() - 74 - 24 - PanelUpdate.VERTICAL_GAP, parent.getWidth(), 74);
+        images = bakeImages();
+        setBounds(0, parent.getHeight() - 74 - 20 - UpdatePanel.VERTICAL_GAP, parent.getWidth(), 74);
         setVisible(false);
     }
 
@@ -61,7 +61,7 @@ public class FileDownloading extends JComponent {
         g2d.drawImage(icon, labelPosX, posY, imageWidth, imageHeight, this);
     }
 
-    private Image[] loadImages() {
+    private Image[] bakeImages() {
         return new Image[]{
                 themeManager.getImage("icons", "file", 18, 18),
                 themeManager.getImage("icons", "time", 18, 18),

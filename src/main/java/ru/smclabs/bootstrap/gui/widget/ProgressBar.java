@@ -1,7 +1,7 @@
 package ru.smclabs.bootstrap.gui.widget;
 
 import ru.smclabs.bootstrap.gui.core.ThemeManager;
-import ru.smclabs.bootstrap.gui.panel.PanelUpdate;
+import ru.smclabs.bootstrap.gui.panel.UpdatePanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,7 +18,7 @@ public class ProgressBar extends JComponent {
     private Timer bounceTimer;
     private volatile boolean bounceMode;
 
-    public ProgressBar(ThemeManager themeManager, PanelUpdate parent) {
+    public ProgressBar(ThemeManager themeManager, UpdatePanel parent) {
         this.themeManager = themeManager;
         setBounds(0, parent.getHeight() - 24, parent.getWidth(), 24);
         setProgress(-1.0);
