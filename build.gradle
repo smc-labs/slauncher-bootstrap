@@ -131,7 +131,7 @@ tasks.register("appImageBuild", Exec) {
 tasks.register("packageApp", Exec) {
     dependsOn(tasks.named("appImagePrepare"))
 
-    def os = OperatingSystem.current()
+    def os = System.getProperty("os.name").toLowerCase()
     def outputDir = layout.buildDirectory.dir("installer").get().asFile
     def jarFile = tasks.named("jar").get().archiveFile.get().asFile
     def inputDir = layout.buildDirectory.dir("app-image").get().asFile
@@ -141,10 +141,10 @@ tasks.register("packageApp", Exec) {
     def packageType
     def iconPath = null
 
-    if (os.isMacOsX()) {
+    if (osName.contains("mac")) {
         packageType = "dmg"
         iconPath = "icons/icon.icns"
-    } else if (os.isLinux()) {
+    } else if (osName.contains("linux")) {
         packageType = "deb"
         iconPath = "icons/icon.png"
     } else {
