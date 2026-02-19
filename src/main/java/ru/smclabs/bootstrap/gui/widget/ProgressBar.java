@@ -8,7 +8,6 @@ import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 
 public class ProgressBar extends JComponent {
-
     private final ThemeManager themeManager;
 
     private double progress;

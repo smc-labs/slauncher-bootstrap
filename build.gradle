@@ -60,105 +60,86 @@ dependencies {
     }
 }
 
-jar {
-    manifest {
-        attributes 'Main-Class': application.mainClass
-    }
-}
+def appImageRoot = layout.buildDirectory.dir("app-image")
+def inputDirProvider = appImageRoot.map { it.dir("input") }
+def outputDirProvider = appImageRoot.map { it.dir("build") }
+def installerDirProvider = layout.buildDirectory.dir("installer")
+def jarTask = tasks.named("jar", Jar)
 
-// Убираем старый app-image, если он есть
 tasks.register("appImageCleanup", Delete) {
-    delete layout.buildDirectory.dir("app-image")
+    delete(appImageRoot)
 }
 
-// Подготавливаем папку app-image: копируем JAR и зависимости
-tasks.register("appImagePrepare") {
-    dependsOn(tasks.named("jar"), tasks.named("appImageCleanup"))
+tasks.register("appImagePrepare", Copy) {
+    dependsOn("appImageCleanup")
 
-    doLast {
-        def outputDir = layout.buildDirectory.dir("app-image").get().asFile
-        outputDir.mkdirs()
+    into(inputDirProvider)
 
-        // Копируем основной JAR
-        def jarFile = tasks.named("jar").get().archiveFile.get().asFile
-        copy {
-            from jarFile
-            into outputDir
-        }
-
-        // Копируем runtime зависимости
-        configurations.runtimeClasspath.files.each { file ->
-            copy {
-                from file
-                into outputDir
-            }
-        }
-    }
+    from(jarTask)
+    from(configurations.runtimeClasspath)
 }
 
-// Строим app-image через jpackage
 tasks.register("appImageBuild", Exec) {
-    dependsOn(tasks.named("appImagePrepare"))
+    dependsOn("appImagePrepare")
+
+    def system = System.getProperty("os.name").toLowerCase(Locale.ROOT)
+
+    def iconPath = system.contains("win") ? "windows/icon.ico"
+            : system.contains("mac") ? "macos/icon.icns"
+            : "linux/icon.png"
 
     doFirst {
-        println("Starting jpackage build...")
-        println("JDK: " + System.getProperty("java.vendor.version"))
-    }
-
-    doFirst {
-        def outputDir = layout.buildDirectory.dir("app-image").get().asFile
-        def jarFile = tasks.named("jar").get().archiveFile.get().asFile
-
         commandLine(
                 "jpackage",
                 "--type", "app-image",
                 "--name", "bootstrap",
-                "--app-version", project.version,
+                "--app-version", project.version.toString(),
                 "--vendor", "SMC Labs, Inc.",
-                "--input", outputDir,
-                "--main-jar", jarFile.name,
+                "--input", inputDirProvider.get().asFile.absolutePath,
+                "--main-jar", jarTask.get().archiveFileName.get(),
                 "--main-class", application.mainClass.get(),
-                "--icon", "inno-setup/favicon.ico",
-                "--dest", outputDir
+                "--icon", file("installer/${iconPath}").absolutePath,
+                "--dest", outputDirProvider.get().asFile.absolutePath
         )
-    }
-
-    doLast {
-        println("App Image built successfully in ${layout.buildDirectory.dir("app-image").get().asFile}")
     }
 }
 
 tasks.register("buildMacOsInstaller", Exec) {
     dependsOn(tasks.named("appImagePrepare"))
 
-    def outputDir = layout.buildDirectory.dir("installer").get().asFile
-    def jarFile = tasks.named("jar").get().archiveFile.get().asFile
-    outputDir.mkdirs()
+    def archProvider = providers.environmentVariable("ARCH")
+            .orElse(providers.systemProperty("os.arch"))
 
-    def arch = System.getenv("ARCH") ?: System.getProperty("os.arch")
-    def dmgName = "simpleminecraft-installer-${project.version}-${arch}.dmg"
+    def dmgNameProvider = archProvider.map { arch ->
+        "simpleminecraft-installer-${project.version}-${arch}.dmg"
+    }
+
+    inputs.dir(inputDirProvider)
+    outputs.file(installerDirProvider.map { it.file(dmgNameProvider.get()) })
 
     commandLine(
             "jpackage",
             "--type", "dmg",
             "--name", "SimpleMinecraft",
-            "--app-version", version,
+            "--app-version", project.version,
             "--vendor", "SMC Labs, Inc.",
-            "--input", layout.buildDirectory.dir("app-image").get().asFile,
-            "--main-jar", jarFile.name,
+            "--input", inputDirProvider.get().asFile.absolutePath,
+            "--main-jar", jarTask.get().archiveFileName.get(),
             "--main-class", application.mainClass.get(),
-            "--dest", outputDir,
-            "--icon", "icons/icon.icns"
+            "--dest", installerDirProvider.get().asFile.absolutePath,
+            "--icon", file("installer/macos/icon.icns").absolutePath
     )
 
     doLast {
-        def originalDmg = new File(outputDir, "SimpleMinecraft-${project.version}.dmg")
-        def finalDmg = new File(outputDir, dmgName)
-        if (originalDmg.exists()) {
-            println("Renaming ${originalDmg.name} -> ${finalDmg.name}")
-            originalDmg.renameTo(finalDmg)
+        def installerDir = installerDirProvider.get().asFile
+        def original = new File(installerDir, "SimpleMinecraft-${project.version}.dmg")
+        def target = new File(installerDir, dmgNameProvider.get())
+
+        if (original.exists()) {
+            original.renameTo(target)
+            println("Renamed → ${target.name}")
         } else {
-            println("Warning: expected DMG not found: ${originalDmg.absolutePath}")
+            logger.info("Expected DMG not found: ${original.absolutePath}")
         }
     }
 }

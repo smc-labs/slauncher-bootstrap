@@ -6,7 +6,7 @@
 #define MyAppPublisher "SMC Labs, Inc."
 #define MyAppURL "https://simpleminecraft.ru"
 #define MyAppExeName "bootstrap.exe"
-#define OutputDir "F:\smc-labs\slauncher-bootstrap\inno-setup"
+#define OutputDir "../build/installer/"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
