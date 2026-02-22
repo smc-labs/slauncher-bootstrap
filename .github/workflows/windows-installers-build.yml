@@ -3,7 +3,7 @@ name: Build Windows installers (x64 + ARM64)
 on:
   workflow_dispatch:
   release:
-    types: [published]
+    types: [ published ]
 
 permissions:
   contents: write
@@ -15,8 +15,8 @@ jobs:
         include:
           - os: windows-2025
             arch: x64
-          - os: windows-2025
-            arch: aarch64
+          #- os: windows-2025
+          #  arch: aarch64
 
     runs-on: ${{ matrix.os }}
 
