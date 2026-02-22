@@ -89,9 +89,12 @@ public class ReportProvider extends HttpReportProvider {
     }
 
     private String getJavaInfo() {
-        return System.getProperty("java.home") +
-                " (vendor: " + System.getProperty("java.vm.vendor") +
-                ", version: " + System.getProperty("java.vm.version") + ")";
+        return String.format("%s %s (%s, build %s)",
+                System.getProperty("java.runtime.name"),
+                System.getProperty("java.runtime.version"),
+                System.getProperty("java.vm.vendor"),
+                System.getProperty("java.vm.version")
+        );
     }
 
     private String getStorageInfo() {
