@@ -53,13 +53,26 @@ public class ReportProvider extends HttpReportProvider {
     }
 
     public String createReport(Throwable error) {
-        return "------------------------------------------------------------------------\n\n" +
-                "    OS: " + getOperatingSystemInfo() + ")\n\n" +
-                "    JRE: " + getJavaInfo() + "\n\n" +
-                "    Storage: " + getStorageInfo() + "\n\n" +
-                "    HttpEnvironment: " + getHttpInfo() + "\n" +
-                "\n------------------------------------------------------------------------\n" +
-                "\n" + stacktraceToString(error);
+        return """
+        ------------------------------------------------------------------------
+
+            OS: %s
+
+            JRE: %s
+
+            Storage: %s
+
+            HttpEnvironment: %s
+
+        ------------------------------------------------------------------------
+        %s
+        """.formatted(
+                getOperatingSystemInfo(),
+                getJavaInfo(),
+                getStorageInfo(),
+                getHttpInfo(),
+                stacktraceToString(error)
+        );
     }
 
     @Override
@@ -77,7 +90,7 @@ public class ReportProvider extends HttpReportProvider {
 
     private String getJavaInfo() {
         return System.getProperty("java.home") +
-                " (name: " + System.getProperty("java.runtime.name") +
+                " (vendor: " + System.getProperty("java.vm.vendor") +
                 ", version: " + System.getProperty("java.vm.version") + ")";
     }
 

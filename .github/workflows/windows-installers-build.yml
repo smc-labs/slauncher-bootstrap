@@ -1,4 +1,4 @@
-name: Java CI with Gradle (macOS x64 + ARM64)
+name: Build MacOS installers (x64 + ARM64)
 
 on:
   workflow_dispatch:
@@ -13,9 +13,9 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-14
+          - os: windows-11
             arch: x64
-          - os: macos-14
+          - os: windows-11
             arch: aarch64
 
     runs-on: ${{ matrix.os }}
@@ -33,20 +33,23 @@ jobs:
 
       - run: chmod +x gradlew
 
-      - name: Build DMG
-        run: ./gradlew buildMacOsInstaller --info --stacktrace
+      - name: Install Inno Setup
+        run: choco install innosetup --no-progress -y
+
+      - name: Build installer
+        run: ./gradlew buildWindowsInstaller --info --stacktrace
         env:
           ARCH: ${{ matrix.arch }}
 
-      - name: Upload DMG artifact
+      - name: Upload EXE artifact
         uses: actions/upload-artifact@v4
         with:
-          name: simpleminecraft-macos-${{ matrix.arch }}
-          path: build/installer/*.dmg
+          name: simpleminecraft-windows-${{ matrix.arch }}
+          path: build/installer/*.exe
 
-      - name: Upload DMG to Release
+      - name: Upload EXE to Release
         if: github.event_name == 'release'
         run: |
-          gh release upload "${{ github.event.release.tag_name }}" build/installer/*.dmg --clobber
+          gh release upload "${{ github.event.release.tag_name }}" build/installer/*.exe --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

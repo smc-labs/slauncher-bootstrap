@@ -110,12 +110,12 @@ tasks.register("buildMacOsInstaller", Exec) {
     def archProvider = providers.environmentVariable("ARCH")
             .orElse(providers.systemProperty("os.arch"))
 
-    def dmgNameProvider = archProvider.map { arch ->
+    def nameProvider = archProvider.map { arch ->
         "simpleminecraft-installer-${project.version}-${arch}.dmg"
     }
 
     inputs.dir(inputDirProvider)
-    outputs.file(installerDirProvider.map { it.file(dmgNameProvider.get()) })
+    outputs.file(installerDirProvider.map { it.file(nameProvider.get()) })
 
     commandLine(
             "jpackage",
@@ -133,15 +133,63 @@ tasks.register("buildMacOsInstaller", Exec) {
     doLast {
         def installerDir = installerDirProvider.get().asFile
         def original = new File(installerDir, "SimpleMinecraft-${project.version}.dmg")
-        def target = new File(installerDir, dmgNameProvider.get())
+        def target = new File(installerDir, nameProvider.get())
 
         if (original.exists()) {
             original.renameTo(target)
-            println("Renamed → ${target.name}")
+            println("MacOs installer built → ${target}")
         } else {
-            logger.info("Expected DMG not found: ${original.absolutePath}")
+            println("MacOs installer not found in ${installerDir}")
         }
     }
 }
 
+tasks.register("buildWindowsInstaller", Exec) {
+    dependsOn(tasks.named("appImageBuild"))
+
+    def archProvider = providers.environmentVariable("ARCH")
+            .orElse(providers.systemProperty("os.arch"))
+
+    def normalizedArchProvider = archProvider.map { raw ->
+        switch (raw.toLowerCase()) {
+            case ["amd64", "x86_64"]:
+                return "x64"
+            case ["aarch64", "arm64"]:
+                return "arm64"
+            default:
+                throw new GradleException("Unsupported architecture: $raw")
+        }
+    }
+
+    def installerNameProvider = normalizedArchProvider.map { arch ->
+        "simpleminecraft-installer-${project.version}-${arch}"
+    }
+
+    def resourcesDir = file("installer/windows/")
+    def issFile = new File(resourcesDir, "installer.iss")
+
+    inputs.dir(resourcesDir)
+    outputs.file(installerDirProvider.map { it.file(installerNameProvider.get()) })
+
+    doFirst {
+        commandLine(
+                "C:/Program Files (x86)/Inno Setup 6/ISCC.exe",
+                issFile.absolutePath,
+                "/O${installerDirProvider.get().asFile.absolutePath}",
+                "/DArchitecture=${normalizedArchProvider.get()}",
+                "/DAppVersion=${project.version}",
+                "/DAppName=SimpleMinecraft",
+                "/DAppPublisher=SMC Labs, Inc.",
+                "/DAppPublisherURL=https://simpleminecraft.ru",
+                "/DEntryPoint=bootstrap.exe",
+                "/DOutputDir=${installerDirProvider.get().asFile.absolutePath}",
+                "/DResourcesDir=${resourcesDir.absolutePath}",
+                "/DBuiltImageDir=${outputDirProvider.map { it.dir("bootstrap") }.get().asFile.absolutePath}"
+        )
+    }
+
+    doLast {
+        println("Windows installer built → ${installerDirProvider.get().asFile}/${installerNameProvider.get()}")
+    }
+}
 

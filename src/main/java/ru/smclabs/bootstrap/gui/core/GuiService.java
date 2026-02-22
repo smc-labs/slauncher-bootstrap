@@ -1,9 +1,9 @@
 package ru.smclabs.bootstrap.gui.core;
 
-import ru.smclabs.bootstrap.core.app.Bootstrap;
 import ru.smclabs.bootstrap.gui.listener.FrameDragListener;
 import ru.smclabs.bootstrap.gui.panel.BackgroundPanel;
 import ru.smclabs.bootstrap.util.resources.ResourcesHelper;
+import ru.smclabs.slauncher.resources.provider.DirProvider;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,9 +16,9 @@ public class GuiService {
     private final JFrame frame;
     private final BackgroundPanel panelBackground;
 
-    public GuiService(Bootstrap bootstrap) {
+    public GuiService(DirProvider dirProvider) {
         frame = createFrame();
-        panelBackground = new BackgroundPanel(createThemeManager(bootstrap), frame);
+        panelBackground = new BackgroundPanel(createThemeManager(dirProvider), frame);
     }
 
     public void start() {
@@ -32,8 +32,8 @@ public class GuiService {
         return panelBackground;
     }
 
-    private ThemeManager createThemeManager(Bootstrap bootstrap) {
-        return new ThemeManager(bootstrap.getContext().getDirProvider());
+    private ThemeManager createThemeManager(DirProvider dirProvider) {
+        return new ThemeManager(dirProvider);
     }
 
     private JFrame createFrame() {

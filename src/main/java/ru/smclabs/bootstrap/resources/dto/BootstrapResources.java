@@ -3,9 +3,7 @@ package ru.smclabs.bootstrap.resources.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import ru.smclabs.slauncher.model.resource.ResourceModel;
-import ru.smclabs.slauncher.resources.provider.DirProvider;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class BootstrapResources {

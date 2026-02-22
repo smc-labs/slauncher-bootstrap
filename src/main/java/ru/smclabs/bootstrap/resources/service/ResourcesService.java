@@ -16,20 +16,19 @@ public class ResourcesService {
 
     private final DirProvider dirProvider;
     private final BootstrapHttpService httpService;
-    private final ProcessManager processManager;
     private final GuiService guiService;
+    private final ProcessManager processManager;
     private final AtomicReference<UpdateTask> currentTaskRef = new AtomicReference<>();
 
     public ResourcesService(
             DirProvider dirProvider,
             BootstrapHttpService httpService,
-            ProcessManager processManager,
             GuiService guiService
     ) {
         this.dirProvider = dirProvider;
         this.httpService = httpService;
-        this.processManager = processManager;
         this.guiService = guiService;
+        this.processManager = new ProcessManager(dirProvider);
     }
 
     public UpdateTask runUpdate() throws InterruptedException {

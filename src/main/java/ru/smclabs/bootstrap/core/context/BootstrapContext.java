@@ -1,8 +1,6 @@
 package ru.smclabs.bootstrap.core.context;
 
 import org.jetbrains.annotations.NotNullByDefault;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.smclabs.slauncher.resources.provider.DirProvider;
 
 import java.nio.file.Path;

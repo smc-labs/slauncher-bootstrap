@@ -7,7 +7,7 @@ import ru.smclabs.bootstrap.core.context.BootstrapContext;
 import ru.smclabs.bootstrap.core.environment.BootstrapEnvironment;
 import ru.smclabs.bootstrap.gui.core.GuiService;
 import ru.smclabs.bootstrap.http.BootstrapHttpService;
-import ru.smclabs.bootstrap.launcher.ProcessManager;
+import ru.smclabs.bootstrap.report.ReportProvider;
 import ru.smclabs.bootstrap.resources.service.ResourcesService;
 import ru.smclabs.bootstrap.resources.task.UpdateTask;
 
@@ -17,18 +17,15 @@ public class Bootstrap {
 
     private final BootstrapContext context;
     private final BootstrapEnvironment environment;
-    private final BootstrapHttpService httpService;
     private final ResourcesService resourcesService;
-    private final ProcessManager processManager;
     private final GuiService guiService;
 
     public Bootstrap(BootstrapContext context) {
         this.context = context;
         environment = new BootstrapEnvironment();
-        httpService = new BootstrapHttpService(this);
-        processManager = new ProcessManager(context.getDirProvider());
-        guiService = new GuiService(this);
-        resourcesService = new ResourcesService(context.getDirProvider(), httpService, processManager, guiService);
+        guiService = new GuiService(context.getDirProvider());
+        resourcesService = new ResourcesService(context.getDirProvider(), new BootstrapHttpService(this), guiService);
+        ReportProvider.INSTANCE.setBootstrap(this);
     }
 
     public void registerShutdownHook() {
@@ -64,18 +61,6 @@ public class Bootstrap {
 
     public BootstrapContext getContext() {
         return context;
-    }
-
-    public BootstrapHttpService getHttpService() {
-        return httpService;
-    }
-
-    public ProcessManager getProcessManager() {
-        return processManager;
-    }
-
-    public GuiService getGuiService() {
-        return guiService;
     }
 
     private void initProperties() {
