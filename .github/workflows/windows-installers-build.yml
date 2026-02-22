@@ -13,9 +13,9 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: windows-11
+          - os: windows-2025
             arch: x64
-          - os: windows-11
+          - os: windows-2025
             arch: aarch64
 
     runs-on: ${{ matrix.os }}
