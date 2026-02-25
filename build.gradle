@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'ru.smclabs.bootstrap'
-version '26.1.2'
+version '26.1.3'
 
 application {
     mainClass = 'ru.smclabs.bootstrap.core.entrypoint.BootstrapMain'
@@ -48,8 +48,8 @@ dependencies {
     implementation 'ru.smclabs:report-api:1.1.0'
     implementation 'ru.smclabs.jackson:jackson-pack-config:1.2.0'
     implementation "ru.smclabs.system:system-core:2026.1.4"
-    implementation 'ru.smclabs.slauncher.resources:resources-compressed:2026.2'
-    implementation 'ru.smclabs.slauncher.resources:resources-downloader:2026.2'
+    implementation 'ru.smclabs.slauncher.resources:resources-compressed:26.2.1'
+    implementation 'ru.smclabs.slauncher.resources:resources-downloader:26.2.1'
 
     // theme detector
     implementation("com.github.oshi:oshi-core-java25:6.9.3")
