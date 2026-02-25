@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.smclabs.bootstrap.core.app.Bootstrap;
+import ru.smclabs.bootstrap.core.Bootstrap;
 import ru.smclabs.jacksonpack.Jackson;
 import ru.smclabs.report.dto.Report;
 import ru.smclabs.report.dto.ReportType;

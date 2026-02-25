@@ -1,6 +1,6 @@
 package ru.smclabs.bootstrap.util;
 
-import ru.smclabs.bootstrap.core.entrypoint.BootstrapMain;
+import ru.smclabs.bootstrap.core.BootstrapMain;
 import ru.smclabs.system.info.arch.ArchType;
 import ru.smclabs.system.info.os.OsType;
 

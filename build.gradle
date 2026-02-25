@@ -3,11 +3,11 @@ plugins {
     id 'application'
 }
 
-group 'ru.smclabs.bootstrap'
-version '26.1.3'
+group = 'ru.smclabs.bootstrap'
+version = '26.1.3'
 
 application {
-    mainClass = 'ru.smclabs.bootstrap.core.entrypoint.BootstrapMain'
+    mainClass = 'ru.smclabs.bootstrap.core.BootstrapMain'
 }
 
 java {
