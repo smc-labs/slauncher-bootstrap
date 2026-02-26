@@ -1,18 +1,12 @@
 package ru.smclabs.bootstrap.core;
 
-import org.jetbrains.annotations.NotNullByDefault;
+import org.jetbrains.annotations.NotNull;
 import ru.smclabs.slauncher.resources.provider.DirProvider;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-@NotNullByDefault
 public class BootstrapContext {
-    private final Path workingDir;
-    private final DirProvider dirProvider;
+    private final @NotNull DirProvider dirProvider;
 
     public BootstrapContext() {
-        workingDir = Paths.get(System.getProperty("user.dir"));
         dirProvider = new DirProvider("SIMPLEMINECRAFT");
         initProperties();
     }
@@ -22,11 +16,7 @@ public class BootstrapContext {
         System.setProperty("slauncher.logName", "bootstrap");
     }
 
-    public Path getWorkingDir() {
-        return workingDir;
-    }
-
-    public DirProvider getDirProvider() {
+    public @NotNull DirProvider getDirProvider() {
         return dirProvider;
     }
 }

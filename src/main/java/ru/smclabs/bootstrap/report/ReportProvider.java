@@ -10,7 +10,7 @@ import ru.smclabs.report.dto.Report;
 import ru.smclabs.report.dto.ReportType;
 import ru.smclabs.report.http.HttpReportProvider;
 import ru.smclabs.report.provider.ReportException;
-import ru.smclabs.system.info.arch.ArchType;
+import ru.smclabs.system.core.info.arch.ArchType;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -99,7 +99,7 @@ public class ReportProvider extends HttpReportProvider {
 
     private String getStorageInfo() {
         if (bootstrap == null) return "null";
-        return String.valueOf(bootstrap.getContext().getWorkingDir());
+        return String.valueOf(bootstrap.getContext().getDirProvider());
     }
 
     private String getHttpInfo() {

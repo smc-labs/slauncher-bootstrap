@@ -45,13 +45,13 @@ public class ProcessRef {
         });
     }
 
+    @Override
+    public String toString() {
+        return "ProcessRef{pid=" + pid + "}";
+    }
+
     private boolean canDestroy(ProcessHandle handle) {
         return handle.isAlive()
                 && handle.info().command().stream().anyMatch(command -> command.contains("java"));
-    }
-
-    @Override
-    public String toString() {
-        return "ProcessWrapper{pid=" + pid + "}";
     }
 }

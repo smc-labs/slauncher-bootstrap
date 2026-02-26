@@ -47,7 +47,10 @@ dependencies {
     // utils
     implementation 'ru.smclabs:report-api:1.1.0'
     implementation 'ru.smclabs.jackson:jackson-pack-config:1.2.0'
-    implementation "ru.smclabs.system:system-core:2026.1.4"
+
+    implementation "ru.smclabs.system:system-utils-core:26.1.1"
+    implementation "ru.smclabs.system:system-utils-instance-locker:26.1.1"
+
     implementation 'ru.smclabs.slauncher.resources:resources-compressed:26.2.1'
     implementation 'ru.smclabs.slauncher.resources:resources-downloader:26.2.1'
 

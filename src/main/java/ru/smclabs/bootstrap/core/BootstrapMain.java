@@ -1,49 +1,45 @@
 package ru.smclabs.bootstrap.core;
 
 import ru.smclabs.bootstrap.report.ReportProvider;
-import ru.smclabs.bootstrap.util.RuntimeUtils;
-
-import java.io.IOException;
-import java.nio.file.Paths;
+import ru.smclabs.system.instancelocker.InstanceLocker;
 
 public class BootstrapMain {
-
     public static void main(String[] args) {
         BootstrapContext context = new BootstrapContext();
 
-        if (switchToSystemRuntime()) {
+        InstanceLocker instanceLocker = new InstanceLocker(
+                context.getDirProvider()
+                        .getPersistenceDir("bootstrap")
+                        .resolve("bootstrap.lock")
+        );
+
+        if (!instanceLocker.lock()) {
             System.exit(0);
             return;
         }
 
+        System.exit(start(context, instanceLocker));
+    }
+
+    private static int start(BootstrapContext context, InstanceLocker instanceLocker) {
         try {
             Bootstrap bootstrap = new Bootstrap(context);
-            bootstrap.registerShutdownHook();
+            registerShutdownHook(bootstrap, instanceLocker);
             bootstrap.start();
+            return 0;
         } catch (Exception e) {
             ReportProvider.INSTANCE.send("Bootstrap starting", e);
+            return 1;
         }
     }
 
-    private static boolean switchToSystemRuntime() {
-        if (RuntimeUtils.isExecutableFileExtension("jar")) {
-            return false;
-        }
-
-        if (RuntimeUtils.isStartedByWrongPackagedJre()) {
-            ProcessBuilder processBuilder = new ProcessBuilder();
-            processBuilder.redirectErrorStream(true);
-            processBuilder.command(Paths.get(System.getProperty("user.dir") + "/runtime/x64/bin/java").toString(),
-                    "-jar", "Bootstrap.exe");
-
+    private static void registerShutdownHook(Bootstrap bootstrap, InstanceLocker instanceLocker) {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
-                processBuilder.start();
-                return true;
-            } catch (IOException e) {
-                ReportProvider.INSTANCE.send("Switch to bundle runtime", e);
+                bootstrap.stop();
+            } finally {
+                instanceLocker.unlock();
             }
-        }
-
-        return false;
+        }, "bootstrap-shutdown-hook"));
     }
 }

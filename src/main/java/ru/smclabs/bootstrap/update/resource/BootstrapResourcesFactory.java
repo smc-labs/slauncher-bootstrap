@@ -7,8 +7,8 @@ import ru.smclabs.slauncher.model.resource.ResourceModel;
 import ru.smclabs.slauncher.resources.compressed.resource.ResourceCompressedRuntime;
 import ru.smclabs.slauncher.resources.provider.DirProvider;
 import ru.smclabs.slauncher.resources.type.Resource;
-import ru.smclabs.system.info.arch.ArchType;
-import ru.smclabs.system.info.os.OsType;
+import ru.smclabs.system.core.info.arch.ArchType;
+import ru.smclabs.system.core.info.os.OsType;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

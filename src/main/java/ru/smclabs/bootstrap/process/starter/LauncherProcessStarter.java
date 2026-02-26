@@ -37,6 +37,11 @@ public class LauncherProcessStarter {
     }
 
     public void start() throws IOException, InterruptedException {
+        if (pack == null) {
+            log.info("pack is null. Skipping launcher startup.");
+            return;
+        }
+
         log.info("Starting SLauncher...");
 
         viewController.setTitles("Запуск лаунчера", "Пожалуйста подождите...");

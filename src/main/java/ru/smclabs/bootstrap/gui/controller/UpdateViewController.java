@@ -8,6 +8,7 @@ import ru.smclabs.slauncher.resources.downloader.stats.listener.TimeListener;
 
 import javax.swing.*;
 import java.nio.file.AccessDeniedException;
+import java.nio.file.FileSystemException;
 
 public class UpdateViewController implements SpeedListener, TimeListener, ProgressListener {
     private final UpdatePanel panel;
@@ -42,26 +43,36 @@ public class UpdateViewController implements SpeedListener, TimeListener, Progre
             return showAccessDeniedDialog(ade);
         }
 
+        if (e instanceof FileSystemException fse) {
+            return showAccessDeniedDialog(fse);
+        }
+
         return false;
     }
 
-    public boolean showAccessDeniedDialog(AccessDeniedException e) {
+    public boolean showAccessDeniedDialog(FileSystemException e) {
         String message = """
-                Не удалось получить доступ к файлу:
-                
-                %s
-                
-                Возможные причины:
-                • Антивирус или система блокирует лаунчер.
-                • Запущена другая копия лаунчера.
-                • Файл используется другим процессом.
-                
-                Рекомендуется:
-                • Добавить лаунчер в исключения антивируса.
-                • Закрыть все запущенные копии лаунчера (или завершить java-процессы через диспетчер задач).
-                • Перезагрузить компьютер и попробовать снова.
-                
-                """.formatted(e.getMessage());
+            Не удалось получить доступ к файлу:
+
+            %s
+
+            Путь к файлу:
+            %s
+
+            Возможные причины:
+            • Запущен другой экземпляр лаунчера.
+            • Файл используется другим процессом.
+            • Антивирус или система безопасности блокирует доступ.
+
+            Что можно сделать:
+            • Закрыть все копии лаунчера.
+            • Завершить процессы java через диспетчер задач.
+            • Добавить лаунчер в исключения антивируса.
+            • Перезагрузить компьютер и попробовать снова.
+            """.formatted(
+                e.getReason() != null ? e.getReason() : e.getMessage(),
+                e.getFile()
+        );
 
         return showRetryDialog(message);
     }
@@ -106,6 +117,21 @@ public class UpdateViewController implements SpeedListener, TimeListener, Progre
                 JOptionPane.ERROR_MESSAGE,
                 null,
                 new Object[]{"Повторить", "Закрыть лаунчер"},
+                "Повторить"
+        );
+
+        return result != 0;
+    }
+
+    private boolean showDestroyProcessesDialog(String message) {
+        int result = JOptionPane.showOptionDialog(
+                panel,
+                message,
+                "Ошибка доступа к файлу",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.ERROR_MESSAGE,
+                null,
+                new Object[]{"Повторить", "Завершить процессы и повторить", "Закрыть лаунчер"},
                 "Повторить"
         );
 

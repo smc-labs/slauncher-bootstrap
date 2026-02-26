@@ -1,8 +1,8 @@
 package ru.smclabs.bootstrap.util;
 
 import ru.smclabs.bootstrap.core.BootstrapMain;
-import ru.smclabs.system.info.arch.ArchType;
-import ru.smclabs.system.info.os.OsType;
+import ru.smclabs.system.core.info.arch.ArchType;
+import ru.smclabs.system.core.info.os.OsType;
 
 import java.net.URISyntaxException;
 import java.nio.file.Files;
