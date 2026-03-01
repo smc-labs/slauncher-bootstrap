@@ -4,24 +4,18 @@ import ru.smclabs.bootstrap.report.ReportProvider;
 import ru.smclabs.system.instancelocker.InstanceLocker;
 
 public class BootstrapMain {
-    public static void main(String[] args) {
+    void main() {
         BootstrapContext context = new BootstrapContext();
-
-        InstanceLocker instanceLocker = new InstanceLocker(
-                context.getDirProvider()
-                        .getPersistenceDir("bootstrap")
-                        .resolve("bootstrap.lock")
-        );
+        InstanceLocker instanceLocker = new BootstrapInstanceLocker(context.getDirProvider());
 
         if (!instanceLocker.lock()) {
             System.exit(0);
-            return;
         }
 
-        System.exit(start(context, instanceLocker));
+        System.exit(runBootstrap(context, instanceLocker));
     }
 
-    private static int start(BootstrapContext context, InstanceLocker instanceLocker) {
+    private int runBootstrap(BootstrapContext context, InstanceLocker instanceLocker) {
         try {
             Bootstrap bootstrap = new Bootstrap(context);
             registerShutdownHook(bootstrap, instanceLocker);
@@ -33,13 +27,17 @@ public class BootstrapMain {
         }
     }
 
-    private static void registerShutdownHook(Bootstrap bootstrap, InstanceLocker instanceLocker) {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            try {
-                bootstrap.stop();
-            } finally {
-                instanceLocker.unlock();
-            }
-        }, "bootstrap-shutdown-hook"));
+    private void registerShutdownHook(Bootstrap bootstrap, InstanceLocker instanceLocker) {
+        Runtime.getRuntime().addShutdownHook(
+                Thread.ofPlatform()
+                        .name("bootstrap-shutdown-hook")
+                        .unstarted(() -> {
+                            try {
+                                bootstrap.stop();
+                            } finally {
+                                instanceLocker.unlock();
+                            }
+                        })
+        );
     }
 }
