@@ -25,15 +25,15 @@ import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+/**
+ * Задача, отвечающая за проверку и обновление ресурсов бутстрапа.
+ * Выполняет получение информации о ресурсах с сервера, валидацию локальных файлов,
+ * загрузку отсутствующих или повреждённых файлов и распаковку архивов.
+ */
 public class UpdateTask {
     private static final Logger log = LoggerFactory.getLogger(UpdateTask.class);
-
-    private static final int MAX_RETRIES = 5;
-    private static final long MIN_DELAY_MS = TimeUnit.SECONDS.toMillis(5);
-    private static final long MAX_DELAY_MS = TimeUnit.SECONDS.toMillis(30);
 
     private final HttpService httpService;
     private final ProcessRefRepository processRefStorage;
@@ -42,6 +42,15 @@ public class UpdateTask {
     private final BootstrapResourcesFactory factory;
     private final Thread worker;
 
+    /**
+     * Создаёт новый экземпляр задачи обновления с необходимыми зависимостями.
+     *
+     * @param httpService HTTP-сервис для выполнения сетевых запросов
+     * @param dirProvider Провайдер директорий для работы с файловой системой
+     * @param processRefStorage Репозиторий для управления ссылками на процессы лаунчера
+     * @param viewController Контроллер для обновления GUI в процессе загрузки
+     * @param launcherProcessStarter Стартер для запуска процесса лаунчера после обновления
+     */
     public UpdateTask(
             HttpService httpService,
             DirProvider dirProvider,
@@ -57,65 +66,80 @@ public class UpdateTask {
         this.worker = createThread();
     }
 
+    /**
+     * Запускает задачу обновления в фоновом потоке.
+     * Метод возвращается сразу после запуска рабочего потока.
+     */
     public void start() {
         worker.start();
     }
 
+    /**
+     * Отменяет задачу обновления путём прерывания рабочего потока.
+     * Все активные операции загрузки будут прерваны.
+     */
     public void cancel() {
         worker.interrupt();
     }
 
+    /**
+     * Ожидает завершения задачи обновления.
+     *
+     * @throws InterruptedException если текущий поток был прерван во время ожидания
+     */
     public void join() throws InterruptedException {
         worker.join();
     }
 
+    /**
+     * Проверяет, не была ли отменена задача обновления.
+     *
+     * @return true, если задача всё ещё выполняется; false, если была отменена
+     */
     public boolean isNotCancelled() {
         return !worker.isInterrupted();
     }
 
+    /**
+     * Создаёт рабочий поток для выполнения процесса обновления.
+     *
+     * @return незапущенный платформенный поток, настроенный для задачи обновления
+     */
     private Thread createThread() {
-        Thread thread = new Thread(this::runUpdate);
-        thread.setName("update-task-worker");
-        return thread;
+        return Thread.ofPlatform()
+                .name("update-task-worker")
+                .unstarted(this::runUpdate);
     }
 
+    /**
+     * Основной цикл выполнения обновления с автоматическим повтором при ошибках.
+     * Получает ресурсы с сервера, валидирует их, загружает недостающие
+     * и подготавливает стартер процесса лаунчера. При ошибках показывает
+     * диалог пользователю и повторяет попытку по запросу.
+     */
     private void runUpdate() {
         int attempt = 1;
 
         while (isNotCancelled()) {
             try {
-                log.info("Update attempt {}/{}", attempt, MAX_RETRIES);
+                log.info("Update attempt #{} started", attempt);
 
                 ResourcesPack pack = fetchResources();
                 updateResources(findInvalidResources(pack));
                 launcherProcessStarter.setPack(pack);
 
-                worker.interrupt();
+                cancel();
                 return;
             } catch (InterruptedIOException e) {
-                log.info("Update cancelled: {}", e.getMessage());
-                worker.interrupt();
+                log.info("Update attempt {} cancelled: {}", attempt, e.getMessage());
+
+                cancel();
                 return;
             } catch (Exception e) {
-                ReportProvider.INSTANCE.send("Update attempt " + attempt + " failed", e);
+                ReportProvider.INSTANCE.send("Bootstrap update failed", e);
 
                 if (viewController.showError(e)) {
-                    worker.interrupt();
-                    return;
-                }
-
-                if (attempt >= MAX_RETRIES) {
-                    handleError(e);
-                    return;
-                }
-
-                long delay = calculateBackoff(attempt);
-                log.info("Retrying in {} ms", delay);
-
-                try {
-                    waitWithCountdown(delay);
-                } catch (InterruptedException ie) {
-                    worker.interrupt();
+                    cancel();
                     return;
                 }
 
@@ -124,47 +148,25 @@ public class UpdateTask {
         }
     }
 
-    private void waitWithCountdown(long delayMs) throws InterruptedException {
-        viewController.setTitle("Что-то сломалось");
-
-        long seconds = delayMs / 1000;
-        long remainder = delayMs % 1000;
-
-        for (long i = seconds; i > 0; i--) {
-            viewController.showRetryCounter(i);
-            Thread.sleep(1000);
-
-            if (worker.isInterrupted()) {
-                throw new InterruptedException();
-            }
-        }
-
-        if (remainder > 0) {
-            Thread.sleep(remainder);
-        }
-    }
-
-    private long calculateBackoff(int attempt) {
-        long delay = MIN_DELAY_MS * (1L << (attempt - 1));
-        return Math.min(delay, MAX_DELAY_MS);
-    }
-
-    private void handleError(Exception e) {
-        log.error("Update failed", e);
-        viewController.setTitles("Произошла ошибка", "Мы уже в курсе и исправляем!");
-        try {
-            Thread.sleep(TimeUnit.SECONDS.toMillis(10));
-        } catch (InterruptedException e1) {
-            worker.interrupt();
-        }
-    }
-
+    /**
+     * Получает информацию о ресурсах бутстрапа с удалённого сервера.
+     *
+     * @return пакет ресурсов, содержащий все необходимые для бутстрапа файлы
+     * @throws HttpServiceException если сетевой запрос завершился ошибкой
+     * @throws JsonProcessingException если не удалось разобрать ответ сервера
+     */
     private ResourcesPack fetchResources() throws HttpServiceException, JsonProcessingException {
         FetchResourcesRequest request = new FetchResourcesRequest(httpService);
         BootstrapResources dto = request.execute();
         return factory.build(dto);
     }
 
+    /**
+     * Фильтрует ресурсы, чтобы найти те, которые отсутствуют или повреждены локально.
+     *
+     * @param pack пакет ресурсов для валидации
+     * @return список ресурсов, которые необходимо скачать или обновить
+     */
     private List<Resource> findInvalidResources(ResourcesPack pack) {
         return pack.getResources()
                 .stream()
@@ -172,6 +174,15 @@ public class UpdateTask {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Скачивает и устанавливает указанные ресурсы.
+     * Перед обновлением завершает все запущенные процессы лаунчера,
+     * отслеживает прогресс загрузки через view controller,
+     * а после загрузки распаковывает сжатые архивы.
+     *
+     * @param resources список ресурсов для скачивания и установки
+     * @throws IOException если произошла ошибка при загрузке или файловой операции
+     */
     private void updateResources(List<Resource> resources) throws IOException {
         if (resources.isEmpty()) {
             return;
@@ -212,6 +223,12 @@ public class UpdateTask {
         extractArchives(archives);
     }
 
+    /**
+     * Распаковывает все загруженные сжатые архивы.
+     *
+     * @param archives список сжатых ресурсов для распаковки
+     * @throws IOException если произошла ошибка при распаковке
+     */
     private void extractArchives(List<ResourceCompressed> archives) throws IOException {
         if (!archives.isEmpty()) {
             viewController.setSubTitle("Установка обновления...");

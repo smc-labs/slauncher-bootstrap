@@ -7,14 +7,67 @@ import ru.smclabs.slauncher.resources.downloader.stats.listener.SpeedListener;
 import ru.smclabs.slauncher.resources.downloader.stats.listener.TimeListener;
 
 import javax.swing.*;
-import java.nio.file.AccessDeniedException;
 import java.nio.file.FileSystemException;
 
 public class UpdateViewController implements SpeedListener, TimeListener, ProgressListener {
+    private static final String DEFAULT_ERROR_TITLE = "Ошибка обновления";
+    private static final String DEFAULT_ERROR_DIALOG = """
+            Упс... Что-то пошло не так при обновлении:
+            
+            %s
+            
+            Попробуйте нажать «Повторить»
+            
+            Если ошибка повторяется - попробуйте следующие шаги:
+            • Добавить лаунчер в исключения антивируса
+            • Проверьте интернет соединение
+            • Перезагрузить компьютер
+            
+            Если ничего не помогло — пишите в поддержку!
+            
+            """;
+
+    private static final String ACCESS_DENIED_ERROR_DIALOG = """
+            Не получилось обновить файл:
+            
+            %s
+            
+            Файл:
+            %s
+            
+            Попробуйте:
+            • Закрыть все окна лаунчера
+            • Проверить диспетчер задач — нет ли там java?
+            • Добавить лаунчер в исключения антивируса
+            • Перезагрузить компьютер
+            
+            Если ничего не помогло — пишите в поддержку!
+            
+            """;
+
     private final UpdatePanel panel;
 
     public UpdateViewController(UpdatePanel panel) {
         this.panel = panel;
+    }
+
+    @Override
+    public void handleProgress(double progress) {
+        panel.setProgress(progress);
+    }
+
+    @Override
+    public void handleSpeed(String speed) {
+        panel.setLabelSpeed(speed);
+    }
+
+    @Override
+    public void handleTime(long time) {
+        panel.setLabelTimeRemain(TimeUtils.toHumanTime(time));
+    }
+
+    public void handleFileName(String fileName) {
+        panel.setLabelFileName(fileName);
     }
 
     public void setTitles(String title, String subTitle) {
@@ -39,65 +92,20 @@ public class UpdateViewController implements SpeedListener, TimeListener, Progre
     }
 
     public boolean showError(Exception e) {
-        if (e instanceof AccessDeniedException ade) {
-            return showAccessDeniedDialog(ade);
-        }
-
         if (e instanceof FileSystemException fse) {
-            return showAccessDeniedDialog(fse);
+            return showFileSystemError(fse);
         }
 
-        return false;
-    }
-
-    public boolean showAccessDeniedDialog(FileSystemException e) {
-        String message = """
-            Не удалось получить доступ к файлу:
-
-            %s
-
-            Путь к файлу:
-            %s
-
-            Возможные причины:
-            • Запущен другой экземпляр лаунчера.
-            • Файл используется другим процессом.
-            • Антивирус или система безопасности блокирует доступ.
-
-            Что можно сделать:
-            • Закрыть все копии лаунчера.
-            • Завершить процессы java через диспетчер задач.
-            • Добавить лаунчер в исключения антивируса.
-            • Перезагрузить компьютер и попробовать снова.
-            """.formatted(
-                e.getReason() != null ? e.getReason() : e.getMessage(),
-                e.getFile()
+        return showRetryDialog(
+                DEFAULT_ERROR_TITLE,
+                DEFAULT_ERROR_DIALOG.formatted(e.getMessage() == null ? e.getCause().getMessage() : e.getMessage())
         );
-
-        return showRetryDialog(message);
     }
 
-    public void showRetryCounter(long seconds) {
-        setSubTitle("Повтор через " + seconds + " сек...");
-    }
-
-    @Override
-    public void handleProgress(double progress) {
-        panel.setProgress(progress);
-    }
-
-    @Override
-    public void handleSpeed(String speed) {
-        panel.setLabelSpeed(speed);
-    }
-
-    @Override
-    public void handleTime(long time) {
-        panel.setLabelTimeRemain(TimeUtils.toHumanTime(time));
-    }
-
-    public void handleFileName(String fileName) {
-        panel.setLabelFileName(fileName);
+    public boolean showFileSystemError(FileSystemException e) {
+        String reason = e.getReason() != null ? e.getReason() : e.getMessage();
+        String message = ACCESS_DENIED_ERROR_DIALOG.formatted(reason, e.getFile());
+        return showRetryDialog("Ошибка доступа к файлу", message);
     }
 
     private void toggleDownloadingStats(boolean visible) {
@@ -108,30 +116,15 @@ public class UpdateViewController implements SpeedListener, TimeListener, Progre
         panel.setProgress(-1.0);
     }
 
-    private boolean showRetryDialog(String message) {
+    private boolean showRetryDialog(String title, String message) {
         int result = JOptionPane.showOptionDialog(
                 panel,
                 message,
-                "Ошибка доступа к файлу",
+                title,
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.ERROR_MESSAGE,
                 null,
                 new Object[]{"Повторить", "Закрыть лаунчер"},
-                "Повторить"
-        );
-
-        return result != 0;
-    }
-
-    private boolean showDestroyProcessesDialog(String message) {
-        int result = JOptionPane.showOptionDialog(
-                panel,
-                message,
-                "Ошибка доступа к файлу",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.ERROR_MESSAGE,
-                null,
-                new Object[]{"Повторить", "Завершить процессы и повторить", "Закрыть лаунчер"},
                 "Повторить"
         );
 
