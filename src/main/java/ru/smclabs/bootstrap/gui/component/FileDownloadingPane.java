@@ -1,7 +1,7 @@
 package ru.smclabs.bootstrap.gui.component;
 
-import ru.smclabs.bootstrap.gui.panel.update.UpdatePanel;
 import ru.smclabs.bootstrap.gui.manager.ThemeManager;
+import ru.smclabs.bootstrap.gui.panel.UpdatePanel;
 import ru.smclabs.bootstrap.util.resources.LocalResourceHelper;
 
 import javax.swing.*;
@@ -20,8 +20,16 @@ public class FileDownloadingPane extends JComponent {
         this.themeManager = themeManager;
         labelFont = LocalResourceHelper.loadFont("GolosText-Regular", 14);
         images = bakeImages();
-        setBounds(0, parent.getHeight() - 74 - 20 - UpdatePanel.VERTICAL_GAP, parent.getWidth(), 74);
+        setBounds(0, parent.getHeight() - 98 - UpdatePanel.VERTICAL_GAP, parent.getWidth(), 74);
         setVisible(false);
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+        drawLabel(g2d, images[0], themeManager.getColor("sub-title"), fileName, 0);
+        drawLabel(g2d, images[1], themeManager.getColor("sub-title"), timeRemain, 28);
+        drawLabel(g2d, images[2], themeManager.getColor("sub-title"), speed, 56);
     }
 
     public void setFileName(String value) {
@@ -37,14 +45,6 @@ public class FileDownloadingPane extends JComponent {
     public void setSpeed(String value) {
         speed = value;
         repaint();
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g;
-        drawLabel(g2d, images[0], themeManager.getColor("sub-title"), fileName, 0);
-        drawLabel(g2d, images[1], themeManager.getColor("sub-title"), timeRemain, 28);
-        drawLabel(g2d, images[2], themeManager.getColor("sub-title"), speed, 28 * 2);
     }
 
     private void drawLabel(Graphics2D g2d, Image icon, Color color, String text, int posY) {

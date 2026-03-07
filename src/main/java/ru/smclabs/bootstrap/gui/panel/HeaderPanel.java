@@ -1,16 +1,15 @@
-package ru.smclabs.bootstrap.gui.panel.header;
+package ru.smclabs.bootstrap.gui.panel;
 
-import ru.smclabs.bootstrap.gui.panel.Panel;
-import ru.smclabs.bootstrap.gui.panel.background.BackgroundPanel;
 import ru.smclabs.bootstrap.gui.manager.GuiManager;
 import ru.smclabs.bootstrap.gui.manager.ThemeManager;
 import ru.smclabs.bootstrap.gui.component.ButtonControl;
+import ru.smclabs.bootstrap.gui.panel.background.BackgroundPanel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
-public class HeaderPanel extends Panel {
+public class HeaderPanel extends JPanel {
     private final ThemeManager themeManager;
     private final JFrame frame;
 

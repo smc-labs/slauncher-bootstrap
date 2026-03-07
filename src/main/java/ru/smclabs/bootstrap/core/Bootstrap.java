@@ -8,9 +8,7 @@ import ru.smclabs.bootstrap.http.BootstrapHttpService;
 import ru.smclabs.bootstrap.process.repository.ProcessRefRepository;
 import ru.smclabs.bootstrap.process.starter.LauncherProcessStarter;
 import ru.smclabs.bootstrap.report.ReportProvider;
-import ru.smclabs.bootstrap.update.UpdateTask;
 import ru.smclabs.bootstrap.update.manager.UpdateManager;
-import ru.smclabs.system.instancelocker.InstanceLocker;
 
 import java.io.IOException;
 
@@ -55,10 +53,8 @@ public class Bootstrap {
         guiManager.start();
 
         try {
-            UpdateTask task = updateManager.runUpdate();
-            task.join();
-
-            launcherProcessStarter.start();
+            updateManager.runUpdate();
+            launcherProcessStarter.runLauncher();
         } catch (InterruptedException e) {
             log.error("Resources update cancelled", e);
         } catch (IOException e) {

@@ -36,7 +36,7 @@ public class LauncherProcessStarter {
         this.pack = pack;
     }
 
-    public void start() throws IOException, InterruptedException {
+    public void runLauncher() throws IOException, InterruptedException {
         if (pack == null) {
             log.info("pack is null. Skipping launcher startup.");
             return;

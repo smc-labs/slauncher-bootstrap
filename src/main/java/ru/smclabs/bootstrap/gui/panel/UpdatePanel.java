@@ -1,23 +1,23 @@
-package ru.smclabs.bootstrap.gui.panel.update;
+package ru.smclabs.bootstrap.gui.panel;
 
-import ru.smclabs.bootstrap.gui.panel.Panel;
-import ru.smclabs.bootstrap.gui.panel.background.BackgroundPanel;
-import ru.smclabs.bootstrap.gui.manager.GuiManager;
-import ru.smclabs.bootstrap.gui.manager.ThemeManager;
 import ru.smclabs.bootstrap.gui.component.FileDownloadingPane;
 import ru.smclabs.bootstrap.gui.component.ProgressBar;
+import ru.smclabs.bootstrap.gui.manager.GuiManager;
+import ru.smclabs.bootstrap.gui.manager.ThemeManager;
+import ru.smclabs.bootstrap.gui.panel.background.BackgroundPanel;
 import ru.smclabs.bootstrap.util.resources.LocalResourceHelper;
 
+import javax.swing.*;
 import java.awt.*;
 
-public class UpdatePanel extends Panel {
+public class UpdatePanel extends JPanel {
     public static final int VERTICAL_GAP = 34;
 
     private final ThemeManager themeManager;
     private final Font titleFont;
     private final Font subTitleFont;
-    private final FileDownloadingPane fileDownloading;
     private final ProgressBar progressBar;
+    private final FileDownloadingPane fileDownloading;
 
     private String labelTitle = "Поиск обновлений";
     private String labelSubTitle = "Это займет пару мгновений...";
@@ -33,8 +33,8 @@ public class UpdatePanel extends Panel {
         titleFont = LocalResourceHelper.loadFont("GolosText-Bold", 34);
         subTitleFont = LocalResourceHelper.loadFont("GolosText-Regular", 16);
 
-        add(fileDownloading = new FileDownloadingPane(themeManager, this));
         add(progressBar = new ProgressBar(themeManager, this));
+        add(fileDownloading = new FileDownloadingPane(themeManager, this));
     }
 
     public void drawCenteredString(Graphics2D g2d, String text, Font font, Paint paint, int y) {
@@ -76,15 +76,34 @@ public class UpdatePanel extends Panel {
 
     @Override
     protected void paintComponent(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        Graphics2D g2d = (Graphics2D) g.create();
+        try {
+            g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        drawBackground(g2d);
+            drawBackground(g2d);
 
-        drawCenteredString(g2d, labelTitle, titleFont, themeManager.getColor("title"), 25);
-        drawCenteredString(g2d, labelSubTitle, subTitleFont, themeManager.getColor("sub-title"), 55);
+            boolean downloadingVisible = fileDownloading.isVisible();
+
+            drawCenteredString(
+                    g2d,
+                    labelTitle,
+                    titleFont,
+                    themeManager.getColor("title"),
+                    downloadingVisible ? 30 : 70
+            );
+
+            drawCenteredString(
+                    g2d,
+                    labelSubTitle,
+                    subTitleFont,
+                    themeManager.getColor("sub-title"),
+                    downloadingVisible ? 60 : 100
+            );
+        } finally {
+            g2d.dispose();
+        }
     }
 
     private int calcWidth() {
@@ -97,6 +116,6 @@ public class UpdatePanel extends Panel {
 
     private void drawBackground(Graphics2D g2d) {
         g2d.setColor(themeManager.getColor("bg"));
-        g2d.fill(new Rectangle(0, 0, getWidth(), getHeight()));
+        g2d.fillRect(0, 0, getWidth(), getHeight());
     }
 }

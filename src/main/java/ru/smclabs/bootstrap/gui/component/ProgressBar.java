@@ -1,14 +1,17 @@
 package ru.smclabs.bootstrap.gui.component;
 
-import ru.smclabs.bootstrap.gui.panel.update.UpdatePanel;
 import ru.smclabs.bootstrap.gui.manager.ThemeManager;
+import ru.smclabs.bootstrap.gui.panel.UpdatePanel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 
 public class ProgressBar extends JComponent {
+    private static final int PROGRESS_BAR_HEIGHT = 24;
+
     private final ThemeManager themeManager;
+    private final RoundRectangle2D.Double roundRect;
 
     private double progress;
     private double bouncePos;
@@ -19,7 +22,8 @@ public class ProgressBar extends JComponent {
 
     public ProgressBar(ThemeManager themeManager, UpdatePanel parent) {
         this.themeManager = themeManager;
-        setBounds(0, parent.getHeight() - 24, parent.getWidth(), 24);
+        roundRect = new RoundRectangle2D.Double();
+        setBounds(0, parent.getHeight() - PROGRESS_BAR_HEIGHT, parent.getWidth(), PROGRESS_BAR_HEIGHT);
         setProgress(-1.0);
     }
 
@@ -36,16 +40,22 @@ public class ProgressBar extends JComponent {
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D) g.create();
-        Rectangle bounds = getBounds();
-        drawBackground(g2d, bounds);
+        try {
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        if (bounceMode) {
-            drawBounce(g2d, bounds);
-        } else {
-            drawProgress(g2d, bounds);
+            int width = getWidth();
+            int height = getHeight();
+
+            drawBackground(g2d, width, height);
+
+            if (bounceMode) {
+                drawBounce(g2d, width, height);
+            } else {
+                drawProgress(g2d, width, height);
+            }
+        } finally {
+            g2d.dispose();
         }
-
-        g2d.dispose();
     }
 
     private void startBounce() {
@@ -78,21 +88,24 @@ public class ProgressBar extends JComponent {
         }
     }
 
-    private void drawBackground(Graphics2D g2d, Rectangle bounds) {
+    private void drawBackground(Graphics2D g2d, int width, int height) {
         g2d.setColor(themeManager.getColor("progress-bar"));
-        g2d.fill(new RoundRectangle2D.Double(0, 0, getWidth(), getHeight(), getHeight(), getHeight()));
+        roundRect.setRoundRect(0, 0, width, height, height, height);
+        g2d.fill(roundRect);
     }
 
-    private void drawProgress(Graphics2D g2d, Rectangle bounds) {
+    private void drawProgress(Graphics2D g2d, int width, int height) {
         g2d.setColor(themeManager.getColor("progress-bar-track"));
-        g2d.fill(new RoundRectangle2D.Double(0, 0, getWidth() * progress, getHeight(), getHeight(), getHeight()));
+        roundRect.setRoundRect(0, 0, width * progress, height, height, height);
+        g2d.fill(roundRect);
     }
 
-    private void drawBounce(Graphics2D g2d, Rectangle bounds) {
-        double barWidth = getWidth() * 0.2;
-        double barPosX = (getWidth() - barWidth) * bouncePos;
+    private void drawBounce(Graphics2D g2d, int width, int height) {
+        double barWidth = width * 0.2;
+        double barPosX = (width - barWidth) * bouncePos;
 
         g2d.setColor(themeManager.getColor("progress-bar-track"));
-        g2d.fill(new RoundRectangle2D.Double(barPosX, 0, barWidth, getHeight(), getHeight(), getHeight()));
+        roundRect.setRoundRect(barPosX, 0, barWidth, height, height, height);
+        g2d.fill(roundRect);
     }
 }

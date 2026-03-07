@@ -1,6 +1,6 @@
 package ru.smclabs.bootstrap.gui.controller;
 
-import ru.smclabs.bootstrap.gui.panel.update.UpdatePanel;
+import ru.smclabs.bootstrap.gui.panel.UpdatePanel;
 import ru.smclabs.bootstrap.util.TimeUtils;
 import ru.smclabs.slauncher.resources.downloader.stats.listener.ProgressListener;
 import ru.smclabs.slauncher.resources.downloader.stats.listener.SpeedListener;

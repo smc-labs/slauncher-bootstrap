@@ -1,18 +1,18 @@
 package ru.smclabs.bootstrap.gui.panel.background;
 
 import ru.smclabs.bootstrap.gui.manager.ThemeManager;
-import ru.smclabs.bootstrap.gui.panel.header.HeaderPanel;
-import ru.smclabs.bootstrap.gui.panel.Panel;
-import ru.smclabs.bootstrap.gui.panel.update.UpdatePanel;
+import ru.smclabs.bootstrap.gui.panel.HeaderPanel;
+import ru.smclabs.bootstrap.gui.panel.UpdatePanel;
 import ru.smclabs.bootstrap.util.resources.LocalResourceHelper;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 
-public class BackgroundPanel extends Panel {
+public class BackgroundPanel extends JPanel {
     public static final int PADDING_X = 34;
     public static final int PADDING_Y = 28;
+    public static final double BORDER_RADIUS = 28.0;
 
     private static final int LOGO_WIDTH = 40;
     private static final int LOGO_HEIGHT = 40;
@@ -20,10 +20,12 @@ public class BackgroundPanel extends Panel {
     private final Image imageLogo;
     private final UpdatePanel panelUpdate;
     private final ThemeManager themeManager;
+    private final RoundRectangle2D.Double roundRect;
 
     public BackgroundPanel(ThemeManager themeManager, JFrame frame) {
         this.themeManager = themeManager;
         imageLogo = LocalResourceHelper.loadScaledImage("/assets/icons/favicon.png", LOGO_WIDTH, LOGO_HEIGHT);
+        roundRect = new RoundRectangle2D.Double();
         setLayout(null);
         setBackground(null);
         setBorder(new BackgroundBorder(themeManager));
@@ -37,19 +39,32 @@ public class BackgroundPanel extends Panel {
 
     @Override
     protected void paintComponent(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        Graphics2D g2d = (Graphics2D) g.create();
+        try {
+            g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        drawBackground(g2d);
-        drawLogo(g2d);
+            drawBackground(g2d);
+            drawLogo(g2d);
+        } finally {
+            g2d.dispose();
+        }
 
         super.paintComponent(g);
     }
 
     private void drawBackground(Graphics2D g2d) {
+        roundRect.setRoundRect(
+                0,
+                0,
+                getWidth(),
+                getHeight(),
+                BORDER_RADIUS,
+                BORDER_RADIUS
+        );
+
         g2d.setColor(themeManager.getColor("bg"));
-        g2d.fill(new RoundRectangle2D.Double(0, 0, getWidth(), getHeight(), (18D / 2D) * Math.PI, (18D / 2D) * Math.PI));
+        g2d.fill(roundRect);
     }
 
     private void drawLogo(Graphics2D g2d) {

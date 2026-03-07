@@ -12,7 +12,7 @@ import java.awt.*;
 public class GuiManager {
     public static final String FRAME_TITLE = "SimpleMinecraft";
     public static final int FRAME_WIDTH = 460;
-    public static final int FRAME_HEIGHT = 340;
+    public static final int FRAME_HEIGHT = 356;
 
     private final JFrame frame;
     private final BackgroundPanel panelBackground;
