@@ -2,7 +2,7 @@ package ru.smclabs.bootstrap.gui.component;
 
 import ru.smclabs.bootstrap.gui.panel.update.UpdatePanel;
 import ru.smclabs.bootstrap.gui.manager.ThemeManager;
-import ru.smclabs.bootstrap.util.resources.ResourcesHelper;
+import ru.smclabs.bootstrap.util.resources.LocalResourceHelper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,7 +18,7 @@ public class FileDownloadingPane extends JComponent {
 
     public FileDownloadingPane(ThemeManager themeManager, UpdatePanel parent) {
         this.themeManager = themeManager;
-        labelFont = ResourcesHelper.loadFont("GolosText-Regular", 14);
+        labelFont = LocalResourceHelper.loadFont("GolosText-Regular", 14);
         images = bakeImages();
         setBounds(0, parent.getHeight() - 74 - 20 - UpdatePanel.VERTICAL_GAP, parent.getWidth(), 74);
         setVisible(false);

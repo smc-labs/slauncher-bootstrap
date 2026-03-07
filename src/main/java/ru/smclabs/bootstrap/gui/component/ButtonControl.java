@@ -1,7 +1,7 @@
 package ru.smclabs.bootstrap.gui.component;
 
 import ru.smclabs.bootstrap.gui.manager.ThemeManager;
-import ru.smclabs.bootstrap.util.resources.ResourcesHelper;
+import ru.smclabs.bootstrap.util.resources.LocalResourceHelper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,7 +19,7 @@ public abstract class ButtonControl extends JComponent implements MouseListener 
     public ButtonControl(ThemeManager themeManager, String type) {
         this.themeManager = themeManager;
         imageRegular = themeManager.getImage("buttons", type, 40, 40);
-        imageHover = ResourcesHelper.loadScaledImage("/assets/buttons/" + type + "-hover.png", 40, 40);
+        imageHover = LocalResourceHelper.loadScaledImage("/assets/buttons/" + type + "-hover.png", 40, 40);
         setPreferredSize(new Dimension(40, 40));
         setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         addMouseListener(this);

@@ -3,7 +3,7 @@ package ru.smclabs.bootstrap.gui.manager;
 import ru.smclabs.bootstrap.gui.controller.UpdateViewController;
 import ru.smclabs.bootstrap.gui.listener.FrameDragListener;
 import ru.smclabs.bootstrap.gui.panel.background.BackgroundPanel;
-import ru.smclabs.bootstrap.util.resources.ResourcesHelper;
+import ru.smclabs.bootstrap.util.resources.LocalResourceHelper;
 import ru.smclabs.slauncher.resources.provider.DirProvider;
 
 import javax.swing.*;
@@ -46,7 +46,7 @@ public class GuiManager {
         frame.setTitle(FRAME_TITLE);
         frame.setName(FRAME_TITLE);
         frame.setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
-        frame.setIconImage(ResourcesHelper.loadScaledImage("/assets/icons/favicon.png", 128, 128));
+        frame.setIconImage(LocalResourceHelper.loadScaledImage("/assets/icons/favicon.png", 128, 128));
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setUndecorated(true);
         frame.setResizable(false);

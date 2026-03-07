@@ -4,7 +4,7 @@ import ru.smclabs.bootstrap.gui.manager.ThemeManager;
 import ru.smclabs.bootstrap.gui.panel.header.HeaderPanel;
 import ru.smclabs.bootstrap.gui.panel.Panel;
 import ru.smclabs.bootstrap.gui.panel.update.UpdatePanel;
-import ru.smclabs.bootstrap.util.resources.ResourcesHelper;
+import ru.smclabs.bootstrap.util.resources.LocalResourceHelper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,7 +23,7 @@ public class BackgroundPanel extends Panel {
 
     public BackgroundPanel(ThemeManager themeManager, JFrame frame) {
         this.themeManager = themeManager;
-        imageLogo = ResourcesHelper.loadScaledImage("/assets/icons/favicon.png", LOGO_WIDTH, LOGO_HEIGHT);
+        imageLogo = LocalResourceHelper.loadScaledImage("/assets/icons/favicon.png", LOGO_WIDTH, LOGO_HEIGHT);
         setLayout(null);
         setBackground(null);
         setBorder(new BackgroundBorder(themeManager));

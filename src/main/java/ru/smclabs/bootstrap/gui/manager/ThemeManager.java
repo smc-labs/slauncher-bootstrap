@@ -5,7 +5,7 @@ import com.jthemedetecor.OsThemeDetector;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.smclabs.bootstrap.util.resources.ResourcesHelper;
+import ru.smclabs.bootstrap.util.resources.LocalResourceHelper;
 import ru.smclabs.jacksonpack.Jackson;
 import ru.smclabs.slauncher.resources.provider.DirProvider;
 
@@ -37,7 +37,7 @@ public class ThemeManager {
     }
 
     public Image getImage(String type, String name, int width, int height) {
-        return ResourcesHelper.loadScaledImage("/assets/" + type + "/" + name
+        return LocalResourceHelper.loadScaledImage("/assets/" + type + "/" + name
                 + "-" + (dark ? "dark" : "light") + ".png", width, height);
     }
 

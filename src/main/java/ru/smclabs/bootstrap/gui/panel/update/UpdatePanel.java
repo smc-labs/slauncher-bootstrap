@@ -6,7 +6,7 @@ import ru.smclabs.bootstrap.gui.manager.GuiManager;
 import ru.smclabs.bootstrap.gui.manager.ThemeManager;
 import ru.smclabs.bootstrap.gui.component.FileDownloadingPane;
 import ru.smclabs.bootstrap.gui.component.ProgressBar;
-import ru.smclabs.bootstrap.util.resources.ResourcesHelper;
+import ru.smclabs.bootstrap.util.resources.LocalResourceHelper;
 
 import java.awt.*;
 
@@ -30,8 +30,8 @@ public class UpdatePanel extends Panel {
         setBackground(null);
         setLayout(null);
 
-        titleFont = ResourcesHelper.loadFont("GolosText-Bold", 34);
-        subTitleFont = ResourcesHelper.loadFont("GolosText-Regular", 16);
+        titleFont = LocalResourceHelper.loadFont("GolosText-Bold", 34);
+        subTitleFont = LocalResourceHelper.loadFont("GolosText-Regular", 16);
 
         add(fileDownloading = new FileDownloadingPane(themeManager, this));
         add(progressBar = new ProgressBar(themeManager, this));
