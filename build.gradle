@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'ru.smclabs.bootstrap'
-version = '26.1.6'
+version = '26.1.7'
 
 application {
     mainClass = 'ru.smclabs.bootstrap.core.BootstrapMain'
