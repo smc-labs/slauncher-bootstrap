@@ -11,7 +11,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class UpdatePanel extends JPanel {
-    public static final int VERTICAL_GAP = 34;
+    public static final int VERTICAL_GAP = 24;
 
     private final ThemeManager themeManager;
     private final Font titleFont;
@@ -91,7 +91,7 @@ public class UpdatePanel extends JPanel {
                     labelTitle,
                     titleFont,
                     themeManager.getColor("title"),
-                    downloadingVisible ? 30 : 70
+                    downloadingVisible ? 35 : 70
             );
 
             drawCenteredString(
@@ -99,7 +99,7 @@ public class UpdatePanel extends JPanel {
                     labelSubTitle,
                     subTitleFont,
                     themeManager.getColor("sub-title"),
-                    downloadingVisible ? 60 : 100
+                    downloadingVisible ? 60 : 95
             );
         } finally {
             g2d.dispose();

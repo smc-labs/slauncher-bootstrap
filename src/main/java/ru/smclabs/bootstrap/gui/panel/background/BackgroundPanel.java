@@ -10,7 +10,7 @@ import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 
 public class BackgroundPanel extends JPanel {
-    public static final int PADDING_X = 34;
+    public static final int PADDING_X = 36;
     public static final int PADDING_Y = 28;
     public static final double BORDER_RADIUS = 30;
 
