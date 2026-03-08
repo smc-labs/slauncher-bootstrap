@@ -43,9 +43,6 @@ public class Bootstrap {
 
         try {
             updateManager.runUpdate();
-
-            Thread.sleep(Duration.ofSeconds(60));
-
             launcherStarter.runLauncher();
         } catch (InterruptedException e) {
             log.error("Resources update cancelled", e);
