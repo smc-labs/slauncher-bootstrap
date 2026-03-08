@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import ru.smclabs.bootstrap.gui.controller.UpdateViewController;
 import ru.smclabs.bootstrap.http.request.FetchResourcesRequest;
 import ru.smclabs.bootstrap.process.repository.ProcessRefRepository;
-import ru.smclabs.bootstrap.process.starter.LauncherProcessStarter;
+import ru.smclabs.bootstrap.process.starter.LauncherStarter;
 import ru.smclabs.bootstrap.report.ReportProvider;
 import ru.smclabs.bootstrap.update.resource.BootstrapResourcesFactory;
 import ru.smclabs.bootstrap.update.resource.model.BootstrapResources;
@@ -37,7 +37,7 @@ public class UpdateTask {
 
     private final HttpService httpService;
     private final ProcessRefRepository processRefStorage;
-    private final LauncherProcessStarter launcherProcessStarter;
+    private final LauncherStarter launcherStarter;
     private final UpdateViewController viewController;
     private final BootstrapResourcesFactory factory;
     private final Thread worker;
@@ -49,19 +49,19 @@ public class UpdateTask {
      * @param dirProvider Провайдер директорий для работы с файловой системой
      * @param processRefStorage Репозиторий для управления ссылками на процессы лаунчера
      * @param viewController Контроллер для обновления GUI в процессе загрузки
-     * @param launcherProcessStarter Стартер для запуска процесса лаунчера после обновления
+     * @param launcherStarter Стартер для запуска процесса лаунчера после обновления
      */
     public UpdateTask(
             HttpService httpService,
             DirProvider dirProvider,
             ProcessRefRepository processRefStorage,
             UpdateViewController viewController,
-            LauncherProcessStarter launcherProcessStarter
+            LauncherStarter launcherStarter
     ) {
         this.httpService = httpService;
         this.processRefStorage = processRefStorage;
         this.viewController = viewController;
-        this.launcherProcessStarter = launcherProcessStarter;
+        this.launcherStarter = launcherStarter;
         this.factory = new BootstrapResourcesFactory(dirProvider);
         this.worker = createThread();
     }
@@ -126,7 +126,7 @@ public class UpdateTask {
 
                 ResourcesPack pack = fetchResources();
                 updateResources(findInvalidResources(pack));
-                launcherProcessStarter.setPack(pack);
+                launcherStarter.setPack(pack);
 
                 cancel();
                 return;

@@ -27,10 +27,6 @@ repositories {
         name = "smcLabsReleases"
         url = uri("https://maven.simpleminecraft.ru/releases")
     }
-    maven {
-        name = "JitPack"
-        url = uri("https://jitpack.io")
-    }
     flatDir {
         dirs "libs"
     }

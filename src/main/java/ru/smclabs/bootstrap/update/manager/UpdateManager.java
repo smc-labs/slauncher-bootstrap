@@ -3,7 +3,7 @@ package ru.smclabs.bootstrap.update.manager;
 import ru.smclabs.bootstrap.gui.controller.UpdateViewController;
 import ru.smclabs.bootstrap.http.BootstrapHttpService;
 import ru.smclabs.bootstrap.process.repository.ProcessRefRepository;
-import ru.smclabs.bootstrap.process.starter.LauncherProcessStarter;
+import ru.smclabs.bootstrap.process.starter.LauncherStarter;
 import ru.smclabs.bootstrap.update.UpdateTask;
 import ru.smclabs.slauncher.resources.provider.DirProvider;
 
@@ -11,7 +11,7 @@ public class UpdateManager {
     private final DirProvider dirProvider;
     private final BootstrapHttpService httpService;
     private final ProcessRefRepository processRefStorage;
-    private final LauncherProcessStarter launcherProcessStarter;
+    private final LauncherStarter launcherStarter;
     private final UpdateViewController viewController;
 
     private UpdateTask currentTask;
@@ -20,13 +20,13 @@ public class UpdateManager {
             DirProvider dirProvider,
             BootstrapHttpService httpService,
             ProcessRefRepository processRefStorage,
-            LauncherProcessStarter launcherProcessStarter,
+            LauncherStarter launcherStarter,
             UpdateViewController viewController
     ) {
         this.dirProvider = dirProvider;
         this.httpService = httpService;
         this.processRefStorage = processRefStorage;
-        this.launcherProcessStarter = launcherProcessStarter;
+        this.launcherStarter = launcherStarter;
         this.viewController = viewController;
     }
 
@@ -48,7 +48,7 @@ public class UpdateManager {
                 dirProvider,
                 processRefStorage,
                 viewController,
-                launcherProcessStarter
+                launcherStarter
         );
     }
 }

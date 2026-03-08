@@ -6,11 +6,12 @@ import org.slf4j.LoggerFactory;
 import ru.smclabs.bootstrap.gui.manager.GuiManager;
 import ru.smclabs.bootstrap.http.BootstrapHttpService;
 import ru.smclabs.bootstrap.process.repository.ProcessRefRepository;
-import ru.smclabs.bootstrap.process.starter.LauncherProcessStarter;
+import ru.smclabs.bootstrap.process.starter.LauncherStarter;
 import ru.smclabs.bootstrap.report.ReportProvider;
 import ru.smclabs.bootstrap.update.manager.UpdateManager;
 
 import java.io.IOException;
+import java.time.Duration;
 
 @NotNullByDefault
 public class Bootstrap {
@@ -19,29 +20,17 @@ public class Bootstrap {
     private final BootstrapContext context;
     private final BootstrapEnvironment environment;
     private final GuiManager guiManager;
-    private final LauncherProcessStarter launcherProcessStarter;
+    private final ProcessRefRepository processRefRepository;
+    private final LauncherStarter launcherStarter;
     private final UpdateManager updateManager;
 
     public Bootstrap(BootstrapContext context) {
         this.context = context;
         environment = new BootstrapEnvironment();
         guiManager = new GuiManager(context.getDirProvider());
-
-        ProcessRefRepository processRefStorage = new ProcessRefRepository(context.getDirProvider());
-
-        launcherProcessStarter = new LauncherProcessStarter(
-                guiManager.getUpdateViewController(),
-                processRefStorage,
-                context.getDirProvider()
-        );
-
-        updateManager = new UpdateManager(
-                context.getDirProvider(),
-                new BootstrapHttpService(this),
-                processRefStorage,
-                launcherProcessStarter,
-                guiManager.getUpdateViewController()
-        );
+        processRefRepository = new ProcessRefRepository(context.getDirProvider());
+        launcherStarter = createLauncherStarter();
+        updateManager = createUpdateManager();
 
         ReportProvider.INSTANCE.setBootstrap(this);
     }
@@ -54,7 +43,10 @@ public class Bootstrap {
 
         try {
             updateManager.runUpdate();
-            launcherProcessStarter.runLauncher();
+
+            Thread.sleep(Duration.ofSeconds(60));
+
+            launcherStarter.runLauncher();
         } catch (InterruptedException e) {
             log.error("Resources update cancelled", e);
         } catch (IOException e) {
@@ -73,6 +65,24 @@ public class Bootstrap {
 
     public BootstrapContext getContext() {
         return context;
+    }
+
+    private LauncherStarter createLauncherStarter() {
+        return new LauncherStarter(
+                guiManager.getUpdateViewController(),
+                processRefRepository,
+                context.getDirProvider()
+        );
+    }
+
+    private UpdateManager createUpdateManager() {
+        return new UpdateManager(
+                context.getDirProvider(),
+                new BootstrapHttpService(this),
+                processRefRepository,
+                launcherStarter,
+                guiManager.getUpdateViewController()
+        );
     }
 
     private void initProperties() {

@@ -13,8 +13,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
 
-public class LauncherProcessStarter {
-    private static final Logger log = LoggerFactory.getLogger(LauncherProcessStarter.class);
+public class LauncherStarter {
+    private static final Logger log = LoggerFactory.getLogger(LauncherStarter.class);
 
     private final UpdateViewController viewController;
     private final ProcessRefRepository processRefStorage;
@@ -22,7 +22,7 @@ public class LauncherProcessStarter {
 
     private ResourcesPack pack;
 
-    public LauncherProcessStarter(
+    public LauncherStarter(
             UpdateViewController viewController,
             ProcessRefRepository processRefStorage,
             DirProvider dirProvider

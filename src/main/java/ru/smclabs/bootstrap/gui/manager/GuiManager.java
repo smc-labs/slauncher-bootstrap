@@ -45,12 +45,16 @@ public class GuiManager {
         JFrame frame = new JFrame();
         frame.setTitle(FRAME_TITLE);
         frame.setName(FRAME_TITLE);
-        frame.setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
-        frame.setIconImage(LocalResourceHelper.loadScaledImage("/assets/icons/favicon.png", 128, 128));
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setUndecorated(true);
         frame.setResizable(false);
         frame.setBackground(new Color(0, 0, 0, 0));
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
+        frame.setIconImage(LocalResourceHelper.loadScaledImage(
+                "/assets/icons/favicon.png",
+                128,
+                128
+        ));
 
         FrameDragListener dragListener = new FrameDragListener(frame);
         frame.addMouseListener(dragListener);
